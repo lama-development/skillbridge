@@ -1,0 +1,174 @@
+@import 'global.css';
+
+body {
+    background: var(--color-bg);
+    background: linear-gradient(90deg, var(--color-bg-gradient-start) 0%, var(--color-bg-gradient-end) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    max-width: 850px;
+    width: 100%;
+    background-color: #423D58;
+    /* Colore scuro come nel design */
+    border-radius: 16px;
+    overflow: hidden;
+    /* Nasconde il contenuto oltre i bordi */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.left-section {
+    flex: 1;
+    position: relative;
+    min-height: 500px;
+    background: url('/img/bridge.webp') no-repeat center center;
+    background-size: cover;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    color: #fff;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo {
+    width: 40px;
+    height: auto;
+  }
+  .site-name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.tagline {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+/* Sezione di destra: form */
+/* Sezione destra con il form */
+.right-section {
+    flex: 1;
+    background-color: #554F70;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.right-section h2 {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+.right-section .login-link {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #bbb;
+}
+
+.right-section .login-link a {
+    color: #A089F7;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Stile del form */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #ddd;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+input::placeholder {
+    color: #ccc;
+}
+
+/* Checkbox dei termini */
+.terms {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.terms input {
+    margin-right: 10px;
+}
+
+.terms label {
+    font-size: 0.85rem;
+    color: #ddd;
+    margin: 0;
+}
+
+.terms a {
+    color: #A089F7;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Pulsante di registrazione */
+.btn-primary {
+    background-color: #A089F7;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #8F76E1;
+}
