@@ -1,0 +1,28 @@
+<!-- views/login.ejs -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SkillBridge</title>
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+        <!-- CSS -->
+        <link rel="stylesheet" href="/css/global.css">
+</head>
+<body>
+    <h1>Login</h1>
+    <form action="/login" method="post">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+        <button type="submit">Accedi</button>
+    </form>
+</body>
+</html>
