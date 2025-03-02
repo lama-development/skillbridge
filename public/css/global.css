@@ -22,3 +22,18 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.btn-primary {
+    background-color: #A089F7;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #8F76E1;
+}

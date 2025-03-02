@@ -14,10 +14,8 @@ body {
     max-width: 850px;
     width: 100%;
     background-color: #423D58;
-    /* Colore scuro come nel design */
     border-radius: 16px;
     overflow: hidden;
-    /* Nasconde il contenuto oltre i bordi */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
@@ -40,16 +38,18 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-  }
-  .logo {
+}
+
+.brand-logo {
     width: 40px;
     height: auto;
-  }
-  .site-name {
+}
+
+.brand-name {
     font-size: 1.4rem;
     font-weight: bold;
     color: #fff;
-  }
+}
 
 .back-btn {
     position: absolute;
@@ -57,9 +57,9 @@ body {
     right: 20px;
     background-color: rgba(255, 255, 255, 0.2);
     color: #fff;
-    border: none;
     padding: 8px 16px;
     border-radius: 16px;
+    text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s;
 }
@@ -74,8 +74,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Sezione di destra: form */
-/* Sezione destra con il form */
 .right-section {
     flex: 1;
     background-color: #554F70;
@@ -105,7 +103,6 @@ body {
     font-weight: 600;
 }
 
-/* Stile del form */
 form {
     display: flex;
     flex-direction: column;
@@ -123,18 +120,22 @@ input[type="email"],
 input[type="password"] {
     padding: 12px;
     margin-bottom: 15px;
-    border: none;
     border-radius: 8px;
     font-size: 0.95rem;
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
+    border: 1px solid transparent;
 }
 
 input::placeholder {
     color: #ccc;
 }
 
-/* Checkbox dei termini */
+input:focus {
+    outline: none;
+    border: 1px solid #A089F7;
+}
+
 .terms {
     display: flex;
     align-items: center;
@@ -155,20 +156,4 @@ input::placeholder {
     color: #A089F7;
     text-decoration: none;
     font-weight: 600;
-}
-
-/* Pulsante di registrazione */
-.btn-primary {
-    background-color: #A089F7;
-    color: #fff;
-    border: none;
-    padding: 12px;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.btn-primary:hover {
-    background-color: #8F76E1;
 }
