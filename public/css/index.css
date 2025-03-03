@@ -1,0 +1,7 @@
+/* public/css/index.css */
+
+@import 'global.css';
+
+body {
+    background-color: var(--color-bg-1);
+}

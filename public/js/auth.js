@@ -1,3 +1,5 @@
+// public/js/auth.js
+
 document.querySelectorAll('.toggle-password').forEach(function (button) {
     button.addEventListener('click', function () {
         const input = this.parentElement.querySelector('input');
