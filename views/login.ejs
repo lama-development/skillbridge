@@ -11,45 +11,83 @@
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <!-- CSS -->
     <link rel="stylesheet" href="/css/login.css">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- JS -->
+    <script src="/js/signup.js" defer></script>
 </head>
 
 <body>
     <div class="container">
         <div class="left-section">
-            <div class="brand">
-                <img src="img/logo.png" alt="Logo" class="brand-logo">
-                <span class="brand-name">SkillBridge</span>
+            <div class="top-bar">
+                <a href="#" class="logo">
+                    <img src="/img/logo-black.png" alt="Logo" class="logo-img" />
+                    <span class="logo-text">SkillBridge</span>
+                </a>
             </div>
-            <a href="/" class="back-btn">Ritorna al sito</a>
-            <div class="tagline">
-                <h3>Costruisci ponti,<br>sblocca opportunità.</h3>
+            <div class="form-container">
+                <h1>Crea un account</h1>
+                <p class="subtitle">Registrati per creare un account ed esplorare nuove possibilità.</p>
+                <!-- Form di registrazione -->
+                <form class="signup-form" action="#" method="POST">
+                    <!-- Input Email -->
+                    <div class="input-wrapper">
+                        <i class="bx bx-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="Email" required />
+                    </div>
+
+                    <!-- Input Username -->
+                    <div class="input-wrapper">
+                        <i class="bx bx-user"></i>
+                        <input type="text" id="username" name="username" placeholder="Username" required />
+                    </div>
+
+                    <!-- Input Password con pulsante per mostrare/nascondere -->
+                    <div class="input-wrapper password-wrapper">
+                        <i class="bx bx-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Password" required />
+                        <button type="button" class="toggle-password"><i class="bx bx-show"></i></button>
+                    </div>
+
+                    <!-- Input Conferma Password (opzionale, con icona e toggle se desiderato) -->
+                    <div class="input-wrapper password-wrapper">
+                        <i class="bx bx-lock"></i>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Conferma Password" required />
+                        <button type="button" class="toggle-password"><i class="bx bx-show"></i></button>
+                    </div>
+
+
+                    <!-- Checkbox Termini e Condizioni -->
+                    <div class="terms">
+                        <input type="checkbox" id="agree-terms" name="agree-terms" required />
+                        <label for="agree-terms">
+                            Accetto i <a href="#">Termini di Servizio</a> di SkillBridge
+                        </label>
+                    </div>
+
+                    <!-- Pulsante di signup -->
+                    <button type="submit" class="signup-btn">Sign up</button>
+                </form>
             </div>
+
+            <!-- Link testuale per chi ha già un account -->
+            <p class="login-link">
+                Hai già un account? <a href="#">Effettua il login</a>
+            </p>
         </div>
 
-        <!-- Sezione di destra (Form) -->
+        <!-- Sezione destra: Informazioni/Immagine promozionale -->
         <div class="right-section">
-            <h2>Crea un account</h2>
-            <p class="login-link">
-                Hai già un account?
-                <a href="#">Accedi</a>
-            </p>
-
-            <form>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Inserisci la tua email" required>
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Inserisci il tuo username" required>
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Inserisci la tua password" required>
-                <label for="confirm-password">Conferma Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" placeholder="Conferma la tua password" required>
-                <div class="terms">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">Accetto i <a href="#">Termini & Condizioni</a></label>
-                </div>
-                <button class="btn-primary" type="submit">Crea account</button>
-            </form>
+            <div class="card-preview">
+                <img src="/img/logo-white.png" alt="Riddle Card" />
+            </div>
+            <div class="card-text">
+                <h2>Il tuo ponte verso la crescita professionale</h2>
+                <p>Attraverso SkillBridge, il tuo potenziale incontra opportunità concrete: un ambiente dinamico dove freelance e aziende collaborano per innovare e crescere.</p>
+            </div>
         </div>
     </div>
+</body>
 
 </html>
