@@ -13,13 +13,56 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- CSS -->
     <link rel="stylesheet" href="/css/navbar.css">
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/onboarding.css">
     <!-- JS -->
     <script src="/js/nav.js" defer></script>
+    <script src="/js/onboarding.js" defer></script>
 </head>
 
 <body>
-    <%- include('partials/navbar') %>
+    <div class="onboarding-container">
+        <div class="onboarding-box">
+            <h1>Benvenuto a bordo!</h1>
+            <p>Ancora pochi passi per completare il tuo profilo</p>
+            <div class="options">
+                <div class="option selected" onclick="selectRole('freelancer')">
+                    <i class='bx bx-user'></i> Freelancer
+                </div>
+                <div class="option" onclick="selectRole('azienda')">
+                    <i class='bx bx-buildings'></i> Azienda
+                </div>
+            </div>
+            <form id="onboarding-form">
+                <div id="freelancer-fields" style="display: block;">
+                    <div class="input-wrapper">
+                        <i class="bx bx-user"></i>
+                        <input type="text" id="nome" name="nome" placeholder="Nome" required autocomplete="name" />
+                    </div>
+                    <div class="input-wrapper">
+                        <i class="bx bx-user"></i>
+                        <input type="text" id="cognome" name="cognome" placeholder="Cognome" required autocomplete="family-name" />
+                    </div>
+                    <div class="input-wrapper">
+                        <i class="bx bx-globe"></i>
+                        <input type="url" id="portfolio" name="portfolio" placeholder="Portfolio" />
+                    </div>
+                </div>
+                <div id="azienda-fields" style="display: none;">
+                    <div class="input-wrapper">
+                        <i class="bx bx-user"></i>
+                        <input type="text" id="nome-azienda" name="nome-azienda" placeholder="Nome Azienda" required />
+                    </div>
+                    <div class="input-wrapper">
+                        <i class="bx bx-globe"></i>
+                        <input type="url" id="website" name="website" placeholder="Sito Web" />
+                    </div>
+                </div>
+                <div class="buttons" id="buttons">
+                    <button type="submit" class="btn">Inizia ad esplorare</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>

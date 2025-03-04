@@ -1,5 +1,7 @@
 // public/js/auth.js
 
+const usernameInput = document.getElementById('username');
+
 document.querySelectorAll('.toggle-password').forEach(function (button) {
     button.addEventListener('click', function () {
         const input = this.parentElement.querySelector('input');
@@ -11,4 +13,13 @@ document.querySelectorAll('.toggle-password').forEach(function (button) {
             this.innerHTML = '<i class="bx bx-show"></i>';
         }
     });
+});
+
+usernameInput.addEventListener('input', function () {
+    // Converte il testo in minuscolo
+    let currentValue = this.value.toLowerCase();
+    // Rimuove caratteri non ammessi (solo a-z, 0-9 e trattini)
+    let cleanedValue = currentValue.replace(/[^a-z0-9-]/g, '');
+    // Aggiorna il valore dell'input con il testo ripulito
+    this.value = cleanedValue;
 });
