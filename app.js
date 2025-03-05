@@ -71,7 +71,7 @@ app.post('/login', (req, res, next) => {
             if (err) { return next(err); }
             // Se il campo type non è impostato, significa che l'onboarding non è stato completato
             if (!user.type) {
-                return res.redirect('/onboarding?userId=' + user.id);
+                return res.redirect('/onboarding');
             }
             return res.redirect('/');
         });
@@ -131,32 +131,46 @@ app.post('/signup', (req, res) => {
     });
 });
 
-// GET route for onboarding form
+// GET route per il form di onboarding
 app.get('/onboarding', (req, res) => {
-    // Pass the userId from query params to the view
-    res.render('onboarding', { userId: req.query.userId });
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per completare l\'onboarding.');
+        return res.redirect('/login');
+    }
+    // Renderizza la pagina 
+    res.render('onboarding');
 });
 
-// POST route for onboarding form
+
+// POST route per il form di onboarding
 app.post('/onboarding', (req, res) => {
-    const { userId, type } = req.body;
-    // Prepara la query per aggiornare il campo type in base alla scelta
-    let updateQuery, updateData;
-    if (type === 'freelancer') {
-        updateQuery = 'UPDATE users SET type = ? WHERE id = ?';
-        updateData = [type, userId];
-    } else if (type === 'business') {
-        updateQuery = 'UPDATE users SET type = ? WHERE id = ?';
-        updateData = [type, userId];
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per completare l\'onboarding.');
+        return res.redirect('/login');
     }
+
+    const { type } = req.body;
+    let updateQuery, updateData;
+
+    if (type === 'freelancer' || type === 'business') {
+        updateQuery = 'UPDATE users SET type = ? WHERE id = ?';
+        updateData = [type, req.user.id];
+    } else {
+        req.flash('error_msg', 'Tipo utente non valido.');
+        return res.redirect('/onboarding');
+    }
+
     db.run(updateQuery, updateData, function (err) {
         if (err) {
             console.error(err);
-            return res.redirect('/onboarding?userId=' + userId);
+            req.flash('error_msg', 'Errore durante l\'onboarding.');
+            return res.redirect('/onboarding');
         }
+        req.flash('success_msg', 'Onboarding completato con successo!');
         res.redirect('/');
     });
 });
+
 
 // Avvio del server
 app.listen(PORT, () => {
