@@ -20,8 +20,33 @@
         <button class="btn mode-toggle">
             <i class="bx bx-sun"></i>
         </button>
-        <a href="/profile" class="navbar-profile">
-            <img src="/img/profile.png" alt="Profile">
-        </a>
+        <!-- Menu contestuale per il profilo -->
+        <div class="navbar-profile-wrapper">
+            <img src="/img/profile.png" alt="Profile" class="navbar-profile">
+            <div class="profile-menu">
+                <ul>
+                    <li>
+                        <a href="/profile">
+                            <i class="bx bx-user"></i>
+                            Profilo
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="info-link">
+                            <i class="bx bx-info-circle"></i>
+                            Informazioni
+                        </a>
+                    </li>
+                    <li>
+                        <form action="/logout" method="POST">
+                            <button type="submit">
+                                <i class="bx bx-log-out"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </nav>

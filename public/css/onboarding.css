@@ -40,8 +40,9 @@
 }
 
 .option {
-    border: 1px solid var(--color-accent);
-    color: var(--color-accent);
+    background-color: var(--color-bg-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
     flex: 1;
     margin: 5px;
     padding: 15px;
@@ -62,7 +63,8 @@
 .option:hover,
 .option.selected {
     background-color: var(--color-accent);
-    color: var(--color-bg-1);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-accent);
 }
 
 .input-wrapper {
@@ -116,4 +118,28 @@
 
 .btn:hover {
     background-color: var(--color-accent-hover);
+}
+
+@media (max-width: 440px) {
+    .onboarding-box h1 {
+        font-size: 1.8rem;
+    }
+
+    .onboarding-box p {
+        font-size: 1rem;
+    }
+
+    .option {
+        font-size:.9rem;
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .option i {
+        font-size: .9rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+    }
 }

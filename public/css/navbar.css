@@ -65,7 +65,72 @@
     font-size: 1.2rem;
 }
 
-.navbar-profile img {
+/* Stili per il menu contestuale del profilo */
+.navbar-profile-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-menu {
+    position: absolute;
+    display: none;
+    top: 140%;
+    right: 0;
+    margin-right: -10px;
+    background-color: var(--color-bg-2);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    z-index: 10;
+    min-width: 150px;
+}
+
+.profile-menu.show {
+    display: block;
+}
+
+.profile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-menu li {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.profile-menu li:last-child {
+    border-bottom: none;
+}
+
+.profile-menu a,
+.profile-menu button {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: var(--font-weight-regular);
+}
+
+.profile-menu button {
+    color: red;
+}
+
+.profile-menu a:hover,
+.profile-menu button:hover {
+    background-color: var(--color-border);
+}
+
+.profile-menu i {
+    margin-right: 8px;
+}
+
+.navbar-profile {
     height: 30px;
     width: 30px;
     border-radius: 50%;
