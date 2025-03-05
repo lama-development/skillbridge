@@ -14,13 +14,16 @@
     <!-- CSS -->
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/index.css">
-    <!-- JS -->
-    <script src="/js/nav.js" defer></script>
 </head>
 
 <body>
     <%- include('partials/navbar') %>
+    <% if (showOnboardingAlert) { %>
+        <div class="alert-onboarding">
+            Ancora qualche passo per completare il tuo profilo.
+            <a href="/onboarding?userId=<%= user ? user.id : '' %>" class="btn-primary">Completa l'onboarding</a>.
+        </div>
+    <% } %>  
 </body>
-<!-- <a href="https://www.flaticon.com/free-icons/link" title="link icons">Link icons created by Freepik - Flaticon</a> -->
 
 </html>

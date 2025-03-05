@@ -1,4 +1,5 @@
-// passportConfig.js
+// config/passportConfig.js
+
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
@@ -9,11 +10,11 @@ passport.use(new LocalStrategy(
     (email, password, done) => {
         db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
             if (err) return done(err);
-            if (!user) return done(null, false, { message: 'Incorrect email.' });
+            if (!user) return done(null, false, { message: 'Email errata.' });
             bcrypt.compare(password, user.password, (err, isMatch) => {
                 if (err) return done(err);
                 if (isMatch) return done(null, user);
-                return done(null, false, { message: 'Incorrect password.' });
+                return done(null, false, { message: 'Password errata.' });
             });
         });
     }

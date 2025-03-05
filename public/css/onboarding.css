@@ -1,3 +1,7 @@
+/* public/css/onboarding.css */
+
+@import 'global.css';
+
 .onboarding-container {
     display: flex;
     justify-content: center;
@@ -91,7 +95,7 @@
     border-color: var(--color-accent);
 }
 
-.buttons {
+.button-wrapper {
     justify-content: center;
     margin-top: 20px;
 }

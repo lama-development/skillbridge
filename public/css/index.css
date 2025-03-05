@@ -5,3 +5,22 @@
 body {
     background-color: var(--color-bg-1);
 }
+
+.alert-onboarding {
+    background-color: var(--color-bg-2);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 12px 24px;
+    border-radius: 4px;
+    margin: 10px auto;
+    width: fit-content;
+}
+
+.btn-primary {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    text-decoration: underline;
+}

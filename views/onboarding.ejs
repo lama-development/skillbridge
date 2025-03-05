@@ -1,4 +1,4 @@
-<!-- views/index.ejs -->
+<!-- views/onboarding.ejs -->
 
 <!DOCTYPE html>
 <html lang="it">
@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/onboarding.css">
     <!-- JS -->
-    <script src="/js/nav.js" defer></script>
     <script src="/js/onboarding.js" defer></script>
 </head>
 
@@ -28,11 +27,13 @@
                 <div class="option selected" onclick="selectRole('freelancer')">
                     <i class='bx bx-user'></i> Freelancer
                 </div>
-                <div class="option" onclick="selectRole('azienda')">
+                <div class="option" onclick="selectRole('business')">
                     <i class='bx bx-buildings'></i> Azienda
                 </div>
             </div>
-            <form id="onboarding-form">
+            <form id="onboarding-form" action="/onboarding" method="POST">
+                <input type="hidden" name="userId" value="<%= userId %>">
+                <input type="hidden" name="type" id="selected-type" value="freelancer">
                 <div id="freelancer-fields" style="display: block;">
                     <div class="input-wrapper">
                         <i class="bx bx-user"></i>
@@ -47,7 +48,7 @@
                         <input type="url" id="portfolio" name="portfolio" placeholder="Portfolio" />
                     </div>
                 </div>
-                <div id="azienda-fields" style="display: none;">
+                <div id="business-fields" style="display: none;">
                     <div class="input-wrapper">
                         <i class="bx bx-user"></i>
                         <input type="text" id="nome-azienda" name="nome-azienda" placeholder="Nome Azienda" required />
@@ -57,7 +58,7 @@
                         <input type="url" id="website" name="website" placeholder="Sito Web" />
                     </div>
                 </div>
-                <div class="buttons" id="buttons">
+                <div class="button-wrapper">
                     <button type="submit" class="btn">Inizia ad esplorare</button>
                 </div>
             </form>
