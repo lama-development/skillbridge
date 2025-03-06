@@ -1,4 +1,5 @@
 // public/js/auth.js
+"use strict";
 
 const usernameInput = document.getElementById('username');
 

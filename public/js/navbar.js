@@ -1,4 +1,5 @@
 // public/js/navbar.js
+"use strict";
 
 document.addEventListener('DOMContentLoaded', function() {
     const profileWrapper = document.querySelector('.navbar-profile-wrapper');

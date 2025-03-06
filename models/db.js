@@ -1,7 +1,8 @@
 // models/db.js
+"use strict";
 
 import sqlite3 from 'sqlite3';
-const db = new sqlite3.Database('./users.db');
+const db = new sqlite3.Database('./skillbridge.db');
 
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
@@ -9,7 +10,12 @@ db.serialize(() => {
     email TEXT UNIQUE,
     username TEXT,
     password TEXT,
-    type TEXT
+    type TEXT,
+    firstName TEXT,
+    lastName TEXT,
+    businessName TEXT,
+    website TEXT,
+    profilePicture TEXT DEFAULT 'img/profile.png'
     )`);
 });
 

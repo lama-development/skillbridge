@@ -1,4 +1,5 @@
 // punlic/js/onboarding.js
+"use strict";
 
 function selectRole(role) {
     // Rimuove la classe 'selected' da tutte le opzioni

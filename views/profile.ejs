@@ -1,0 +1,41 @@
+<!-- views/profile.ejs -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilo - SkillBridge</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/profile.css">
+    <!-- JS -->
+    <script src="/js/navbar.js" defer></script>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+    <div class="profile-container">
+        <div class="profile-card">
+            <img src="/img/profile.png" alt="Foto Profilo" class="profile-image">
+            <div class="profile-info">
+                <% if (user.type === 'freelancer') { %>
+                    <h1><%= user.firstName %> <%= user.lastName %></h1>
+                <% } else if (user.type === 'business') { %>
+                    <h1><%= user.businessName %></h1>
+                <% } else { %>
+                    <h1>Profilo Utente</h1>
+                <% } %>
+                <p class="username">@<%= user.username %></p>
+                <% if (user.website) { %>
+                    <p class="website"><a href="<%= user.website %>" target="_blank"><%= user.website %></a></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <script src="/js/profile.js"></script>
+</body>
+</html>

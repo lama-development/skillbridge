@@ -1,4 +1,5 @@
 // app.js
+"use strict";
 
 import express from 'express';
 import session from 'express-session';
@@ -61,21 +62,48 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) { return next(err); }
-        if (!user) {
-            req.flash('error_msg', info.message);
+    const { emailOrUsername, password } = req.body;
+
+    // Cerca l'utente nel database usando sia email che username
+    db.get('SELECT * FROM users WHERE email = ? OR username = ?', [emailOrUsername, emailOrUsername], (err, user) => {
+        if (err) {
+            console.error(err);
+            req.flash('error_msg', 'Errore nel server, riprova più tardi.');
             return res.redirect('/login');
         }
-        req.logIn(user, (err) => {
-            if (err) { return next(err); }
-            // Se il campo type non è impostato, significa che l'onboarding non è stato completato
-            if (!user.type) {
-                return res.redirect('/onboarding');
+        if (!user) {
+            req.flash('error_msg', 'Credenziali non valide.');
+            return res.redirect('/login');
+        }
+
+        // Confronta la password con quella hashata nel database
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) {
+                console.error(err);
+                req.flash('error_msg', 'Errore durante la verifica della password.');
+                return res.redirect('/login');
             }
-            return res.redirect('/');
+            if (!isMatch) {
+                req.flash('error_msg', 'Credenziali non valide.');
+                return res.redirect('/login');
+            }
+
+            // Autentica l'utente con Passport.js
+            req.logIn(user, (err) => {
+                if (err) {
+                    console.error(err);
+                    req.flash('error_msg', 'Errore durante l\'autenticazione.');
+                    return res.redirect('/login');
+                }
+
+                // Controllo onboarding
+                if (!user.type) {
+                    return res.redirect('/onboarding');
+                }
+                return res.redirect('/');
+            });
         });
-    })(req, res, next);
+    });
 });
 
 app.post('/logout', (req, res, next) => {
@@ -146,20 +174,21 @@ app.get('/onboarding', (req, res) => {
     res.render('onboarding');
 });
 
-
-// POST route per il form di onboarding
 app.post('/onboarding', (req, res) => {
     if (!req.isAuthenticated()) {
         req.flash('error_msg', 'Devi essere loggato per completare l\'onboarding.');
         return res.redirect('/login');
     }
 
-    const { type } = req.body;
+    const { type, firstName, lastName, businessName, website } = req.body;
     let updateQuery, updateData;
 
-    if (type === 'freelancer' || type === 'business') {
-        updateQuery = 'UPDATE users SET type = ? WHERE id = ?';
-        updateData = [type, req.user.id];
+    if (type === 'freelancer') {
+        updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ? WHERE id = ?';
+        updateData = [type, firstName, lastName, website, req.user.id];
+    } else if (type === 'business') {
+        updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ? WHERE id = ?';
+        updateData = [type, businessName, website, req.user.id];
     } else {
         req.flash('error_msg', 'Tipo utente non valido.');
         return res.redirect('/onboarding');
@@ -174,6 +203,19 @@ app.post('/onboarding', (req, res) => {
         req.flash('success_msg', 'Onboarding completato con successo!');
         res.redirect('/');
     });
+});
+
+app.get('/profile', (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per accedere al profilo.');
+        return res.redirect('/login');
+    }
+    // Se il campo "type" non è impostato, l'onboarding non è stato completato.
+    if (!req.user.type) {
+        req.flash('error_msg', 'Completa l\'onboarding per accedere al profilo.');
+        return res.redirect('/onboarding');
+    }
+    res.render('profile', { user: req.user });
 });
 
 
