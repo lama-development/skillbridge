@@ -24,3 +24,9 @@ body {
 .btn-primary:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 650px) {
+    .alert-onboarding {
+        margin: 10px;
+    }
+}
