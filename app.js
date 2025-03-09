@@ -218,7 +218,7 @@ app.get('/profile', (req, res) => {
         req.flash('error_msg', 'Completa l\'onboarding per accedere al profilo.');
         return res.redirect('/onboarding');
     }
-    res.render('profile', { user: req.user });
+    res.render('profile', { user: req.user, package: pkg });
 });
 
 

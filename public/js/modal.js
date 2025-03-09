@@ -5,7 +5,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const infoLink = document.getElementById("info-link");
     const modal = document.getElementById("info-modal");
-    const closeBtn = modal.querySelector(".close");
+    const closeBtn = modal.querySelector(".modal-close");
 
     // Open the modal when "Informazioni" is clicked
     infoLink.addEventListener("click", (e) => {
