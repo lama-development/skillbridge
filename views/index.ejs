@@ -13,13 +13,16 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- CSS -->
     <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/modal.css">
     <link rel="stylesheet" href="/css/index.css">
     <!-- JS -->
     <script src="/js/navbar.js" defer></script>
+    <script src="/js/modal.js" defer></script> 
 </head>
 
 <body>
     <%- include('partials/navbar') %>
+    <%- include('partials/modal') %>
     <% if (showOnboardingAlert) { %>
         <div class="alert-onboarding">
             Ancora pochi passi per completare il tuo profilo.

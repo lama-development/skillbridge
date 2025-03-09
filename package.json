@@ -1,15 +1,31 @@
 {
   "name": "skillbridge",
   "version": "1.0.0",
-  "description": "",
+  "author": "Davide La Marca",
+  "description": "A web app that helps freelancers and businesses connect, collaborate, and grow.",
+  "license": "ISC",
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "Davide La Marca",
-  "license": "ISC",
+  "keywords": [
+    "freelancers",
+    "business",
+    "jobs",
+    "collaboration",
+    "projects",
+    "skillbridge"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lama-development/skillbridge"
+  },
+  "bugs": {
+    "url": "https://github.com/lama-development/skillbridge/issues"
+  },
+  "homepage": "https://github.com/lama-development/skillbridge#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "connect-flash": "^0.1.1",

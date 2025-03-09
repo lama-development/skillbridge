@@ -11,18 +11,20 @@
         <input type="text" class="navbar-search" name="searchbar" placeholder="Cerca">
     </div>
     <div class="navbar-right">
-        <button class="btn search-btn">
+        <button class="btn search-btn" aria-label="Cerca">
             <i class="bx bx-search"></i>
         </button>
-        <button class="btn chat-btn">
+        <button class="btn chat-btn" aria-label="Chat">
             <i class="bx bx-chat"></i>
         </button>
-        <button class="btn mode-toggle">
+        <button class="btn theme-btn" aria-label="Tema">
             <i class="bx bx-sun"></i>
         </button>
         <!-- Menu contestuale per il profilo -->
         <div class="navbar-profile-wrapper">
-            <img src="/img/profile.png" alt="Profile" class="navbar-profile">
+            <button class="btn" aria-label="Profilo">
+                <img src="/img/profile.png" alt="Profile" class="navbar-profile">
+            </button>
             <div class="profile-menu">
                 <ul>
                     <li>

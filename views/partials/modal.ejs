@@ -1,0 +1,24 @@
+<!--public/views/partials/modal.ejs-->
+
+<div id="info-modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Name: <span><%= package.name %></span></p>
+    <p>Author: <span><%= package.author %></span></p>
+    <p>Version: <span><%= package.version %></span></p>
+    <p>Description: <span><%= package.description %></span></p>
+    <p>License: <span><%= package.license %></span></p>
+    <p>Repository: 
+      <a href="<%= package.repository.url %>" target="_blank" rel="noopener noreferrer">
+        <%= package.repository.url %>
+      </a>
+      <i class="bx bx-link-external"></i>
+    </p>
+    <p>Report an issue: 
+      <a href="<%= package.bugs.url %>" target="_blank" rel="noopener noreferrer">
+        <%= package.bugs.url %>
+      </a>
+      <i class="bx bx-link-external"></i>
+    </p>
+  </div>
+</div>

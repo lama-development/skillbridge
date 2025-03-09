@@ -6,6 +6,7 @@ import session from 'express-session';
 import path from 'path';
 import flash from 'connect-flash';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import bcrypt from 'bcrypt';
 import passport from './config/passportConfig.js';
 import db from './models/db.js';
@@ -14,6 +15,8 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
 
 // Configurazione EJS
 app.set('view engine', 'ejs');
@@ -54,7 +57,7 @@ app.get('/', (req, res) => {
     if (req.isAuthenticated() && !req.user.type) {
         showOnboardingAlert = true;
     }
-    res.render('index', { showOnboardingAlert });
+    res.render('index', { showOnboardingAlert, package: pkg });
 });
 
 app.get('/login', (req, res) => {
