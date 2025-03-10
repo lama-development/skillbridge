@@ -1,6 +1,6 @@
 /* public/css/pages/index.css */
 
-@import 'global.css';
+@import '../global.css';
 
 body {
     background-color: var(--color-bg-1);

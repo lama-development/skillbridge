@@ -1,6 +1,6 @@
 /* public/css/pages/login-signup.css */
 
-@import 'global.css';
+@import '../global.css';
 
 .container {
     background-color: var(--color-bg-1);

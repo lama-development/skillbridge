@@ -1,5 +1,5 @@
 /* public/css/pages/profile.css */
-@import 'global.css';
+@import '../global.css';
 
 .profile-container {
     display: flex;

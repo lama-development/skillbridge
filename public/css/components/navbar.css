@@ -1,6 +1,6 @@
 /* public/css/components/navbar.css */
 
-@import 'global.css';
+@import '../global.css';
 
 .navbar {
     background-color: var(--color-bg-2);

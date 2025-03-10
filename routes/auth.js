@@ -4,7 +4,7 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import passport from '../config/passportConfig.js';
-import db from '../models/db.js';
+import db from '../database/db.js';
 
 const router = express.Router();
 

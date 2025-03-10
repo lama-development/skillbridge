@@ -4,7 +4,11 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import db from '../database/db.js';
+
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
 const router = express.Router();
 
 // Variabili per risolvere i percorsi relativi
@@ -19,7 +23,7 @@ router.get('/', (req, res) => {
         showOnboardingAlert = true;
     }
     // Nota: se serve passare info dal package, puoi farlo direttamente o importarlo qui
-    res.render('index', { showOnboardingAlert });
+    res.render('index', { showOnboardingAlert, package: pkg  });
 });
 
 // Rotta GET per il form di onboarding
@@ -73,7 +77,7 @@ router.get('/profile', (req, res) => {
         req.flash('error_msg', 'Completa l\'onboarding per accedere al profilo.');
         return res.redirect('/onboarding');
     }
-    res.render('profile', { user: req.user });
+    res.render('profile', { user: req.user, package: pkg });
 });
 
 export default router;
