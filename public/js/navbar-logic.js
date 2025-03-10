@@ -1,5 +1,4 @@
-// public/js/navbar.js
-
+// public/js/navbar-logic.js
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function() {

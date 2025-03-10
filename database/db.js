@@ -2,7 +2,9 @@
 "use strict";
 
 import sqlite3 from 'sqlite3';
-const db = new sqlite3.Database('./skillbridge.db');
+
+const dbPath = path.join(__dirname, 'skillbridge.db');
+const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (

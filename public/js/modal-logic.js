@@ -1,5 +1,4 @@
-// public/js/modal.js
-
+// public/js/modal-logic.js
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {

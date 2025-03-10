@@ -1,4 +1,4 @@
-// punlic/js/onboarding.js
+// punlic/js/onboarding-logic.js
 "use strict";
 
 function selectRole(role) {

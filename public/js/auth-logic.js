@@ -1,4 +1,4 @@
-// public/js/auth.js
+// public/js/auth-logic.js
 "use strict";
 
 const usernameInput = document.getElementById('username');

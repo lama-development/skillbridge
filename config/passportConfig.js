@@ -4,7 +4,7 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
-import db from '../models/db.js';
+import db from '../database/db.js';
 
 passport.use(new LocalStrategy(
     { usernameField: 'email', passwordField: 'password' },
