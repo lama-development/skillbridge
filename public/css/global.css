@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
 
 :root {
-    /* Light Mode Colors */
+    /* Colori tema chiaro */
     --color-bg-1: #fff;
     --color-bg-2: #f1f1f1;
     --color-border: #c9cdd1;
@@ -13,7 +13,7 @@
     --color-gradient-end: #0b99ff;
     --color-text-primary: #000;
     --color-text-secondary: #666;
-    /* Font Weights */
+    /* Font Weight */
     --font-weight-regular: 400;
     --font-weight-medium: 600;
     --font-weight-bold: 800;
@@ -21,7 +21,7 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        /* Dark Mode Colors */
+        /* Colori tema scuro */
         --color-bg-1: #000;
         --color-bg-2: #0f1117;
         --color-border: #23252c;

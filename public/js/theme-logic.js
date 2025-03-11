@@ -2,10 +2,14 @@
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Select theme button (may be null on login page)
+    // Trova il pulsante del tema della navbar (potrebbe non esserci in tutte le pagine)
     const themeBtn = document.querySelector('.theme-btn');
-    const themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
+    let themeIcon = null;
+    if (themeBtn) {
+        themeIcon = themeBtn.querySelector('i');
+    }
 
+    // Definizioni variabili colori tema chiaro/scuro
     const lightTheme = {
         '--color-bg-1': '#fff',
         '--color-bg-2': '#f1f1f1',
@@ -50,18 +54,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentTheme = localStorage.getItem('theme');
     if (!currentTheme) {
-        currentTheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            currentTheme = 'dark';
+        } else {
+            currentTheme = 'light';
+        }
     }
 
-    applyTheme(currentTheme === 'dark' ? darkTheme : lightTheme);
+    if (currentTheme === 'dark') {
+        applyTheme(darkTheme);
+    } else {
+        applyTheme(lightTheme);
+    }
     updateThemeIcon(currentTheme);
 
-    // Only add event listener if the theme button exists
+    // Controllo se il pulsante del tema esiste nella pagina
     if (themeBtn) {
         themeBtn.addEventListener('click', function() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            if (currentTheme === 'dark') {
+                currentTheme = 'light';
+            } else {
+                currentTheme = 'dark';
+            }
             localStorage.setItem('theme', currentTheme);
-            applyTheme(currentTheme === 'dark' ? darkTheme : lightTheme);
+            if (currentTheme === 'dark') {
+                applyTheme(darkTheme);
+            } else {
+                applyTheme(lightTheme);
+            }
             updateThemeIcon(currentTheme);
         });
     }

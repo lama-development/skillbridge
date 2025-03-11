@@ -6,20 +6,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("info-modal");
     const closeBtn = modal.querySelector(".modal-close");
 
-    // Open the modal when "Informazioni" is clicked
+    // Apertura modale quando si preme 'Informazioni'
     infoLink.addEventListener("click", (e) => {
         e.preventDefault();
         modal.style.display = "block";
         document.body.classList.add("modal-open");
     });
 
-    // Close the modal when clicking the close button
+    // Chiusura modale quando si preme la 'X'
     closeBtn.addEventListener("click", () => {
         modal.style.display = "none";
         document.body.classList.remove("modal-open");
     });
 
-    // Also close the modal when clicking outside the modal content
+    // Chiusura modale quando si clicca fuori dalla finestra
     window.addEventListener("click", (event) => {
         if (event.target === modal) {
             modal.style.display = "none";

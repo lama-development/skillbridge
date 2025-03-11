@@ -148,7 +148,6 @@
     transition: opacity 0.3s ease;
 }
 
-/* Freccia del tooltip */
 .tooltip::after {
     content: "";
     position: absolute;
@@ -159,7 +158,6 @@
     border-color: var(--color-border) transparent transparent transparent;
 }
 
-/* Mostra il tooltip quando si passa sopra l'input o quando è attivo */
 .input-wrapper:hover .tooltip,
 .input-wrapper:focus-within .tooltip {
     opacity: 1;
@@ -254,7 +252,6 @@
     opacity: .7;
 }
 
-/* Media Queries per Responsive Design */
 @media (max-width: 820px) {
     .container {
         flex-direction: column;

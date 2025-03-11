@@ -2,7 +2,6 @@
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Profile menu logic
     const profileWrapper = document.querySelector('.navbar-profile-wrapper');
     const profileMenu = document.querySelector('.profile-menu');
 

@@ -2,18 +2,12 @@
 "use strict";
 
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
 import db from '../database/db.js';
-
+import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+
 const pkg = require('../package.json');
 const router = express.Router();
-
-// Variabili per risolvere i percorsi relativi
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Rotta per la home page
 router.get('/', (req, res) => {

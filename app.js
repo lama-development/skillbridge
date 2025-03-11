@@ -6,16 +6,12 @@ import session from 'express-session';
 import path from 'path';
 import flash from 'connect-flash';
 import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
 import passport from './config/passportConfig.js';
-import db from './database/db.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const require = createRequire(import.meta.url);
-const pkg = require('./package.json');
 
 // Configurazione di EJS
 app.set('view engine', 'ejs');
