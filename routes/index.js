@@ -16,8 +16,12 @@ router.get('/', (req, res) => {
     if (req.isAuthenticated() && !req.user.type) {
         showOnboardingAlert = true;
     }
-    // Nota: se serve passare info dal package, puoi farlo direttamente o importarlo qui
-    res.render('index', { showOnboardingAlert, package: pkg  });
+    // Supponendo di avere un array di annunci
+    const annunci = [
+        { id: 1, logo: '/images/logo1.png', azienda: 'Azienda 1', titolo: 'Offerta 1', descrizione: 'Descrizione offerta 1' },
+        { id: 2, logo: '/images/logo2.png', azienda: 'Azienda 2', titolo: 'Offerta 2', descrizione: 'Descrizione offerta 2' }
+    ];
+    res.render('index', { showOnboardingAlert, package: pkg, annunci, user: req.user });
 });
 
 // Rotta GET per il form di onboarding

@@ -24,12 +24,49 @@
 <body>
     <%- include('partials/navbar') %>
     <%- include('partials/modal') %>
+    <!-- Onboarding se non ancora completato -->
     <% if (showOnboardingAlert) { %>
         <div class="alert-onboarding">
             Ancora pochi passi per completare il tuo profilo.
             <a href="/onboarding" class="btn-primary">Completa l'onboarding</a>.
         </div>
     <% } %>  
+    <!-- Contenuto principale -->
+    <section class="quick-actions">
+        <div class="greeting">
+            <% if (user && user.firstName) { %>
+                <h1>Ciao, <%= user.firstName %>.</h1>
+            <% } else if (user && user.businessName) { %>
+                <h1>Benvenuto <%= user.businessName %>.</h1>
+            <% } else { %>
+                <h1>Benvenuto</h1>
+            <% } %>
+            <p class="sub-greeting">Cosa vuoi fare oggi?</p>
+        </div>
+        <div class="actions-container">
+            <div class="action-card" onclick="location.href='/cerca-lavoro'">
+                <i class='bx bx-search'></i>
+                <span>Cerca Lavoro</span>
+            </div>
+            <div class="action-card" onclick="location.href='/promuovi-lavoro'">
+                <i class='bx bx-briefcase'></i>
+                <span>Promuovi Lavoro</span>
+            </div>
+        </div>
+    </section>
+    <section class="annunci">
+        <h2>Offerte di Lavoro in Evidenza</h2>
+        <div class="annunci-grid">
+            <% annunci.forEach(annuncio => { %>
+                <div class="annuncio-card">
+                    <img src="<%= annuncio.logo %>" alt="<%= annuncio.azienda %> Logo">
+                    <h3><%= annuncio.titolo %></h3>
+                    <p><%= annuncio.descrizione %></p>
+                    <a href="/dettaglio/<%= annuncio.id %>" class="btn-primary">Visualizza Dettagli</a>
+                </div>
+            <% }) %>
+        </div>
+    </section>
 </body>
 
 </html>
