@@ -1,10 +1,10 @@
-// config/passportConfig.js
+// database/passport.js
 "use strict";
 
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
-import db from '../database/db.js';
+import db from './db.js';
 
 passport.use(new LocalStrategy(
     { usernameField: 'email', passwordField: 'password' },

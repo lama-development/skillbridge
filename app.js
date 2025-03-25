@@ -6,7 +6,7 @@ import session from 'express-session';
 import path from 'path';
 import flash from 'connect-flash';
 import { fileURLToPath } from 'url';
-import passport from './config/passportConfig.js';
+import passport from './database/passport.js';
 const app = express();
 const PORT = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
