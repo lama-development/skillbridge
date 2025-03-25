@@ -1,65 +1,89 @@
 /* public/css/global.css */
 
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
-
-:root {
-    /* Colori tema chiaro */
-    --color-bg-1: #fff;
-    --color-bg-2: #f1f1f1;
-    --color-border: #c9cdd1;
-    --color-accent: #0b99ff;
-    --color-accent-hover: #0383c4;
-    --color-gradient-start: #4c53ba;
-    --color-gradient-end: #0b99ff;
-    --color-text-primary: #000;
-    --color-text-secondary: #666;
-    /* Font Weight */
-    --font-weight-regular: 400;
-    --font-weight-medium: 600;
-    --font-weight-bold: 800;
+/* Ottimizzazioni per il tema scuro */
+[data-bs-theme="dark"] {
+    --bs-body-color: #e1e1e1;
+    --bs-body-bg: #121212;
+    --bs-secondary-color: #adb5bd;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* Colori tema scuro */
-        --color-bg-1: #000;
-        --color-bg-2: #0f1117;
-        --color-border: #23252c;
-        --color-accent: #0b99ff;
-        --color-accent-hover: #0383c4;
-        --color-gradient-start: #4c53ba;
-        --color-gradient-end: #0b99ff;
-        --color-text-primary: #fff;
-        --color-text-secondary: #95969e;
-    }
+/* Stili personalizzati per le cards */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-* {
-    font-family: "Bricolage Grotesque", sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.card:hover {
+    transform: translateY(-2px);
 }
 
-body {
-    background-color: var(--color-bg-1);
+/* Personalizzazione link e bottoni */
+a {
+    transition: color 0.2s ease;
 }
 
-.alert {
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 5px;
+.btn {
+    transition: all 0.2s ease;
 }
 
-.alert-danger {
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #ebccd1;
+/* Stili specifici per il tema scuro */
+[data-bs-theme="dark"] .card {
+    --bs-card-bg: #1e1e1e;
+    border-color: #2d2d2d;
 }
 
-.alert-success {
-    color: #3c763d;
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
+[data-bs-theme="dark"] .bg-light {
+    background-color: #1e1e1e !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+    color: #e1e1e1 !important;
+}
+
+/* Miglioramenti per l'accessibilità */
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-hover-color: #fff;
+}
+
+/* Stili per il modal in tema scuro */
+[data-bs-theme="dark"] .modal-content {
+    background-color: #1e1e1e;
+    border-color: #2d2d2d;
+}
+
+/* Miglioramenti input in tema scuro */
+[data-bs-theme="dark"] .input-group-text {
+    background-color: #2d2d2d;
+    border-color: #3d3d3d;
+    color: #e1e1e1;
+}
+
+[data-bs-theme="dark"] .form-control {
+    background-color: #2d2d2d;
+    border-color: #3d3d3d;
+    color: #e1e1e1;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: #2d2d2d;
+    border-color: #0d6efd;
+    color: #e1e1e1;
+}
+
+/* Miglioramenti per la navbar in tema scuro */
+[data-bs-theme="dark"] .navbar {
+    --bs-navbar-color: #e1e1e1;
+    --bs-navbar-hover-color: #fff;
+    background-color: #1e1e1e !important;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+/* Animazioni e transizioni generali */
+.fade {
+    transition: opacity .2s linear;
+}
+
+/* Utility classes */
+.cursor-pointer {
+    cursor: pointer;
 }

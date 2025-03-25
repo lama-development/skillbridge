@@ -2,7 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,62 +10,80 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <!-- CSS -->
-    <link rel="stylesheet" href="/css/components/navbar.css">
-    <link rel="stylesheet" href="/css/components/modal.css">
-    <link rel="stylesheet" href="/css/pages/index.css">
+    <!-- Bootstrap CSS -->
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global CSS -->
+    <link href="/css/global.css" rel="stylesheet">
     <!-- JS -->
-    <script src="/js/navbar-logic.js" defer></script>
-    <script src="/js/theme-logic.js" defer></script>
-    <script src="/js/modal-logic.js" defer></script> 
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="/js/navbar.js" defer></script>
+    <script src="/js/theme.js" defer></script>
 </head>
-
 <body>
     <%- include('partials/navbar') %>
     <%- include('partials/modal') %>
+    
     <!-- Onboarding se non ancora completato -->
     <% if (showOnboardingAlert) { %>
-        <div class="alert-onboarding">
+        <div class="alert alert-info alert-dismissible fade show m-3" role="alert">
             Ancora pochi passi per completare il tuo profilo.
-            <a href="/onboarding" class="btn-primary">Completa l'onboarding</a>.
+            <a href="/onboarding" class="btn btn-primary btn-sm ms-2">Completa l'onboarding</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <% } %>  
-    <!-- Contenuto principale -->
-    <section class="quick-actions">
-        <div class="greeting">
-            <% if (user && user.firstName) { %>
-                <h1>Ciao, <%= user.firstName %>.</h1>
-            <% } else if (user && user.businessName) { %>
-                <h1>Benvenuto <%= user.businessName %>.</h1>
-            <% } else { %>
-                <h1>Benvenuto</h1>
-            <% } %>
-            <p class="sub-greeting">Cosa vuoi fare oggi?</p>
-        </div>
-        <div class="actions-container">
-            <div class="action-card" onclick="location.href='/cerca-lavoro'">
-                <i class='bx bx-search'></i>
-                <span>Cerca Lavoro</span>
-            </div>
-            <div class="action-card" onclick="location.href='/promuovi-lavoro'">
-                <i class='bx bx-briefcase'></i>
-                <span>Promuovi Lavoro</span>
-            </div>
-        </div>
-    </section>
-    <section class="annunci">
-        <h2>Offerte di Lavoro in Evidenza</h2>
-        <div class="annunci-grid">
-            <% annunci.forEach(annuncio => { %>
-                <div class="annuncio-card">
-                    <img src="<%= annuncio.logo %>" alt="<%= annuncio.azienda %> Logo">
-                    <h3><%= annuncio.titolo %></h3>
-                    <p><%= annuncio.descrizione %></p>
-                    <a href="/dettaglio/<%= annuncio.id %>" class="btn-primary">Visualizza Dettagli</a>
-                </div>
-            <% }) %>
-        </div>
-    </section>
-</body>
 
+    <div class="container py-5">
+        <!-- Contenuto principale -->
+        <section class="mb-5">
+            <div class="mb-4">
+                <% if (user && user.firstName) { %>
+                    <h1 class="display-5 mb-2">Ciao, <%= user.firstName %>.</h1>
+                <% } else if (user && user.businessName) { %>
+                    <h1 class="display-5 mb-2">Benvenuto <%= user.businessName %>.</h1>
+                <% } else { %>
+                    <h1 class="display-5 mb-2">Benvenuto</h1>
+                <% } %>
+                <p class="text-muted fs-5">Cosa vuoi fare oggi?</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm cursor-pointer" onclick="location.href='/cerca-lavoro'" style="cursor: pointer;">
+                        <div class="card-body text-center p-4">
+                            <i class='bx bx-search fs-1 mb-3 text-primary'></i>
+                            <h3 class="card-title">Cerca Lavoro</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm cursor-pointer" onclick="location.href='/promuovi-lavoro'" style="cursor: pointer;">
+                        <div class="card-body text-center p-4">
+                            <i class='bx bx-briefcase fs-1 mb-3 text-primary'></i>
+                            <h3 class="card-title">Promuovi Lavoro</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="display-6 mb-4">Offerte di Lavoro in Evidenza</h2>
+            <div class="row g-4">
+                <% annunci.forEach(annuncio => { %>
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="text-center mb-3">
+                                    <img src="<%= annuncio.logo %>" alt="<%= annuncio.azienda %> Logo" class="img-fluid" style="max-height: 60px;">
+                                </div>
+                                <h3 class="card-title h5 mb-3"><%= annuncio.titolo %></h3>
+                                <p class="card-text text-muted mb-4"><%= annuncio.descrizione %></p>
+                                <a href="/dettaglio/<%= annuncio.id %>" class="btn btn-primary w-100">Visualizza Dettagli</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </section>
+    </div>
+</body>
 </html>

@@ -1,54 +1,55 @@
 <!-- views/partials/navbar.ejs -->
-
-<nav class="navbar">
-    <div class="navbar-left">
-        <a href="/">
-            <img src="/favicon.ico" alt="Logo">
+ 
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/favicon.ico" alt="Logo" class="me-2" style="height: 24px;">
             <span>SkillBridge</span>
         </a>
-    </div>
-    <div class="navbar-center">
-        <input type="text" class="navbar-search" name="searchbar" placeholder="Cerca">
-    </div>
-    <div class="navbar-right">
-        <button class="btn search-btn" aria-label="Cerca">
-            <i class="bx bx-search"></i>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <button class="btn chat-btn" aria-label="Chat">
-            <i class="bx bx-chat"></i>
-        </button>
-        <button class="btn theme-btn" aria-label="Tema">
-            <i class="bx bx-sun"></i>
-        </button>
-        <!-- Menu contestuale per il profilo -->
-        <div class="navbar-profile-wrapper">
-            <button class="btn" aria-label="Profilo">
-                <img src="/img/profile.png" alt="Profile" class="navbar-profile">
-            </button>
-            <div class="profile-menu">
-                <ul>
-                    <li>
-                        <a href="/profile">
-                            <i class="bx bx-user"></i>
-                            Profilo
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" id="info-link">
-                            <i class="bx bx-info-circle"></i>
-                            Informazioni
-                        </a>
-                    </li>
-                    <li>
-                        <form action="/logout" method="POST">
-                            <button type="submit">
-                                <i class="bx bx-log-out"></i>
-                                <span>Logout</span>
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <form class="d-flex mx-auto w-50">
+                <div class="input-group">
+                    <input type="search" class="form-control" placeholder="Cerca" aria-label="Cerca">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="bx bx-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link" aria-label="Chat">
+                        <i class="bx bx-chat"></i>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link theme-btn" aria-label="Tema">
+                        <i class="bx bx-sun"></i>
+                    </button>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <img src="/img/profile.png" alt="Profile" class="rounded-circle" style="width: 32px; height: 32px;">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/profile"><i class="bx bx-user me-2"></i>Profilo</a></li>
+                        <li><a class="dropdown-item" href="#" id="info-link"><i class="bx bx-info-circle me-2"></i>Informazioni</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="/logout" method="POST">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bx bx-log-out me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

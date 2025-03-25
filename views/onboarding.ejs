@@ -2,7 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,64 +10,82 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <!-- CSS -->
-    <link rel="stylesheet" href="/css/components/navbar.css">
-    <link rel="stylesheet" href="/css/pages/onboarding.css">
+    <!-- Bootstrap CSS -->
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global CSS -->
+    <link href="/css/global.css" rel="stylesheet">
     <!-- JS -->
-    <script src="/js/onboarding-logic.js" defer></script>
-    <script src="/js/theme-logic.js" defer></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="/js/onboarding.js" defer></script>
+    <script src="/js/theme.js" defer></script>
 </head>
-
 <body>
-    <div class="onboarding-container">
-        <div class="onboarding-box">
-            <h1>Benvenuto a bordo!</h1>
-            <p>Ancora pochi passi per completare il tuo profilo</p>
-            <% if (error_msg && error_msg.length > 0) { %>
-                <div class="alert alert-danger">
-                    <%= error_msg %>
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
+        <div class="card shadow-sm" style="max-width: 500px;">
+            <div class="card-body p-4">
+                <h1 class="card-title text-center mb-2">Benvenuto a bordo!</h1>
+                <p class="text-muted text-center mb-4">Ancora pochi passi per completare il tuo profilo</p>
+                
+                <% if (error_msg && error_msg.length > 0) { %>
+                    <div class="alert alert-danger">
+                        <%= error_msg %>
+                    </div>
+                <% } %>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="card h-100 option selected" onclick="selectRole('freelancer')" role="button">
+                            <div class="card-body text-center py-4">
+                                <i class='bx bx-user fs-1 mb-2'></i>
+                                <div>Freelancer</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card h-100 option" onclick="selectRole('business')" role="button">
+                            <div class="card-body text-center py-4">
+                                <i class='bx bx-buildings fs-1 mb-2'></i>
+                                <div>Azienda</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            <% } %>
-            <div class="options">
-                <div class="option selected" onclick="selectRole('freelancer')">
-                    <i class='bx bx-user'></i> Freelancer
-                </div>
-                <div class="option" onclick="selectRole('business')">
-                    <i class='bx bx-buildings'></i> Azienda
-                </div>
+
+                <form id="onboarding-form" action="/onboarding" method="POST">
+                    <input type="hidden" name="type" id="selected-type" value="freelancer">
+                    
+                    <div id="freelancer-fields">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bx bx-user"></i></span>
+                            <input type="text" class="form-control" name="firstName" placeholder="Nome" required autocomplete="name">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bx bx-user"></i></span>
+                            <input type="text" class="form-control" name="lastName" placeholder="Cognome" required autocomplete="family-name">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bx bx-globe"></i></span>
+                            <input type="url" class="form-control" name="website" placeholder="Sito Web">
+                        </div>
+                    </div>
+
+                    <div id="business-fields" style="display: none;">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bx bx-buildings"></i></span>
+                            <input type="text" class="form-control" name="businessName" placeholder="Nome Azienda" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bx bx-globe"></i></span>
+                            <input type="url" class="form-control" name="website" placeholder="Sito Web">
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Inizia ad esplorare</button>
+                    </div>
+                </form>
             </div>
-            <form id="onboarding-form" action="/onboarding" method="POST">
-                <input type="hidden" name="type" id="selected-type" value="freelancer">
-                <div id="freelancer-fields" style="display: block;">
-                    <div class="input-wrapper">
-                        <i class="bx bx-user"></i>
-                        <input type="text" name="firstName" placeholder="Nome" required autocomplete="name" />
-                    </div>
-                    <div class="input-wrapper">
-                        <i class="bx bx-user"></i>
-                        <input type="text" name="lastName" placeholder="Cognome" required autocomplete="family-name" />
-                    </div>
-                    <div class="input-wrapper">
-                        <i class="bx bx-globe"></i>
-                        <input type="url" name="website" placeholder="Sito Web" />
-                    </div>
-                </div>
-                <div id="business-fields" style="display: none;">
-                    <div class="input-wrapper">
-                        <i class="bx bx-user"></i>
-                        <input type="text" name="businessName" placeholder="Nome Azienda" required />
-                    </div>
-                    <div class="input-wrapper">
-                        <i class="bx bx-globe"></i>
-                        <input type="url" name="website" placeholder="Sito Web" />
-                    </div>
-                </div>
-                <div class="button-wrapper">
-                    <button type="submit" class="btn">Inizia ad esplorare</button>
-                </div>
-            </form>
         </div>
     </div>
 </body>
-
 </html>

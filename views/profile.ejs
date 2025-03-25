@@ -10,33 +10,41 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <!-- CSS -->
-    <link rel="stylesheet" href="/css/components/navbar.css">
-    <link rel="stylesheet" href="/css/components/modal.css">
-    <link rel="stylesheet" href="/css/pages/profile.css">
+    <!-- Bootstrap CSS -->
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global CSS -->
+    <link href="/css/global.css" rel="stylesheet">
     <!-- JS -->
-    <script src="/js/navbar-logic.js" defer></script>
-    <script src="/js/theme-logic.js" defer></script>
-    <script src="/js/modal-logic.js" defer></script> 
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="/js/navbar.js" defer></script>
+    <script src="/js/theme.js" defer></script>
 </head>
 <body>
     <%- include('partials/navbar') %>
     <%- include('partials/modal') %>
-    <div class="profile-container">
-        <div class="profile-card">
-            <img src="/img/profile.png" alt="Foto Profilo" class="profile-image">
-            <div class="profile-info">
-                <% if (user.type === 'freelancer') { %>
-                    <h1><%= user.firstName %> <%= user.lastName %></h1>
-                <% } else if (user.type === 'business') { %>
-                    <h1><%= user.businessName %></h1>
-                <% } else { %>
-                    <h1>Profilo Utente</h1>
-                <% } %>
-                <p class="username">@<%= user.username %></p>
-                <% if (user.website) { %>
-                    <p class="website"><a href="<%= user.website %>" target="_blank" rel="noopener"><%= user.website %></a></p>
-                <% } %>
+    
+    <div class="container py-5">
+        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <img src="/img/profile.png" alt="Foto Profilo" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    <div>
+                        <% if (user.type === 'freelancer') { %>
+                            <h1 class="h3 mb-2"><%= user.firstName %> <%= user.lastName %></h1>
+                        <% } else if (user.type === 'business') { %>
+                            <h1 class="h3 mb-2"><%= user.businessName %></h1>
+                        <% } else { %>
+                            <h1 class="h3 mb-2">Profilo Utente</h1>
+                        <% } %>
+                        <p class="text-muted mb-2">@<%= user.username %></p>
+                        <% if (user.website) { %>
+                            <a href="<%= user.website %>" class="text-decoration-none" target="_blank" rel="noopener">
+                                <i class="bx bx-globe"></i>
+                                <%= user.website %>
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

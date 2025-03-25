@@ -1,24 +1,51 @@
-<!--public/views/partials/modal.ejs-->
+<!-- views/partials/modal.ejs -->
 
-<div id="info-modal" class="modal">
-  <div class="modal-content">
-    <span class="modal-close">&times;</span>
-    <p>Name: <span><%= package.name %></span></p>
-    <p>Author: <span><%= package.author %></span></p>
-    <p>Version: <span><%= package.version %></span></p>
-    <p>Description: <span><%= package.description %></span></p>
-    <p>License: <span><%= package.license %></span></p>
-    <p>Repository: 
-      <a href="<%= package.repository.url %>" target="_blank" rel="noopener">
-        <%= package.repository.url %>
-      </a>
-      <i class="bx bx-link-external"></i>
-    </p>
-    <p>Report an issue: 
-      <a href="<%= package.bugs.url %>" target="_blank" rel="noopener">
-        <%= package.bugs.url %>
-      </a>
-      <i class="bx bx-link-external"></i>
-    </p>
+<div class="modal fade" id="info-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Informazioni</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <strong>Nome:</strong>
+          <span class="ms-2"><%= package.name %></span>
+        </div>
+        <div class="mb-3">
+          <strong>Autore:</strong>
+          <span class="ms-2"><%= package.author %></span>
+        </div>
+        <div class="mb-3">
+          <strong>Versione:</strong>
+          <span class="ms-2"><%= package.version %></span>
+        </div>
+        <div class="mb-3">
+          <strong>Descrizione:</strong>
+          <span class="ms-2"><%= package.description %></span>
+        </div>
+        <div class="mb-3">
+          <strong>Licenza:</strong>
+          <span class="ms-2"><%= package.license %></span>
+        </div>
+        <div class="mb-3">
+          <strong>Repository:</strong>
+          <a href="<%= package.repository.url %>" class="ms-2 text-decoration-none" target="_blank" rel="noopener">
+            <%= package.repository.url %>
+            <i class="bx bx-link-external"></i>
+          </a>
+        </div>
+        <div class="mb-3">
+          <strong>Segnala un problema:</strong>
+          <a href="<%= package.bugs.url %>" class="ms-2 text-decoration-none" target="_blank" rel="noopener">
+            <%= package.bugs.url %>
+            <i class="bx bx-link-external"></i>
+          </a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
   </div>
 </div>

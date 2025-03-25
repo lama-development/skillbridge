@@ -7,7 +7,6 @@ import path from 'path';
 import flash from 'connect-flash';
 import { fileURLToPath } from 'url';
 import passport from './config/passportConfig.js';
-
 const app = express();
 const PORT = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
@@ -21,8 +20,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Configurazione della cartella pubblica
+// Configurazione delle cartelle statiche
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // Configurazione delle sessioni per Passport
 app.use(session({
@@ -30,7 +30,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-
 app.use(flash());
 
 // Inizializzazione di Passport
