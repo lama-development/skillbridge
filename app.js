@@ -42,15 +42,18 @@ app.use((req, res, next) => {
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
     res.locals.success_msg = req.flash('success_msg');
+    res.locals.info_msg = req.flash('info_msg'); // Aggiunto per i messaggi info
     next();
 });
 
 // Importa e monta i moduli delle rotte
 import indexRoutes from './routes/index.js';
 import authRoutes from './routes/auth.js';
+import postsRoutes from './routes/posts.js';
 
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
+app.use('/posts', postsRoutes);
 
 // Avvio del server
 app.listen(PORT, () => {

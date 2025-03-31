@@ -25,6 +25,16 @@ db.serialize(() => {
     website TEXT,
     profilePicture TEXT DEFAULT 'img/profile.png'
     )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    userId INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(id)
+    )`);
 });
 
 export default db;

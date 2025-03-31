@@ -1,0 +1,41 @@
+<!-- views/partials/post-card.ejs -->
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body p-4">
+    <div class="d-flex align-items-center mb-3">
+      <img src="<%= post.profilePicture || '/img/profile.png' %>" alt="Profile" class="rounded-circle me-3 profile-image-small">
+      <div>
+        <h5 class="card-title mb-0">
+          <%= post.title %>
+          <% if (post.type === 'job_offer') { %>
+            <span class="badge bg-primary ms-2">Offerta di lavoro</span>
+          <% } else { %>
+            <span class="badge bg-success ms-2">Freelancer</span>
+          <% } %>
+        </h5>
+        <p class="text-muted mb-0 small">
+          <% if (post.type === 'job_offer') { %>
+            <%= post.businessName %>
+          <% } else { %>
+            <%= post.firstName %> <%= post.lastName %>
+          <% } %>
+          • <%= new Date(post.createdAt).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }) %>
+        </p>
+      </div>
+    </div>
+    <p class="card-text"><%= post.content %></p>
+    <% if (post.website) { %>
+      <a href="<%= post.website %>" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener">
+        <i class="bx bx-globe me-1"></i> Visita il sito
+      </a>
+    <% } %>
+    
+    <% if (user && user.id === post.userId) { %>
+      <form action="/posts/<%= post.id %>/delete" method="POST" class="d-inline-block ms-2">
+        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Sei sicuro di voler eliminare questo post?')">
+          <i class="bx bx-trash me-1"></i> Elimina
+        </button>
+      </form>
+    <% } %>
+  </div>
+</div>

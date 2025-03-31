@@ -20,7 +20,7 @@ if (usernameInput) {
     usernameInput.addEventListener('input', function () {
         // Converte il testo in minuscolo
         let currentValue = this.value.toLowerCase();
-        // Rimuove caratteri non ammessi (solo a-z, 0-9 e trattini)
+        // Rimuove caratteri non ammessi tramite regex (solo a-z, 0-9 e trattini)
         let cleanedValue = currentValue.replace(/[^a-z0-9-]/g, '');
         // Aggiorna il valore dell'input con il testo ripulito
         this.value = cleanedValue;

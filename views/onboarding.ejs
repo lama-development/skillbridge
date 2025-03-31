@@ -23,7 +23,15 @@
     <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
         <div class="card shadow-sm form-container">
             <div class="card-body p-4">
-                <h1 class="card-title text-center mb-2">Benvenuto a bordo!</h1>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h1 class="card-title">Benvenuto a bordo!</h1>
+                    <form action="/onboarding/skip" method="POST">
+                        <button type="submit" class="btn btn-link text-muted d-flex flex-column align-items-center" data-bs-toggle="tooltip" data-bs-placement="left" title="Potrai completare il profilo in seguito">
+                            <span>Salta</span>
+                            <i class='bx bx-right-arrow-alt'></i>
+                        </button>
+                    </form>
+                </div>
                 <p class="text-muted text-center mb-4">Ancora pochi passi per completare il tuo profilo</p>
                 
                 <% if (error_msg && error_msg.length > 0) { %>
@@ -87,5 +95,15 @@
             </div>
         </div>
     </div>
+
+    <!-- Attiva i tooltip di Bootstrap -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
 </body>
 </html>

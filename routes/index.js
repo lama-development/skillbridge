@@ -16,12 +16,47 @@ router.get('/', (req, res) => {
     if (req.isAuthenticated() && !req.user.type) {
         showOnboardingAlert = true;
     }
-    // Supponendo di avere un array di annunci
-    const annunci = [
-        { id: 1, logo: '/images/logo1.png', azienda: 'Azienda 1', titolo: 'Offerta 1', descrizione: 'Descrizione offerta 1' },
-        { id: 2, logo: '/images/logo2.png', azienda: 'Azienda 2', titolo: 'Offerta 2', descrizione: 'Descrizione offerta 2' }
-    ];
-    res.render('index', { showOnboardingAlert, package: pkg, annunci, user: req.user });
+    
+    // Query per prendere le offerte di lavoro con i dati dell'azienda
+    const jobOffersQuery = `
+        SELECT p.*, u.businessName, u.website, u.profilePicture 
+        FROM posts p 
+        JOIN users u ON p.userId = u.id 
+        WHERE p.type = 'job_offer' 
+        ORDER BY p.createdAt DESC
+    `;
+    
+    // Query per prendere le promozioni dei freelancer con i dati dell'utente
+    const freelancerPromosQuery = `
+        SELECT p.*, u.firstName, u.lastName, u.website, u.profilePicture 
+        FROM posts p 
+        JOIN users u ON p.userId = u.id 
+        WHERE p.type = 'freelancer_promo' 
+        ORDER BY p.createdAt DESC
+    `;
+    
+    // Esegui entrambe le query e renderizza la pagina
+    db.all(jobOffersQuery, [], (err, jobOffers) => {
+        if (err) {
+            console.error('Errore durante il recupero delle offerte di lavoro:', err);
+            jobOffers = [];
+        }
+        
+        db.all(freelancerPromosQuery, [], (err, freelancerPromos) => {
+            if (err) {
+                console.error('Errore durante il recupero delle promozioni freelancer:', err);
+                freelancerPromos = [];
+            }
+            
+            res.render('index', { 
+                showOnboardingAlert, 
+                package: pkg, 
+                user: req.user,
+                jobOffers: jobOffers || [],
+                freelancerPromos: freelancerPromos || []
+            });
+        });
+    });
 });
 
 // Rotta GET per il form di onboarding
@@ -63,6 +98,17 @@ router.post('/onboarding', (req, res) => {
         req.flash('success_msg', 'Onboarding completato con successo!');
         res.redirect('/');
     });
+});
+
+// Rotta POST per saltare l'onboarding
+router.post('/onboarding/skip', (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per accedere a questa funzionalità.');
+        return res.redirect('/login');
+    }
+
+    // Semplicemente reindirizza l'utente alla pagina principale
+    res.redirect('/');
 });
 
 // Rotta per la pagina del profilo
