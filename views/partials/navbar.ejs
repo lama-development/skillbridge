@@ -1,10 +1,10 @@
 <!-- views/partials/navbar.ejs -->
  
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top navbar-compact">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="/">
-            <img src="/favicon.ico" alt="Logo" class="me-2" style="height: 24px;">
-            <span>SkillBridge</span>
+            <img src="/favicon.ico" alt="Logo" class="me-2 logo-small">
+            <span class="navbar-brand-text">SkillBridge</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -12,7 +12,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-            <form class="d-flex mx-auto w-50">
+            <form class="d-flex mx-auto w-35">
                 <div class="input-group">
                     <input type="search" class="form-control" placeholder="Cerca" aria-label="Cerca">
                     <button class="btn btn-outline-secondary" type="button">
@@ -34,7 +34,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <img src="/img/profile.png" alt="Profile" class="rounded-circle" style="width: 32px; height: 32px;">
+                        <img src="/img/profile.png" alt="Profile" class="rounded-circle profile-image-small">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="/profile"><i class="bx bx-user me-2"></i>Profilo</a></li>
@@ -42,7 +42,7 @@
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form action="/logout" method="POST">
-                                <button type="submit" class="dropdown-item">
+                                <button type="submit" class="dropdown-item text-danger">
                                     <i class="bx bx-log-out me-2"></i>Logout
                                 </button>
                             </form>

@@ -1,7 +1,7 @@
 <!-- views/profile.ejs -->
 
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,34 +19,38 @@
     <script src="/js/navbar.js" defer></script>
     <script src="/js/theme.js" defer></script>
 </head>
-<body>
+<body class="d-flex flex-column h-100 has-navbar-padding">
     <%- include('partials/navbar') %>
     <%- include('partials/modal') %>
     
-    <div class="container py-5">
-        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <img src="/img/profile.png" alt="Foto Profilo" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                    <div>
-                        <% if (user.type === 'freelancer') { %>
-                            <h1 class="h3 mb-2"><%= user.firstName %> <%= user.lastName %></h1>
-                        <% } else if (user.type === 'business') { %>
-                            <h1 class="h3 mb-2"><%= user.businessName %></h1>
-                        <% } else { %>
-                            <h1 class="h3 mb-2">Profilo Utente</h1>
-                        <% } %>
-                        <p class="text-muted mb-2">@<%= user.username %></p>
-                        <% if (user.website) { %>
-                            <a href="<%= user.website %>" class="text-decoration-none" target="_blank" rel="noopener">
-                                <i class="bx bx-globe"></i>
-                                <%= user.website %>
-                            </a>
-                        <% } %>
+    <main class="flex-shrink-0">
+        <div class="container py-5">
+            <div class="card shadow-sm mx-auto profile-container">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <img src="/img/profile.png" alt="Foto Profilo" class="rounded-circle mb-3 profile-image">
+                        <div>
+                            <% if (user.type === 'freelancer') { %>
+                                <h1 class="h3 mb-2"><%= user.firstName %> <%= user.lastName %></h1>
+                            <% } else if (user.type === 'business') { %>
+                                <h1 class="h3 mb-2"><%= user.businessName %></h1>
+                            <% } else { %>
+                                <h1 class="h3 mb-2">Profilo Utente</h1>
+                            <% } %>
+                            <p class="text-muted mb-2">@<%= user.username %></p>
+                            <% if (user.website) { %>
+                                <a href="<%= user.website %>" class="text-decoration-none" target="_blank" rel="noopener">
+                                    <i class="bx bx-globe"></i>
+                                    <%= user.website %>
+                                </a>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+    
+    <%- include('partials/footer') %>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <!-- views/index.ejs -->
 
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,7 @@
     <script src="/js/navbar.js" defer></script>
     <script src="/js/theme.js" defer></script>
 </head>
-<body>
+<body class="d-flex flex-column h-100 has-navbar-padding">
     <%- include('partials/navbar') %>
     <%- include('partials/modal') %>
     
@@ -32,58 +32,62 @@
         </div>
     <% } %>  
 
-    <div class="container py-5">
-        <!-- Contenuto principale -->
-        <section class="mb-5">
-            <div class="mb-4">
-                <% if (user && user.firstName) { %>
-                    <h1 class="display-5 mb-2">Ciao, <%= user.firstName %>.</h1>
-                <% } else if (user && user.businessName) { %>
-                    <h1 class="display-5 mb-2">Benvenuto <%= user.businessName %>.</h1>
-                <% } else { %>
-                    <h1 class="display-5 mb-2">Benvenuto</h1>
-                <% } %>
-                <p class="text-muted fs-5">Cosa vuoi fare oggi?</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card h-100 shadow-sm cursor-pointer" onclick="location.href='/cerca-lavoro'" style="cursor: pointer;">
-                        <div class="card-body text-center p-4">
-                            <i class='bx bx-search fs-1 mb-3 text-primary'></i>
-                            <h3 class="card-title">Cerca Lavoro</h3>
-                        </div>
-                    </div>
+    <main class="flex-shrink-0">
+        <div class="container py-5">
+            <!-- Contenuto principale -->
+            <section class="mb-5">
+                <div class="mb-4">
+                    <% if (user && user.firstName) { %>
+                        <h1 class="display-5 mb-2">Ciao, <%= user.firstName %>.</h1>
+                    <% } else if (user && user.businessName) { %>
+                        <h1 class="display-5 mb-2">Benvenuto <%= user.businessName %>.</h1>
+                    <% } else { %>
+                        <h1 class="display-5 mb-2">Benvenuto</h1>
+                    <% } %>
+                    <p class="text-muted fs-5">Cosa vuoi fare oggi?</p>
                 </div>
-                <div class="col-md-6">
-                    <div class="card h-100 shadow-sm cursor-pointer" onclick="location.href='/promuovi-lavoro'" style="cursor: pointer;">
-                        <div class="card-body text-center p-4">
-                            <i class='bx bx-briefcase fs-1 mb-3 text-primary'></i>
-                            <h3 class="card-title">Promuovi Lavoro</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="display-6 mb-4">Offerte di Lavoro in Evidenza</h2>
-            <div class="row g-4">
-                <% annunci.forEach(annuncio => { %>
-                    <div class="col-md-4">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body">
-                                <div class="text-center mb-3">
-                                    <img src="<%= annuncio.logo %>" alt="<%= annuncio.azienda %> Logo" class="img-fluid" style="max-height: 60px;">
-                                </div>
-                                <h3 class="card-title h5 mb-3"><%= annuncio.titolo %></h3>
-                                <p class="card-text text-muted mb-4"><%= annuncio.descrizione %></p>
-                                <a href="/dettaglio/<%= annuncio.id %>" class="btn btn-primary w-100">Visualizza Dettagli</a>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm cursor-pointer" onclick="location.href='/cerca-lavoro'">
+                            <div class="card-body text-center p-4">
+                                <i class='bx bx-search fs-1 mb-3 text-primary'></i>
+                                <h3 class="card-title">Cerca Lavoro</h3>
                             </div>
                         </div>
                     </div>
-                <% }) %>
-            </div>
-        </section>
-    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm cursor-pointer" onclick="location.href='/promuovi-lavoro'">
+                            <div class="card-body text-center p-4">
+                                <i class='bx bx-briefcase fs-1 mb-3 text-primary'></i>
+                                <h3 class="card-title">Promuovi Lavoro</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="display-6 mb-4">Offerte di Lavoro in Evidenza</h2>
+                <div class="row g-4">
+                    <% annunci.forEach(annuncio => { %>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <img src="<%= annuncio.logo %>" alt="<%= annuncio.azienda %> Logo" class="img-fluid company-logo">
+                                    </div>
+                                    <h3 class="card-title h5 mb-3"><%= annuncio.titolo %></h3>
+                                    <p class="card-text text-muted mb-4"><%= annuncio.descrizione %></p>
+                                    <a href="/dettaglio/<%= annuncio.id %>" class="btn btn-primary w-100">Visualizza Dettagli</a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <%- include('partials/footer') %>
 </body>
 </html>

@@ -8,36 +8,36 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
+        <div class="mb-2">
           <strong>Nome:</strong>
-          <span class="ms-2"><%= package.name %></span>
+          <span class="ms-1"><%= package.name %></span>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
           <strong>Autore:</strong>
-          <span class="ms-2"><%= package.author %></span>
+          <span class="ms-1"><%= package.author %></span>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
           <strong>Versione:</strong>
-          <span class="ms-2"><%= package.version %></span>
+          <span class="ms-1"><%= package.version %></span>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
           <strong>Descrizione:</strong>
-          <span class="ms-2"><%= package.description %></span>
+          <span class="ms-1"><%= package.description %></span>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
           <strong>Licenza:</strong>
-          <span class="ms-2"><%= package.license %></span>
+          <span class="ms-1"><%= package.license %></span>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
           <strong>Repository:</strong>
-          <a href="<%= package.repository.url %>" class="ms-2 text-decoration-none" target="_blank" rel="noopener">
+          <a href="<%= package.repository.url %>" class="ms-1 text-decoration-none" target="_blank" rel="noopener">
             <%= package.repository.url %>
             <i class="bx bx-link-external"></i>
           </a>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
           <strong>Segnala un problema:</strong>
-          <a href="<%= package.bugs.url %>" class="ms-2 text-decoration-none" target="_blank" rel="noopener">
+          <a href="<%= package.bugs.url %>" class="ms-1 text-decoration-none" target="_blank" rel="noopener">
             <%= package.bugs.url %>
             <i class="bx bx-link-external"></i>
           </a>
