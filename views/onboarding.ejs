@@ -23,15 +23,15 @@
         <div class="card shadow-sm form-container">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h1 class="card-title">Benvenuto a bordo!</h1>
+                    <h1 class="card-title">Benvenuto!</h1>
                     <form action="/onboarding/skip" method="POST">
-                        <button type="submit" class="btn btn-link text-muted d-flex flex-column align-items-center" data-bs-toggle="tooltip" data-bs-placement="left" title="Potrai completare il profilo in seguito">
+                        <button type="submit" class="btn btn-link text-muted d-flex align-items-center skip-link" data-bs-toggle="tooltip" data-bs-placement="left" title="Potrai completare il profilo in seguito">
                             <span>Salta</span>
                             <i class='bx bx-right-arrow-alt'></i>
                         </button>
                     </form>
                 </div>
-                <p class="text-muted text-center mb-4">Ancora pochi passi per completare il tuo profilo</p>
+                <p class="text-muted text-start mb-4">Ancora pochi passi per completare il tuo profilo</p>
                 
                 <% if (error_msg && error_msg.length > 0) { %>
                     <div class="alert alert-danger">
@@ -44,7 +44,7 @@
                         <div class="card h-100 option selected" onclick="selectRole('freelancer')" role="button">
                             <div class="card-body text-center py-4">
                                 <i class='bx bx-user fs-1 mb-2'></i>
-                                <div>Freelancer</div>
+                                <div class="fw-bold">Freelancer</div>
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                         <div class="card h-100 option" onclick="selectRole('business')" role="button">
                             <div class="card-body text-center py-4">
                                 <i class='bx bx-buildings fs-1 mb-2'></i>
-                                <div>Azienda</div>
+                                <div class="fw-bold">Azienda</div>
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="bx bx-globe"></i></span>
-                            <input type="url" class="form-control" name="website" placeholder="Sito Web">
+                            <input type="url" class="form-control" name="website" placeholder="Sito Web o Portfolio">
                         </div>
                     </div>
 
@@ -83,12 +83,12 @@
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="bx bx-globe"></i></span>
-                            <input type="url" class="form-control" name="website" placeholder="Sito Web">
+                            <input type="url" class="form-control" name="website" placeholder="Sito Web Aziendale">
                         </div>
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Inizia ad esplorare</button>
+                        <button type="submit" class="btn btn-primary">Completa registrazione</button>
                     </div>
                 </form>
             </div>

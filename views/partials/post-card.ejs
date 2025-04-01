@@ -8,9 +8,9 @@
         <h5 class="card-title mb-0">
           <%= post.title %>
           <% if (post.type === 'job_offer') { %>
-            <span class="badge bg-primary ms-2">Offerta di lavoro</span>
+            <span class="badge bg-secondary ms-2">Azienda</span>
           <% } else { %>
-            <span class="badge bg-success ms-2">Freelancer</span>
+            <span class="badge bg-primary ms-2">Freelancer</span>
           <% } %>
         </h5>
         <p class="text-muted mb-0 small">
@@ -24,9 +24,9 @@
       </div>
     </div>
     <p class="card-text"><%= post.content %></p>
-    <% if (post.website) { %>
-      <a href="<%= post.website %>" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener">
-        <i class="bx bx-globe me-1"></i> Visita il sito
+    <% if (post.userId !== user?.id) { %>
+      <a href="/profile/<%= post.userId %>" class="btn btn-outline-primary btn-sm">
+        <i class="bx bx-user-circle me-1"></i> Visualizza profilo
       </a>
     <% } %>
     

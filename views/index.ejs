@@ -25,7 +25,7 @@
     
     <!-- Onboarding se non ancora completato -->
     <% if (showOnboardingAlert) { %>
-        <div class="alert alert-warning alert-dismissible fade show m-3" role="alert">
+        <div class="alert alert-warning alert-dismissible show m-3" role="alert">
             <i class="bx bx-error-circle me-2"></i> Completa il tuo profilo per accedere a tutte le funzionalità
             <a href="/onboarding" class="btn btn-warning btn-sm ms-2">Completa l'onboarding</a>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -34,7 +34,7 @@
     
     <!-- Messaggi flash info -->
     <% if (info_msg && info_msg.length > 0) { %>
-        <div class="alert alert-info alert-dismissible fade show m-3" role="alert">
+        <div class="alert alert-info alert-dismissible show m-3" role="alert">
             <%= info_msg %>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -72,7 +72,6 @@
 
                 <div class="row g-4">
                     <% if (!user || !user.type || user.type === 'freelancer') { %>
-                        <!-- Per gli utenti non loggati o freelancer, mostra il bottone per cercare lavoro -->
                         <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
                             <div class="card h-100 shadow-sm cursor-pointer">
                                 <div class="card-body text-center p-4">
@@ -88,15 +87,14 @@
                     <% } %>
                     
                     <% if (!user || !user.type || user.type === 'business') { %>
-                        <!-- Per gli utenti non loggati o aziende, mostra il bottone per trovare freelancer -->
                         <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
                             <div class="card h-100 shadow-sm cursor-pointer">
                                 <div class="card-body text-center p-4">
                                     <i class='bx bx-user fs-1 mb-3 text-primary'></i>
-                                    <h3 class="card-title">Trova Freelancer</h3>
-                                    <p class="text-muted">Scopri professionisti qualificati per i tuoi progetti</p>
+                                    <h3 class="card-title">Trova Professionisti</h3>
+                                    <p class="text-muted">Scopri talenti qualificati per i tuoi progetti</p>
                                     <a href="#freelancerPromos" class="btn btn-outline-primary mt-2">
-                                        <i class="bx bx-chevron-down me-1"></i> Scorri ai freelancer
+                                        <i class="bx bx-chevron-down me-1"></i> Scorri ai professionisti
                                     </a>
                                 </div>
                             </div>
