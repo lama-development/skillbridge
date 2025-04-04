@@ -13,7 +13,6 @@
     <%- include('partials/navbar') %>
     <%- include('partials/modal') %>
     <%- include('partials/post-modals') %>
-    
     <!-- Onboarding se non ancora completato -->
     <% if (showOnboardingAlert) { %>
         <div class="alert alert-warning alert-dismissible show m-3" role="alert">
@@ -22,7 +21,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <% } %>
-    
     <!-- Messaggi flash info -->
     <% if (info_msg && info_msg.length > 0) { %>
         <div class="alert alert-info alert-dismissible show m-3" role="alert">
@@ -30,7 +28,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <% } %>
-
     <main class="flex-shrink-0">
         <div class="container py-5">
             <!-- Contenuto principale -->
@@ -60,7 +57,6 @@
                         <% } %>
                     </div>
                 </div>
-
                 <div class="row g-4">
                     <% if (!user || !user.type || user.type === 'freelancer') { %>
                         <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
@@ -76,7 +72,6 @@
                             </div>
                         </div>
                     <% } %>
-                    
                     <% if (!user || !user.type || user.type === 'business') { %>
                         <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
                             <div class="card h-100 shadow-sm cursor-pointer">
@@ -93,7 +88,6 @@
                     <% } %>
                 </div>
             </section>
-
             <!-- Sezione Offerte di Lavoro -->
             <section class="mb-5" id="jobOffers">
                 <h2 class="display-6 mb-4">Offerte di Lavoro</h2>
@@ -120,7 +114,6 @@
                     </div>
                 <% } %>
             </section>
-
             <!-- Sezione Freelancer -->
             <section id="freelancerPromos">
                 <h2 class="display-6 mb-4">Freelancer Disponibili</h2>
@@ -149,7 +142,6 @@
             </section>
         </div>
     </main>
-    
     <%- include('partials/footer') %>
 </body>
 </html>
