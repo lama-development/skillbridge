@@ -11,19 +11,20 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarContent">
-            <form class="d-flex mx-auto w-35">
+            <form class="d-flex mx-auto w-35" action="/search" method="GET">
                 <div class="input-group">
-                    <input type="search" class="form-control" placeholder="Cerca" aria-label="Cerca">
-                    <button class="btn btn-outline-secondary" type="button">
+                    <input type="search" name="q" class="form-control" placeholder="Cerca annunci o professionisti..." aria-label="Cerca" required>
+                    <button class="btn btn-outline-secondary" type="submit">
                         <i class="bx bx-search"></i>
                     </button>
                 </div>
             </form>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link" aria-label="Chat">
+                    <a href="/chat" class="nav-link chat-button">
                         <i class="bx bx-chat"></i>
-                    </button>
+                        <span>Chat</span>
+                    </a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">

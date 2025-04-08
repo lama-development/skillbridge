@@ -124,4 +124,48 @@ router.get('/profile', (req, res) => {
     res.render('profile', { user: req.user, package: pkg });
 });
 
+// Rotta per la ricerca
+router.get('/search', (req, res) => {
+    const query = req.query.q?.trim();
+    
+    if (!query) {
+        return res.redirect('/');
+    }
+
+    // Query per cercare sia nelle offerte di lavoro che nelle promozioni freelancer
+    const searchQuery = `
+        SELECT 
+            p.*,
+            u.businessName,
+            u.firstName,
+            u.lastName,
+            u.website,
+            u.profilePicture
+        FROM posts p
+        JOIN users u ON p.userId = u.id
+        WHERE (
+            p.title LIKE ? OR 
+            p.content LIKE ?
+        )
+        ORDER BY p.createdAt DESC
+    `;
+
+    const searchParam = `%${query}%`;
+    
+    db.all(searchQuery, [searchParam, searchParam], (err, results) => {
+        if (err) {
+            console.error('Errore durante la ricerca:', err);
+            req.flash('error_msg', 'Si è verificato un errore durante la ricerca.');
+            return res.redirect('/');
+        }
+        
+        res.render('search', { 
+            query,
+            results: results || [],
+            package: pkg,
+            user: req.user
+        });
+    });
+});
+
 export default router;
