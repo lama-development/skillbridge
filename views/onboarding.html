@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - SkillBridge</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../public/favicon.ico">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <!-- Global CSS -->
+    <link href="../public/css/global.css" rel="stylesheet">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <!-- Main content -->
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
+        <div class="card shadow-sm form-container">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h1 class="card-title">Benvenuto!</h1>
+                    <form action="index.html">
+                        <button type="submit" class="btn btn-link text-muted d-flex align-items-center skip-link">
+                            <span>Salta</span>
+                            <i class='bi bi-arrow-right'></i>
+                        </button>
+                    </form>
+                </div>
+                <p class="text-muted text-start mb-4">Ancora pochi passi per completare il tuo profilo</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="card h-100 option selected">
+                            <div class="card-body text-center py-4">
+                                <i class='bi bi-person fs-1 mb-2'></i>
+                                <div class="fw-bold">Freelancer</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card h-100 option">
+                            <div class="card-body text-center py-4">
+                                <i class='bi bi-buildings fs-1 mb-2'></i>
+                                <div class="fw-bold">Azienda</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="onboarding-form" action="index.html">
+                    <input type="hidden" name="type" id="selected-type" value="freelancer">
+                    
+                    <div id="freelancer-fields">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" name="firstName" placeholder="Nome" required autocomplete="name">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" name="lastName" placeholder="Cognome" required autocomplete="family-name">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                            <input type="url" class="form-control" name="website" placeholder="Sito Web o Portfolio">
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Completa registrazione</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
