@@ -169,8 +169,10 @@ a:hover {
 }
 
 /* Profilo */
-.profile-container {
-    max-width: 600px;
+.profile-image {
+    width: 125px;
+    height: 125px;
+    object-fit: cover;
     border: 1px solid var(--color-border);
 }
 
