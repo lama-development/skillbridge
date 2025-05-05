@@ -167,4 +167,24 @@ router.get('/search', (req, res) => {
     });
 });
 
+// Rotta per la pagina chat
+router.get('/chat', (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per accedere alla chat.');
+        return res.redirect('/login');
+    }
+    
+    if (!req.user.type) {
+        req.flash('error_msg', 'Completa l\'onboarding per accedere alla chat.');
+        return res.redirect('/onboarding');
+    }
+    
+    // In futuro qui potresti caricare le conversazioni dell'utente dal database
+    // Per ora renderizziamo semplicemente la pagina chat
+    res.render('chat', { 
+        user: req.user, 
+        package: pkg 
+    });
+});
+
 export default router;
