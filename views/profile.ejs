@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="it" class="h-100">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilo - SkillBridge</title>
+    <%- include('partials/head') %>
+    <script src="/js/navbar.js" defer></script>
+</head>
+
+<body class="d-flex flex-column h-100 has-navbar-padding">
+
+    <%- include('partials/navbar') %>
+    <%- include('partials/modal') %>
+
+    <!-- Main content -->
+    <main class="flex-shrink-0">
+        <div class="container py-5">
+            <!-- Header del profilo -->
+            <div class="p-4 card shadow-sm mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                        <img src="/img/profile.png" alt="Foto Profilo" class="rounded-circle profile-image mb-3">
+                        <div>
+                            <% if (user.type === 'freelancer') { %>
+                                <h1 class="h3 mb-2 fw-bold"><%= user.firstName %> <%= user.lastName %></h1>
+                                <p class="text-muted mb-2">@<%= user.username %></p>
+                                <span class="badge bg-primary">Freelancer</span>
+                            <% } else if (user.type === 'business') { %>
+                                <h1 class="h3 mb-2 fw-bold"><%= user.businessName %></h1>
+                                <p class="text-muted mb-2">@<%= user.username %>/p>
+                                <span class="badge bg-secondary">Azienda</span>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <p>Sono uno sviluppatore web full-stack con oltre 5 anni di esperienza nella creazione di soluzioni web moderne e responsive. La mia passione è costruire interfacce utente intuitive e accessibili che offrano un'ottima esperienza utente.</p>
+                        
+                        <!-- Links e Contatti -->
+                        <div class="mt-3">
+                            <% if (user.website) { %>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-globe text-primary me-2"></i>
+                                    <a href="<%= user.website %>" class="text-primary" target="_blank"><%= user.website %></a>
+                                </div>
+                            <% } %>
+                            <!-- Social Media -->
+                            <div class="d-flex gap-3 fs-5">
+                                <a href="#" class="text-primary" target="_blank" title="LinkedIn">
+                                    <i class="bi bi-linkedin"></i>
+                                </a>
+                                <a href="#" class="text-primary" target="_blank" title="GitHub">
+                                    <i class="bi bi-github"></i>
+                                </a>
+                                <a href="#" class="text-primary" target="_blank" title="Instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Competenze Card -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h4 class="mb-3 fw-bold">Competenze</h4>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge rounded-pill bg-primary">HTML5</span>
+                                <span class="badge rounded-pill bg-primary">CSS3</span>
+                                <span class="badge rounded-pill bg-primary">JavaScript</span>
+                                <span class="badge rounded-pill bg-primary">TypeScript</span>
+                                <span class="badge rounded-pill bg-primary">React</span>
+                                <span class="badge rounded-pill bg-primary">Node.js</span>
+                                <span class="badge rounded-pill bg-primary">Express.js</span>
+                                <span class="badge rounded-pill bg-primary">Git</span>
+                                <span class="badge rounded-pill bg-primary">Bootstrap</span>
+                                <span class="badge rounded-pill bg-primary">Responsive Design</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Annunci Pubblicati Card -->
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="mb-3 fw-bold">Annunci Pubblicati</h4>
+                            <!-- Primo Annuncio -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-2 fw-bold">Sviluppo sito web responsive</h5>
+                                    <p class="card-text mb-1"><small class="text-muted">Pubblicato il: 15/04/2025</small></p>
+                                    <p class="card-text">Offro servizi di sviluppo web front-end per la creazione di siti web moderni, responsive e ottimizzati per SEO. Utilizzo tecnologie come React, Vue.js o HTML/CSS/JS puro in base alle esigenze del cliente.</p>
+                                </div>
+                            </div>
+                            <!-- Secondo Annuncio -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-2 fw-bold">Sviluppo API RESTful</h5>
+                                    <p class="card-text mb-1"><small class="text-muted">Pubblicato il: 10/04/2025</small></p>
+                                    <p class="card-text">Offro servizi di sviluppo di API RESTful scalabili e ben documentate utilizzando Node.js e Express. Gestione database SQL o NoSQL in base alle necessità del progetto.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Card Contatti -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h4 class="mb-3 fw-bold">Contatti</h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0 border-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-envelope text-primary me-2"></i>
+                                        <div>
+                                            <p class="mb-0">mario@gmail.com</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item px-0 border-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-telephone text-primary me-2"></i>
+                                        <div>
+                                            <p class="mb-0">+39 123 456 7890</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+</body>
+</html>

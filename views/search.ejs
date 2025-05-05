@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it" class="h-100">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risultati Ricerca - SkillBridge</title>
+    <%- include('partials/head') %>
+    <script src="/js/navbar.js" defer></script>
+</head>
+
+<body class="d-flex flex-column h-100 has-navbar-padding">
+
+    <%- include('partials/navbar') %>
+    <%- include('partials/modal') %>
+    
+    <!-- Main content -->
+    <main class="flex-shrink-0">
+        <div class="container py-5">
+            <div class="mb-4">
+                <h1 class="h3 fw-bold">Risultati per: "<%= query %>"</h1>
+                <p class="text-muted"><%= results.length === 1 ? '1 risultato trovato' : `${results.length} risultati trovati` %></p>
+            </div>
+            <% if (results.length > 0) { %>
+                <div class="row">
+                    <div class="col-12">
+                        <% results.forEach(post => { %>
+                            <%- include('partials/post-card', { post }) %>
+                        <% }) %>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="alert alert-secondary text-center">
+                    <i class="bx bx-info-circle fs-4 d-block mb-2"></i>
+                    Nessun risultato trovato per la tua ricerca. Prova con termini diversi o più generici.
+                </div>
+            <% } %>
+
+
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+</body>
+</html>

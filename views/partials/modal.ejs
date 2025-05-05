@@ -1,0 +1,49 @@
+<div class="modal" id="info-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Informazioni</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <strong>Nome:</strong>
+          <span><%= package.name %></span>
+        </div>
+        <div class="mb-2">
+          <strong>Autore:</strong>
+          <span><%= package.author %></span>
+        </div>
+        <div class="mb-2">
+          <strong>Versione:</strong>
+          <span><%= package.version %></span>
+        </div>
+        <div class="mb-2">
+          <strong>Descrizione:</strong>
+          <span><%= package.description %></span>
+        </div>
+        <div class="mb-2">
+          <strong>Licenza:</strong>
+          <span><%= package.license %></span>
+        </div>
+        <div class="mb-2">
+          <strong>Repository:</strong>
+          <a href="<%= package.repository.url %>" class="hover-underline" target="_blank" rel="noopener">
+            <%= package.repository.url %>
+            <i class="bx bx-link-external"></i>
+          </a>
+        </div>
+        <div class="mb-2">
+          <strong>Segnala un problema:</strong>
+          <a href="<%= package.bugs.url %>" class="hover-underline" target="_blank" rel="noopener">
+            <%= package.bugs.url %>
+            <i class="bx bx-link-external"></i>
+          </a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>

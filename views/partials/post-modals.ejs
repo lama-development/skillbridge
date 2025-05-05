@@ -1,0 +1,55 @@
+<!-- Modal per la creazione di un'offerta di lavoro (solo per aziende) -->
+<div class="modal" id="create-job-offer-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pubblica un'offerta di lavoro</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/posts/job-offer" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="job-title" class="form-label">Titolo dell'offerta</label>
+            <input type="text" class="form-control" id="job-title" name="title" required placeholder="Sviluppatore front-end per progetto e-commerce">
+          </div>
+          <div class="mb-3">
+            <label for="job-content" class="form-label">Descrizione</label>
+            <textarea class="form-control" id="job-content" name="content" rows="6" required placeholder="Descrivi il lavoro, requisiti, compenso e come candidarsi..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Annulla</button>
+          <button type="submit" class="btn btn-primary">Pubblica offerta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal per la promozione di un freelancer (solo per freelancer) -->
+<div class="modal" id="create-freelancer-promo-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Promuovi i tuoi servizi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/posts/freelancer-promo" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="promo-title" class="form-label">Titolo</label>
+            <input type="text" class="form-control" id="promo-title" name="title" required placeholder="UX/UI Designer disponibile per progetti web e mobile">
+          </div>
+          <div class="mb-3">
+            <label for="promo-content" class="form-label">Descrizione</label>
+            <textarea class="form-control" id="promo-content" name="content" rows="6" required placeholder="Descrivi le tue competenze, esperienze e servizi che offri..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Annulla</button>
+          <button type="submit" class="btn btn-primary">Pubblica promozione</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it" class="h-100">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - SkillBridge</title>
+    <%- include('partials/head') %>
+    <script src="/js/navbar.js" defer></script>
+</head>
+
+<body class="d-flex flex-column h-100 has-navbar-padding">
+    
+    <%- include('partials/navbar') %>
+    <%- include('partials/modal') %>
+    
+    <!-- Main content -->
+    <main class="flex-shrink-0">
+        <div class="container py-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="row g-0 chat-height">
+                        <!-- Lista contatti -->
+                        <div class="col-md-4 chat-sidebar">
+                            <div class="p-3 border-bottom">
+                                <h5 class="mb-0 fw-bold">Messaggi</h5>
+                            </div>
+                            <div class="chat-contacts">
+                                <!-- Contatto attivo -->
+                                <div class="chat-contact active p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <img src="/img/profile.png" alt="Profile" class="rounded-circle profile-image-small">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0 fw-bold">Laura Bianchi</h6>
+                                            <p class="mb-0 small text-truncate">Ciao! Ho visto il tuo profilo...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Altri contatti -->
+                                <div class="chat-contact p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <img src="/img/profile.png" alt="Profile" class="rounded-circle profile-image-small">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0 fw-bold">Marco Verdi</h6>
+                                            <p class="mb-0 small text-truncate">Ho completato il design richiesto...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="chat-contact p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <img src="/img/profile.png" alt="Profile" class="rounded-circle profile-image-small">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0 fw-bold">Microsoft</h6>
+                                            <p class="mb-0 small text-truncate">Grazie per l'invio del tuo CV...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Area conversazione -->
+                        <div class="col-md-8 d-flex flex-column">
+                            <!-- Header conversazione -->
+                            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <img src="/img/profile.png" alt="Profile" class="rounded-circle profile-image-small">
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Laura Bianchi</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Messaggi -->
+                            <div class="chat-messages p-3 d-flex flex-column">
+                                <!-- Messaggi ricevuti -->
+                                <div class="message message-received">
+                                    <div>Ciao! Ho visto il tuo profilo su SkillBridge e sarei interessata a collaborare per un progetto di sviluppo web.</div>
+                                </div>
+                                <div class="message message-received">
+                                    <div>Si tratta di un sito e-commerce per un negozio di abbigliamento. Hai disponibilità nelle prossime settimane?</div>
+                                </div>
+                                <!-- Messaggi inviati -->
+                                <div class="message message-sent">
+                                    <div>Ciao Laura! Grazie per avermi contattato. Sì, sarei interessato al progetto.</div>
+                                </div>
+                                <div class="message message-sent">
+                                    <div>Ho disponibilità a partire dalla prossima settimana. Possiamo discutere i dettagli e il budget?</div>
+                                </div>
+                            </div>
+                            <!-- Input messaggi -->
+                            <div class="chat-input mt-auto">
+                                <form class="d-flex align-items-center">
+                                    <input type="text" class="form-control me-2" placeholder="Scrivi un messaggio...">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <%- include('partials/footer') %>
+
+</body>
+
+</html>

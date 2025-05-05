@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="it" class="h-100">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - SkillBridge</title>
+    <%- include('partials/head') %>
+    <script src="/js/navbar.js" defer></script>
+</head>
+
+<body class="d-flex flex-column h-100 has-navbar-padding">
+    
+    <%- include('partials/navbar') %>
+    <%- include('partials/modal') %>
+    <%- include('partials/post-modals') %>
+    
+    <!-- Alert banners in container -->
+    <div class="container">
+        <!-- Onboarding se non ancora completato -->
+        <% if (showOnboardingAlert) { %>
+            <div class="alert alert-warning alert-dismissible show mt-3" role="alert">
+                <i class="bx bx-error-circle me-2"></i> Completa il tuo profilo per accedere a tutte le funzionalità.
+                <a href="/onboarding" class="btn btn-warning btn-sm ms-2">Completa l'onboarding</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
+        <!-- Messaggi flash info -->
+        <% if (info_msg && info_msg.length > 0) { %>
+            <div class="alert alert-info alert-dismissible show mt-3" role="alert">
+                <%= info_msg %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
+    </div>
+    
+    <!-- Main content -->
+    <main class="flex-shrink-0">
+        <div class="container py-5">
+            <section class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <% if (user && user.firstName) { %>
+                            <h1 class="display-5 mb-2 fw-bold">Ciao, <%= user.firstName %>.</h1>
+                        <% } else if (user && user.businessName) { %>
+                            <h1 class="display-5 mb-2 fw-bold">Benvenuto, <%= user.businessName %>.</h1>
+                        <% } else { %>
+                            <h1 class="display-5 mb-2 fw-bold">Benvenuto.</h1>
+                        <% } %>
+                        <p class="text-muted fs-5">Cosa vuoi fare oggi?</p>
+                    </div>
+                    <div>
+                        <% if (user && user.type) { %>
+                            <% if (user.type === 'freelancer') { %>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-freelancer-promo-modal">
+                                    <i class="bx bx-plus me-1"></i> Promuovi i tuoi servizi
+                                </button>
+                            <% } else if (user.type === 'business') { %>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-job-offer-modal">
+                                    <i class="bx bx-plus me-1"></i> Pubblica offerta di lavoro
+                                </button>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <% if (!user || !user.type || user.type === 'freelancer') { %>
+                        <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
+                            <div class="card h-100 shadow-sm cursor-pointer">
+                                <div class="card-body text-center p-4">
+                                    <i class='bx bx-search fs-1 mb-3 text-primary'></i>
+                                    <h3 class="card-title">Cerca Opportunità di Lavoro</h3>
+                                    <p class="text-muted">Esplora le offerte delle aziende e trova il tuo prossimo progetto</p>
+                                    <a href="#jobOffers" class="btn btn-outline-primary mt-2">
+                                        <i class="bx bx-chevron-down me-1"></i> Scorri alle offerte
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                    <% if (!user || !user.type || user.type === 'business') { %>
+                        <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
+                            <div class="card h-100 shadow-sm cursor-pointer">
+                                <div class="card-body text-center p-4">
+                                    <i class='bx bx-user fs-1 mb-3 text-primary'></i>
+                                    <h3 class="card-title">Trova Professionisti</h3>
+                                    <p class="text-muted">Scopri talenti qualificati per i tuoi progetti</p>
+                                    <a href="#freelancerPromos" class="btn btn-outline-primary mt-2">
+                                        <i class="bx bx-chevron-down me-1"></i> Scorri ai professionisti
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </section>
+            <!-- Sezione Offerte di Lavoro -->
+            <section class="mb-5" id="jobOffers">
+                <h2 class="display-6 mb-4 fw-bold">Offerte di Lavoro</h2>
+                <% if (jobOffers && jobOffers.length > 0) { %>
+                    <div class="row">
+                        <div class="col-12">
+                            <% jobOffers.forEach(post => { %>
+                                <%- include('partials/post-card', { post }) %>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="alert alert-secondary text-center">
+                        <i class="bx bx-info-circle fs-4 d-block mb-2"></i>
+                        Nessuna offerta di lavoro disponibile al momento.
+                        <% if (user && user.type === 'business') { %>
+                            <div class="mt-2">
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#create-job-offer-modal">
+                                    <i class="bx bx-plus me-1"></i> Pubblica la prima offerta
+                                </button>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+            </section>
+            <!-- Sezione Freelancer -->
+            <section id="freelancerPromos">
+                <h2 class="display-6 mb-4 fw-bold">Freelancer Disponibili</h2>
+                <% if (freelancerPromos && freelancerPromos.length > 0) { %>
+                    <div class="row">
+                        <div class="col-12">
+                            <% freelancerPromos.forEach(post => { %>
+                                <%- include('partials/post-card', { post }) %>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="alert alert-secondary text-center">
+                        <i class="bx bx-info-circle fs-4 d-block mb-2"></i>
+                        Nessun freelancer disponibile al momento.
+                        <% if (user && user.type === 'freelancer') { %>
+                            <div class="mt-2">
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#create-freelancer-promo-modal">
+                                    <i class="bx bx-plus me-1"></i> Promuovi i tuoi servizi
+                                </button>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+            </section>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+</body>
+
+</html>

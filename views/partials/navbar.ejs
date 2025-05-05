@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg fixed-top navbar-compact">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/favicon.ico" alt="Logo" class="me-2 logo-small">
+            <span class="navbar-brand-text fw-bold">SkillBridge</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <form class="d-flex mx-auto w-35" action="/search" method="GET">
+                <div class="input-group">
+                    <input type="search" name="q" class="form-control" placeholder="Cerca annunci o professionisti..." aria-label="Cerca" required>
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                <li class="nav-item">
+                    <a href="/chat" class="nav-link chat-button">
+                        <i class="bi bi-chat"></i>
+                        <span>Chat</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown ms-2">
+                    <a class="nav-link dropdown-toggle chat-button d-flex align-items-center" href="#" role="button"
+                        data-bs-toggle="dropdown">
+                        <i class="bi bi-person me-0"></i>
+                        <span>Profilo</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i>Profilo</a></li>
+                        <li><a class="dropdown-item" href="#" id="info-link"><i class="bi bi-info-circle me-2"></i>Informazioni</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="/logout" method="POST">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
