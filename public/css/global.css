@@ -103,7 +103,7 @@ a:hover {
 .login-logo-text {
     font-weight: bold;
 }
-.auth-gradient-bg {
+.gradient-bg {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     color: var(--color-text-light);
 }
@@ -276,9 +276,10 @@ a:hover {
 
 /* Media queries per responsive design */
 @media (max-width: 768px) {
-    .auth-gradient-bg {
-        display: none !important;
+    .auth-page .gradient-bg {
+        display: none !important; /* Nascondi lo sfondo gradient solo nelle pagine auth (login/signup) */
     }
+
     .chat-sidebar {
         border-right: none;
         border-bottom: 1px solid var(--color-border);
@@ -288,5 +289,17 @@ a:hover {
     }
     .chat-height {
         height: auto;
+    }
+    
+    /* Quando il menu della navbar è aperto su mobile, rendi la barra di ricerca full-width */
+    .navbar-collapse.show form,
+    .navbar-collapse.collapsing form {
+        width: 100% !important;
+        margin: 0.5rem 0;
+    }
+    
+    .navbar-collapse.show .w-35,
+    .navbar-collapse.collapsing .w-35 {
+        width: 100% !important;
     }
 }
