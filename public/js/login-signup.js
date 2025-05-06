@@ -2,6 +2,14 @@
 
 const usernameInput = document.getElementById('username');
 
+// Initialize tooltips with hover and focus/touch support
+const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl, {
+        trigger: 'hover focus' // Works on both hover and focus/touch
+    });
+});
+
 document.querySelectorAll('.toggle-password').forEach(function (button) {
     button.addEventListener('click', function () {
         const input = this.parentElement.querySelector('input');

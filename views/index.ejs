@@ -25,6 +25,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         <% } %>
+        <!-- Annuncio per utenti non loggati -->
+        <% if (!user) { %>
+            <div class="alert alert-dismissible show mt-3" role="alert" style="background-color: var(--color-primary); color: var(--color-text-light);">
+                <i class="bx bx-info-circle me-2"></i> Registrati o accedi per usufruire di tutte le funzionalità di SkillBridge.
+                <a href="/signup" class="btn btn-light btn-sm ms-2">Registrati</a>
+                <a href="/login" class="btn btn-outline-light btn-sm ms-2">Accedi</a>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
         <!-- Messaggi flash info -->
         <% if (info_msg && info_msg.length > 0) { %>
             <div class="alert alert-info alert-dismissible show mt-3" role="alert">

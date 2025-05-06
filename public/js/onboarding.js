@@ -1,5 +1,11 @@
 "use strict";
 
+// Aggiungo un listener per eseguire selectRole al caricamento della pagina
+document.addEventListener('DOMContentLoaded', function() {
+    // Inizializza i campi per la selezione predefinita (freelancer)
+    selectRole('freelancer');
+});
+
 function selectRole(role) {
     // Rimuove gli stili di selezione da tutte le opzioni
     document.querySelectorAll('.option').forEach(el => {

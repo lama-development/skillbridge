@@ -7,6 +7,14 @@
     <title>Risultati Ricerca - SkillBridge</title>
     <%- include('partials/head') %>
     <script src="/js/navbar.js" defer></script>
+    <style>
+        .highlight {
+            background-color: #FFD700;
+            font-weight: normal;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+    </style>
 </head>
 
 <body class="d-flex flex-column h-100 has-navbar-padding">
@@ -22,10 +30,47 @@
                 <p class="text-muted"><%= results.length === 1 ? '1 risultato trovato' : `${results.length} risultati trovati` %></p>
             </div>
             <% if (results.length > 0) { %>
+                <%
+                    // Funzione per evidenziare le parole cercate
+                    function highlightText(text, searchQuery) {
+                        if (!text) return '';
+                        // Escape special regex characters in the search query
+                        const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        // Create a regex pattern to match the query (case insensitive)
+                        const regex = new RegExp(`(${escapedQuery})`, 'gi');
+                        // Replace matches with highlighted spans
+                        return text.replace(regex, '<span class="highlight">$1</span>');
+                    }
+                %>
                 <div class="row">
                     <div class="col-12">
-                        <% results.forEach(post => { %>
-                            <%- include('partials/post-card', { post }) %>
+                        <% results.forEach(post => { 
+                            // Create a copy of the post with highlighted content
+                            const highlightedPost = { ...post };
+                            highlightedPost.title = highlightText(post.title, query);
+                            highlightedPost.content = highlightText(post.content, query);
+                            
+                            // Highlight business name or freelancer name
+                            if (post.type === 'job_offer') {
+                                highlightedPost.businessName = highlightText(post.businessName, query);
+                            } else {
+                                // For freelancers, highlight the full name
+                                const fullName = `${post.firstName} ${post.lastName}`;
+                                highlightedPost.fullName = highlightText(fullName, query);
+                                highlightedPost.firstName = post.firstName;
+                                highlightedPost.lastName = post.lastName;
+                            }
+                        %>
+                            <!-- Pass the post with highlighted content -->
+                            <%- include('partials/post-card', { 
+                                post: { 
+                                    ...post, 
+                                    title: highlightedPost.title,
+                                    content: highlightedPost.content,
+                                    businessName: highlightedPost.businessName,
+                                    fullName: highlightedPost.fullName
+                                } 
+                            }) %>
                         <% }) %>
                     </div>
                 </div>

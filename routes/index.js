@@ -132,6 +132,7 @@ router.get('/search', (req, res) => {
     }
 
     // Query per cercare sia nelle offerte di lavoro che nelle promozioni freelancer
+    // Includendo anche il nome dell'utente o dell'azienda
     const searchQuery = `
         SELECT 
             p.*,
@@ -144,14 +145,16 @@ router.get('/search', (req, res) => {
         JOIN users u ON p.userId = u.id
         WHERE (
             p.title LIKE ? OR 
-            p.content LIKE ?
+            p.content LIKE ? OR
+            u.businessName LIKE ? OR
+            (u.firstName || ' ' || u.lastName) LIKE ?
         )
         ORDER BY p.createdAt DESC
     `;
 
     const searchParam = `%${query}%`;
     
-    db.all(searchQuery, [searchParam, searchParam], (err, results) => {
+    db.all(searchQuery, [searchParam, searchParam, searchParam, searchParam], (err, results) => {
         if (err) {
             console.error('Errore durante la ricerca:', err);
             req.flash('error_msg', 'Si è verificato un errore durante la ricerca.');

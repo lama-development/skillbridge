@@ -4,7 +4,7 @@
       <img src="<%= post.profilePicture || '/img/profile.png' %>" alt="Profile" class="rounded-circle me-3 profile-image-small">
       <div>
         <h5 class="card-title mb-0">
-          <%= post.title %>
+          <%- post.title %>
           <% if (post.type === 'job_offer') { %>
             <span class="badge bg-secondary ms-2">Azienda</span>
           <% } else { %>
@@ -13,15 +13,19 @@
         </h5>
         <p class="text-muted mb-0 small">
           <% if (post.type === 'job_offer') { %>
-            <%= post.businessName %>
+            <%- post.businessName || post.businessName %>
           <% } else { %>
-            <%= post.firstName %> <%= post.lastName %>
+            <% if (post.fullName) { %>
+              <%- post.fullName %>
+            <% } else { %>
+              <%= post.firstName %> <%= post.lastName %>
+            <% } %>
           <% } %>
           • <%= new Date(post.createdAt).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }) %>
         </p>
       </div>
     </div>
-    <p class="card-text"><%= post.content %></p>
+    <p class="card-text"><%- post.content %></p>
     <% if (post.userId !== user?.id) { %>
       <a href="/profile/<%= post.userId %>" class="btn btn-outline-primary btn-sm">
         <i class="bx bx-user-circle me-1"></i> Visualizza profilo
