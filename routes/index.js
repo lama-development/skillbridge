@@ -120,7 +120,26 @@ router.get('/profile', (req, res) => {
         req.flash('error_msg', 'Completa l\'onboarding per accedere al profilo.');
         return res.redirect('/onboarding');
     }
-    res.render('profile', { user: req.user, package: pkg });
+    
+    // Query per recuperare gli annunci pubblicati dall'utente
+    const userPostsQuery = `
+        SELECT * FROM posts 
+        WHERE userId = ? 
+        ORDER BY createdAt DESC
+    `;
+    
+    db.all(userPostsQuery, [req.user.id], (err, userPosts) => {
+        if (err) {
+            console.error('Errore durante il recupero degli annunci dell\'utente:', err);
+            userPosts = [];
+        }
+        
+        res.render('profile', { 
+            user: req.user, 
+            package: pkg,
+            userPosts: userPosts || []
+        });
+    });
 });
 
 // Rotta per la ricerca
