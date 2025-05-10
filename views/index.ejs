@@ -20,19 +20,30 @@
         <!-- Onboarding se non ancora completato -->
         <% if (showOnboardingAlert) { %>
             <div class="alert alert-warning alert-dismissible show mt-3" role="alert">
-                <i class="bx bx-error-circle me-2"></i> Completa il tuo profilo per accedere a tutte le funzionalità.
-                <a href="/onboarding" class="btn btn-warning btn-sm ms-2">Completa l'onboarding</a>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+                <div class="d-flex">
+                    <div>
+                        <div>Completa il tuo profilo per accedere a tutte le funzionalità di SkillBridge.</div>
+                        <div class="mt-2">
+                            <a href="/onboarding" class="btn btn-warning btn-sm">Completa l'onboarding</a>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div
         <% } %>
         <!-- Annuncio per utenti non loggati -->
         <% if (!user) { %>
             <div class="alert alert-dismissible show mt-3" role="alert" style="background-color: var(--color-primary); color: var(--color-text-light);">
-                <i class="bx bx-info-circle me-2"></i> Registrati o accedi per usufruire di tutte le funzionalità di SkillBridge.
-                <a href="/signup" class="btn btn-light btn-sm ms-2">Registrati</a>
-                <a href="/login" class="btn btn-outline-light btn-sm ms-2">Accedi</a>
+                <div class="d-flex">
+                    <div>
+                        <div>Accedi per usufruire di tutte le funzionalità di SkillBridge.</div>
+                        <div class="mt-2">
+                            <a href="/login" class="btn btn-light btn-sm">Accedi</a>
+                        </div>
+                    </div>
+                </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            </div
         <% } %>
         <!-- Messaggi flash info -->
         <% if (info_msg && info_msg.length > 0) { %>
@@ -62,11 +73,11 @@
                         <% if (user && user.type) { %>
                             <% if (user.type === 'freelancer') { %>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-freelancer-promo-modal">
-                                    <i class="bx bx-plus me-1"></i> Promuovi i tuoi servizi
+                                    Promuovi i tuoi servizi
                                 </button>
                             <% } else if (user.type === 'business') { %>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-job-offer-modal">
-                                    <i class="bx bx-plus me-1"></i> Pubblica offerta di lavoro
+                                    Pubblica offerta di lavoro
                                 </button>
                             <% } %>
                         <% } %>
@@ -77,11 +88,11 @@
                         <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
                             <div class="card h-100 shadow-sm cursor-pointer">
                                 <div class="card-body text-center p-4">
-                                    <i class='bx bx-search fs-1 mb-3 text-primary'></i>
+                                    <i class='bi bi-briefcase-fill fs-1 mb-3 text-primary'></i>
                                     <h3 class="card-title">Cerca Opportunità di Lavoro</h3>
                                     <p class="text-muted">Esplora le offerte delle aziende e trova il tuo prossimo progetto</p>
                                     <a href="#jobOffers" class="btn btn-outline-primary mt-2">
-                                        <i class="bx bx-chevron-down me-1"></i> Scorri alle offerte
+                                        <i class="bi bi-chevron-down me-1"></i> Scorri alle offerte
                                     </a>
                                 </div>
                             </div>
@@ -91,11 +102,11 @@
                         <div class="col-md-<%= !user || !user.type ? '6' : '12' %>">
                             <div class="card h-100 shadow-sm cursor-pointer">
                                 <div class="card-body text-center p-4">
-                                    <i class='bx bx-user fs-1 mb-3 text-primary'></i>
+                                    <i class='bi bi-person-fill fs-1 mb-3 text-primary'></i>
                                     <h3 class="card-title">Trova Professionisti</h3>
                                     <p class="text-muted">Scopri talenti qualificati per i tuoi progetti</p>
                                     <a href="#freelancerPromos" class="btn btn-outline-primary mt-2">
-                                        <i class="bx bx-chevron-down me-1"></i> Scorri ai professionisti
+                                        <i class="bi bi-chevron-down me-1"></i> Scorri ai professionisti
                                     </a>
                                 </div>
                             </div>
@@ -116,12 +127,11 @@
                     </div>
                 <% } else { %>
                     <div class="alert alert-secondary text-center">
-                        <i class="bx bx-info-circle fs-4 d-block mb-2"></i>
-                        Nessuna offerta di lavoro disponibile al momento.
+                        Nessuna offerta disponibile al momento.
                         <% if (user && user.type === 'business') { %>
                             <div class="mt-2">
                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#create-job-offer-modal">
-                                    <i class="bx bx-plus me-1"></i> Pubblica la prima offerta
+                                    Pubblica offerta di lavoro
                                 </button>
                             </div>
                         <% } %>
@@ -141,12 +151,11 @@
                     </div>
                 <% } else { %>
                     <div class="alert alert-secondary text-center">
-                        <i class="bx bx-info-circle fs-4 d-block mb-2"></i>
                         Nessun freelancer disponibile al momento.
                         <% if (user && user.type === 'freelancer') { %>
                             <div class="mt-2">
                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#create-freelancer-promo-modal">
-                                    <i class="bx bx-plus me-1"></i> Promuovi i tuoi servizi
+                                    Promuovi i tuoi servizi
                                 </button>
                             </div>
                         <% } %>
