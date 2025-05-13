@@ -24,7 +24,7 @@
                         <div class="col-md-4">
                             <div class="profile-image-container text-center text-md-start">
                                 <div class="position-relative mb-3">
-                                    <% if (isOwnProfile) { %>
+                                    <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
                                         <div class="profile-pic-container">
                                             <img src="<%= user.profilePicture.startsWith('/') ? user.profilePicture : '/' + user.profilePicture %>" alt="Foto Profilo" class="rounded-circle profile-image">
                                             <div class="profile-pic-overlay" data-bs-toggle="modal" data-bs-target="#profilePictureModal">
@@ -164,7 +164,7 @@
     
     <%- include('partials/footer') %>
     
-    <% if (isOwnProfile) { %>
+    <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
     <!-- Modal per gestione foto profilo -->
     <div class="modal fade" id="profilePictureModal" tabindex="-1" aria-labelledby="profilePictureModalLabel" aria-hidden="true">
         <div class="modal-dialog">

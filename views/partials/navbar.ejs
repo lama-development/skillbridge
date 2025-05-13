@@ -22,6 +22,14 @@
                         <span>Home</span>
                     </a>
                 </li>
+                <!-- Dark Mode Toggle Button -->
+                <li class="nav-item">
+                    <div id="theme-toggle" class="theme-toggle">
+                        <i class="bi bi-moon-fill" id="dark-icon"></i>
+                        <i class="bi bi-sun-fill d-none" id="light-icon"></i>
+                    </div>
+                </li>
+                <% if (user) { %>
                 <li class="nav-item">
                     <a href="/chat" class="nav-link chat-button">
                         <i class="bi bi-chat"></i>
@@ -47,6 +55,14 @@
                         </li>
                     </ul>
                 </li>
+                <% } else { %>
+                <li class="nav-item">
+                    <a href="/login" class="nav-link chat-button">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Accedi</span>
+                    </a>
+                </li>
+                <% } %>
             </ul>
         </div>
     </div>

@@ -124,7 +124,7 @@ router.post('/onboarding/skip', (req, res) => {
 // Rotta per la pagina del profilo
 router.get('/profile', (req, res) => {
     if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per accedere al profilo.');
+        req.flash('error_msg', 'Devi essere loggato per accedere al tuo profilo.');
         return res.redirect('/login');
     }
     if (!req.user.type) {
@@ -149,22 +149,18 @@ router.get('/profile', (req, res) => {
             user: req.user, 
             package: pkg,
             userPosts: userPosts || [],
-            isOwnProfile: true // È il profilo dell'utente loggato
+            isOwnProfile: true, // È il profilo dell'utente loggato
+            currentUser: req.user
         });
     });
 });
 
 // Rotta per visualizzare il profilo di un altro utente
 router.get('/profile/:username', (req, res) => {
-    if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per visualizzare i profili.');
-        return res.redirect('/login');
-    }
-    
     const username = req.params.username;
     
-    // Controllo se l'utente sta cercando di visualizzare il proprio profilo
-    if (username === req.user.username) {
+    // Controllo se l'utente è autenticato e sta cercando di visualizzare il proprio profilo
+    if (req.isAuthenticated() && username === req.user.username) {
         return res.redirect('/profile');
     }
     
@@ -177,7 +173,7 @@ router.get('/profile/:username', (req, res) => {
         WHERE userId = ? 
         ORDER BY createdAt DESC
     `;
-      db.get(userQuery, [username], (err, otherUser) => {
+    db.get(userQuery, [username], (err, otherUser) => {
         if (err) {
             console.error('Errore durante il recupero dei dati dell\'utente:', err);
             req.flash('error_msg', 'Si è verificato un errore durante il recupero dei dati dell\'utente.');
@@ -199,7 +195,8 @@ router.get('/profile/:username', (req, res) => {
                 user: otherUser, 
                 package: pkg,
                 userPosts: userPosts || [],
-                isOwnProfile: false // Non è il profilo dell'utente loggato
+                isOwnProfile: false, // Non è il profilo dell'utente loggato
+                currentUser: req.user || null // Passa l'utente attuale (null se ospite)
             });
         });
     });
