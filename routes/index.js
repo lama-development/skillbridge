@@ -3,7 +3,7 @@
 import express from 'express';
 import db from '../database/db.js';
 import { createRequire } from "module";
-import upload from '../middleware/upload.js';
+import upload from '../public/js/upload.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
