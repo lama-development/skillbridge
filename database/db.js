@@ -22,6 +22,8 @@ db.serialize(() => {
     lastName TEXT,
     businessName TEXT,
     website TEXT,
+    phone TEXT,
+    bio TEXT DEFAULT '',
     profilePicture TEXT DEFAULT 'img/profile.png'
     )`);
 

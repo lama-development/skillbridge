@@ -3,6 +3,13 @@
 import express from 'express';
 import db from '../database/db.js';
 import { createRequire } from "module";
+import upload from '../middleware/upload.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 
 const pkg = require('../package.json');
@@ -64,6 +71,13 @@ router.get('/onboarding', (req, res) => {
         req.flash('error_msg', 'Devi essere loggato per completare l\'onboarding.');
         return res.redirect('/login');
     }
+    
+    // Controlla se l'utente ha già completato l'onboarding
+    if (req.user.type) {
+        req.flash('info_msg', 'Hai già completato l\'onboarding.');
+        return res.redirect('/');
+    }
+    
     res.render('onboarding');
 });
 
@@ -137,7 +151,60 @@ router.get('/profile', (req, res) => {
         res.render('profile', { 
             user: req.user, 
             package: pkg,
-            userPosts: userPosts || []
+            userPosts: userPosts || [],
+            isOwnProfile: true // È il profilo dell'utente loggato
+        });
+    });
+});
+
+// Rotta per visualizzare il profilo di un altro utente
+router.get('/profile/:userId', (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per visualizzare i profili.');
+        return res.redirect('/login');
+    }
+    
+    const userId = req.params.userId;
+    
+    // Controllo se l'utente sta cercando di visualizzare il proprio profilo
+    if (userId == req.user.id) {
+        return res.redirect('/profile');
+    }
+    
+    // Query per recuperare i dati dell'utente
+    const userQuery = 'SELECT * FROM users WHERE id = ?';
+    
+    // Query per recuperare gli annunci pubblicati dall'utente
+    const userPostsQuery = `
+        SELECT * FROM posts 
+        WHERE userId = ? 
+        ORDER BY createdAt DESC
+    `;
+    
+    db.get(userQuery, [userId], (err, otherUser) => {
+        if (err) {
+            console.error('Errore durante il recupero dei dati dell\'utente:', err);
+            req.flash('error_msg', 'Si è verificato un errore durante il recupero dei dati dell\'utente.');
+            return res.redirect('/');
+        }
+        
+        if (!otherUser) {
+            req.flash('error_msg', 'Utente non trovato.');
+            return res.redirect('/');
+        }
+        
+        db.all(userPostsQuery, [userId], (err, userPosts) => {
+            if (err) {
+                console.error('Errore durante il recupero degli annunci dell\'utente:', err);
+                userPosts = [];
+            }
+            
+            res.render('profile', { 
+                user: otherUser, 
+                package: pkg,
+                userPosts: userPosts || [],
+                isOwnProfile: false // Non è il profilo dell'utente loggato
+            });
         });
     });
 });
@@ -206,6 +273,81 @@ router.get('/chat', (req, res) => {
     res.render('chat', { 
         user: req.user, 
         package: pkg 
+    });
+});
+
+// Rotta POST per l'upload della foto profilo
+router.post('/profile/upload-photo', upload.single('profilePicture'), (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per modificare la foto profilo.');
+        return res.redirect('/login');
+    }
+    
+    if (!req.file) {
+        req.flash('error_msg', 'Nessun file è stato caricato o è avvenuto un errore.');
+        return res.redirect('/profile');
+    }
+    
+    // Percorso relativo all'immagine per la memorizzazione nel database
+    // Per renderlo accessibile tramite browser, salviamo il percorso relativo a /public
+    const relativePath = `/uploads/${req.file.filename}`;
+    
+    // Aggiorna il profilo dell'utente con il nuovo percorso dell'immagine
+    db.run('UPDATE users SET profilePicture = ? WHERE id = ?', [relativePath, req.user.id], function(err) {
+        if (err) {
+            console.error('Errore durante l\'aggiornamento della foto profilo:', err);
+            req.flash('error_msg', 'Si è verificato un errore durante l\'aggiornamento della foto profilo.');
+            return res.redirect('/profile');
+        }
+        
+        // Aggiorna la foto profilo nell'oggetto utente nella sessione
+        req.user.profilePicture = relativePath;
+        
+        req.flash('success_msg', 'Foto profilo aggiornata con successo!');
+        res.redirect('/profile');
+    });
+});
+
+// Rotta POST per rimuovere la foto profilo
+router.post('/profile/remove-photo', (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.flash('error_msg', 'Devi essere loggato per modificare la foto profilo.');
+        return res.redirect('/login');
+    }
+    
+    // Verifica se l'utente ha una foto profilo personalizzata
+    if (req.user.profilePicture === 'img/profile.png' || !req.user.profilePicture) {
+        req.flash('info_msg', 'Non hai una foto profilo personalizzata da rimuovere.');
+        return res.redirect('/profile');
+    }
+    
+    // Percorso completo del file della foto profilo attuale
+    const fullPath = path.join(__dirname, '../public', req.user.profilePicture);
+    
+    // Verifica se il file esiste e non è l'immagine predefinita
+    if (req.user.profilePicture !== 'img/profile.png' && fs.existsSync(fullPath)) {
+        // Rimuovi il file
+        try {
+            fs.unlinkSync(fullPath);
+        } catch (err) {
+            console.error('Errore durante la rimozione del file della foto profilo:', err);
+            // Continua comunque con l'aggiornamento del DB
+        }
+    }
+    
+    // Imposta l'immagine predefinita nel database
+    db.run('UPDATE users SET profilePicture = ? WHERE id = ?', ['img/profile.png', req.user.id], function(err) {
+        if (err) {
+            console.error('Errore durante il reset della foto profilo:', err);
+            req.flash('error_msg', 'Si è verificato un errore durante la rimozione della foto profilo.');
+            return res.redirect('/profile');
+        }
+        
+        // Aggiorna la foto profilo nell'oggetto utente nella sessione
+        req.user.profilePicture = 'img/profile.png';
+        
+        req.flash('success_msg', 'Foto profilo rimossa con successo!');
+        res.redirect('/profile');
     });
 });
 

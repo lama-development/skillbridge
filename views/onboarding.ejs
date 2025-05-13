@@ -30,6 +30,16 @@
                         <%= error_msg %>
                     </div>
                 <% } %>
+                <% if (info_msg && info_msg.length > 0) { %>
+                    <div class="alert alert-info">
+                        <%= info_msg %>
+                    </div>
+                <% } %>
+                <% if (success_msg && success_msg.length > 0) { %>
+                    <div class="alert alert-success">
+                        <%= success_msg %>
+                    </div>
+                <% } %>
                 <div class="row g-3 mb-4">
                     <div class="col-6">
                         <div class="card h-100 option selected" onclick="selectRole('freelancer')" role="button">
@@ -61,17 +71,25 @@
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="bi bi-globe"></i></span>
-                            <input type="url" class="form-control" name="website" placeholder="Sito Web o Portfolio">
+                            <input type="url" class="form-control" name="website" placeholder="Sito Web (opzionale)" autocomplete="url">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                            <input type="tel" class="form-control" name="phone" placeholder="Telefono (opzionale)" autocomplete="tel">
                         </div>
                     </div>
                     <div id="business-fields" style="display: none;">
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                            <input type="text" class="form-control" name="businessName" placeholder="Nome Azienda" required>
+                            <input type="text" class="form-control" name="businessName" placeholder="Nome Azienda" required autocomplete="organization">
                         </div>
                         <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="bi bi-globe""></i></span>
-                            <input type="url" class="form-control" name="website" placeholder="Sito Web Aziendale">
+                            <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                            <input type="url" class="form-control" name="website" placeholder="Sito Web (opzionale)" autocomplete="url">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                            <input type="tel" class="form-control" name="phone" placeholder="Telefono (opzionale)" autocomplete="tel">
                         </div>
                     </div>
                     <div class="text-center">
@@ -82,15 +100,5 @@
         </div>
     </div>
 
-        <!-- Attiva i tooltip di Bootstrap -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                tooltipTriggerList.map(function (tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl);
-                });
-            });
-        </script>
-    
 </body>
 </html>

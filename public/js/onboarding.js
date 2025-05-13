@@ -27,12 +27,14 @@ function selectRole(role) {
         // Gestisce la visualizzazione dei campi freelancer
         document.getElementById('freelancer-fields').style.display = 'block';
         document.getElementById('business-fields').style.display = 'none';
-        
-        // Gestisce i campi required per freelancer
+          // Gestisce i campi required per freelancer
         document.querySelectorAll('#freelancer-fields input').forEach(input => {
             input.disabled = false;
-            if (input.name !== 'website') {
+            // Solo nome e cognome sono required per freelancer
+            if (input.name === 'firstName' || input.name === 'lastName') {
                 input.setAttribute('required', '');
+            } else {
+                input.removeAttribute('required');
             }
         });
         
@@ -45,12 +47,14 @@ function selectRole(role) {
         // Gestisce la visualizzazione dei campi azienda
         document.getElementById('freelancer-fields').style.display = 'none';
         document.getElementById('business-fields').style.display = 'block';
-        
-        // Gestisce i campi required per azienda
+          // Gestisce i campi required per azienda
         document.querySelectorAll('#business-fields input').forEach(input => {
             input.disabled = false;
-            if (input.name !== 'website') {
+            // Solo businessName è required per azienda
+            if (input.name === 'businessName') {
                 input.setAttribute('required', '');
+            } else {
+                input.removeAttribute('required');
             }
         });
         

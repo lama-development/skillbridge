@@ -16,76 +16,52 @@
 
     <!-- Main content -->
     <main class="flex-shrink-0">
-        <div class="container py-5">
+        <div class="container py-4 py-md-5">
             <!-- Header del profilo -->
-            <div class="p-4 card shadow-sm mb-4">
-                <div class="row align-items-center">                    <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
-                        <img src="/img/profile.png" alt="Foto Profilo" class="rounded-circle profile-image mb-3">                        <div>
-                            <% if (user.type === 'freelancer') { %>
-                                <span class="badge bg-primary mb-2">Freelancer</span>
-                                <h1 class="h3 mb-2 fw-bold"><%= user.firstName %> <%= user.lastName %></h1>
-                                <p class="text-muted mb-2">@<%= user.username %></p>
-                                <% if (user.location) { %>
-                                <div class="mt-2">
-                                    <i class="bi bi-geo-alt text-secondary me-1"></i>
-                                    <span class="text-secondary"><%= user.location %></span>
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3 p-md-4">
+                    <div class="row g-4">                        <div class="col-md-4">
+                            <div class="profile-image-container text-center text-md-start">                                <div class="position-relative mb-3">
+                                    <% if (isOwnProfile) { %>
+                                        <!-- Contenitore con effetto hover per la foto profilo -->
+                                        <div class="profile-pic-container">
+                                            <img src="<%= user.profilePicture.startsWith('/') ? user.profilePicture : '/' + user.profilePicture %>" alt="Foto Profilo" class="rounded-circle profile-image">
+                                            <div class="profile-pic-overlay" data-bs-toggle="modal" data-bs-target="#profilePictureModal">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </div>
+                                        </div>
+                                    <% } else { %>
+                                        <img src="<%= user.profilePicture.startsWith('/') ? user.profilePicture : '/' + user.profilePicture %>" alt="Foto Profilo" class="rounded-circle profile-image">
+                                    <% } %>
                                 </div>
-                                <% } %>
-                            <% } else if (user.type === 'business') { %>
-                                <h1 class="h3 mb-2 fw-bold"><%= user.businessName %></h1>
-                                <p class="text-muted mb-2">@<%= user.username %></p>
-                                <span class="badge bg-secondary">Azienda</span>
-                                <% if (user.location) { %>
-                                <div class="mt-2">
-                                    <i class="bi bi-geo-alt text-secondary me-1"></i>
-                                    <span class="text-secondary"><%= user.location %></span>
+                                <div>
+                                    <% if (user.type === 'freelancer') { %>
+                                        <span class="badge bg-primary mb-2">Freelancer</span>
+                                        <h1 class="h3 mb-2 fw-bold"><%= user.firstName %> <%= user.lastName %></h1>
+                                        <p class="text-muted mb-2">@<%= user.username %></p>
+                                    <% } else if (user.type === 'business') { %>
+                                        <h1 class="h3 mb-2 fw-bold"><%= user.businessName %></h1>
+                                        <p class="text-muted mb-2">@<%= user.username %></p>
+                                        <span class="badge bg-secondary">Azienda</span>
+                                    <% } %>
                                 </div>
-                                <% } %>
-                                <% if (user.industry) { %>
-                                <div class="mt-1">
-                                    <i class="bi bi-briefcase text-secondary me-1"></i>
-                                    <span class="text-secondary"><%= user.industry %></span>
-                                </div>
-                                <% } %>
-                            <% } %>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h4 class="fw-bold mb-0">Informazioni</h4>
-                            <% if (user.type === 'freelancer') { %>
-                                <% if (user.hourlyRate) { %>
-                                <div class="text-end">
-                                    <span class="badge bg-success p-2 fs-6">€<%= user.hourlyRate %>/ora</span>
-                                </div>
-                                <% } %>
-                            <% } %>
+                        <div class="col-md-8">
+                            <div class="profile-section">
+                                <h4 class="fw-bold mb-3">Informazioni</h4>
+                                <p class="mb-0"><%= user.bio || 'Nessuna bio inserita' %></p>
+                            </div>
                         </div>
-                        
-                        <p><%= user.bio || 'Sono uno sviluppatore web full-stack con oltre 5 anni di esperienza nella creazione di soluzioni web moderne e responsive. La mia passione è costruire interfacce utente intuitive e accessibili che offrano un\'ottima esperienza utente.' %></p>
-                        
-                        <% if (user.type === 'freelancer' && user.experience) { %>
-                        <div class="mt-3">
-                            <h6 class="fw-bold"><i class="bi bi-award me-2"></i>Esperienza</h6>
-                            <p class="mb-0"><%= user.experience %> anni di esperienza</p>
-                        </div>
-                        <% } %>
-                        
-                        <% if (user.type === 'business' && user.foundedYear) { %>
-                        <div class="mt-3">
-                            <h6 class="fw-bold"><i class="bi bi-calendar-check me-2"></i>Anno di fondazione</h6>
-                            <p class="mb-0"><%= user.foundedYear %></p>
-                        </div>
-                        <% } %>
                     </div>
                 </div>
             </div>
             
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-lg-8">
                     <!-- Competenze Card -->
                     <div class="card shadow-sm mb-4">
-                        <div class="card-body p-4">
+                        <div class="card-body p-3 p-md-4">
                             <h4 class="mb-3 fw-bold">Competenze</h4>
                             <div class="d-flex flex-wrap gap-2">
                                 <span class="badge rounded-pill bg-primary">HTML5</span>
@@ -101,26 +77,29 @@
                             </div>
                         </div>
                     </div>
-                      <!-- Annunci Pubblicati Card -->
+                    <!-- Annunci Pubblicati Card -->
                     <div class="card shadow-sm">
-                        <div class="card-body p-4">
+                        <div class="card-body p-3 p-md-4">
                             <h4 class="mb-3 fw-bold">Annunci Pubblicati</h4>
                             <% if (userPosts && userPosts.length > 0) { %>
-                                <% userPosts.forEach(post => { %>
-                                    <!-- Annuncio -->
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title mb-2 fw-bold"><%= post.title %></h5>
-                                            <p class="card-text mb-1">
-                                                <small class="text-muted">
-                                                    Pubblicato il: <%= new Date(post.createdAt).toLocaleDateString('it-IT') %>
-                                                </small>
-                                            </p>
-                                            <p class="card-text"><%= post.content %></p>
+                                <div class="post-list">
+                                    <% userPosts.forEach(post => { %>
+                                        <!-- Annuncio -->
+                                        <div class="card mb-3">
+                                            <div class="card-body p-3">
+                                                <h5 class="card-title mb-2 fw-bold"><%= post.title %></h5>
+                                                <p class="card-text mb-2">
+                                                    <small class="text-muted">
+                                                        Pubblicato il: <%= new Date(post.createdAt).toLocaleDateString('it-IT') %>
+                                                    </small>
+                                                </p>
+                                                <p class="card-text mb-0"><%= post.content %></p>
+                                            </div>
                                         </div>
-                                    </div>
-                                <% }); %>                            <% } else { %>
-                                <div class="alert alert-secondary">
+                                    <% }); %>
+                                </div>
+                            <% } else { %>
+                                <div class="alert alert-secondary mb-0">
                                     Nessun annuncio pubblicato.
                                 </div>
                             <% } %>
@@ -131,42 +110,113 @@
                 <div class="col-lg-4">
                     <!-- Card Contatti -->
                     <div class="card shadow-sm mb-4">
-                        <div class="card-body p-4">
-                            <h4 class="mb-3 fw-bold">Contatti</h4>                            <ul class="list-group list-group-flush">                                <li class="list-group-item px-0 border-0">
+                        <div class="card-body p-3 p-md-4">
+                            <h4 class="mb-3 fw-bold">Contatti</h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-envelope text-primary me-2"></i>
+                                        <i class="bi bi-envelope text-primary me-2 fs-5"></i>
                                         <div>
-                                            <p class="mb-0"><%= user.email %></p>
+                                            <a href="mailto:<%= user.email %>" class="contact-link"><%= user.email %></a>
                                         </div>
                                     </div>
                                 </li>
                                 <% if (user.website) { %>
-                                <li class="list-group-item px-0 border-0">
+                                <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-globe text-primary me-2"></i>
+                                        <i class="bi bi-globe text-primary me-2 fs-5"></i>
                                         <div>
-                                            <a href="<%= user.website %>" class="text-primary" target="_blank"><%= user.website %></a>
+                                            <a href="<%= user.website %>" class="contact-link" target="_blank"><%= user.website %></a>
                                         </div>
                                     </div>
                                 </li>
                                 <% } %>
-                                <li class="list-group-item px-0 border-0">
+                                <% if (user.phone) { %>
+                                <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-telephone text-primary me-2"></i>
+                                        <i class="bi bi-telephone text-primary me-2 fs-5"></i>
                                         <div>
-                                            <p class="mb-0">+39 123 456 7890</p>
+                                            <a href="tel:<%= user.phone %>" class="contact-link"><%= user.phone %></a>
                                         </div>
                                     </div>
                                 </li>
+                                <% } %>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </main>    <%- include('partials/footer') %>    <% if (isOwnProfile) { %>
+    <!-- Modal per gestione foto profilo -->
+    <div class="modal fade" id="profilePictureModal" tabindex="-1" aria-labelledby="profilePictureModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profilePictureModalLabel">Gestisci foto profilo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Opzioni per la foto profilo -->
+                    <div class="d-flex flex-column">
+                        <!-- Upload nuova foto -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Carica nuova foto</h6>
+                            <form action="/profile/upload-photo" method="POST" enctype="multipart/form-data" id="uploadPhotoForm">
+                                <div class="mb-3">
+                                    <input class="form-control" type="file" id="profilePicture" name="profilePicture" accept="image/*" required>
+                                    <div class="form-text">
+                                        L'immagine deve essere in formato JPG, PNG o GIF e non più grande di 5MB.
+                                    </div>
+                                </div>
+                                <div id="imagePreview" class="text-center mt-3" style="display: none;">
+                                    <img src="" alt="Anteprima" class="img-fluid rounded-circle" style="max-width: 200px; max-height: 200px;">
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-2">
+                                    <i class="bi bi-upload"></i> Carica foto
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Elimina foto attuale -->
+                        <% if (user.profilePicture !== 'img/profile.png') { %>
+                        <div>
+                            <h6 class="fw-bold mb-3">Elimina foto attuale</h6>
+                            <form action="/profile/remove-photo" method="POST">
+                                <p class="text-muted">La foto attuale verrà rimossa e sostituita con l'immagine predefinita.</p>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i> Elimina foto
+                                </button>
+                            </form>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <%- include('partials/footer') %>
-
+    <!-- Script per l'anteprima dell'immagine -->
+    <script>
+        document.getElementById('profilePicture').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                const imagePreview = document.getElementById('imagePreview');
+                const previewImage = imagePreview.querySelector('img');
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    <% } %>
 </body>
 </html>
