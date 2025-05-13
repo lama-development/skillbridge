@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 // Configurazione di Multer per l'upload delle immagini del profilo
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const uploadDir = path.join(__dirname, '../public/uploads');
+        const uploadDir = path.join(__dirname, '../uploads');
         // Assicuriamoci che la cartella esista
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
