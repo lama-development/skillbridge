@@ -215,6 +215,34 @@ input[type="password"]::placeholder {
     object-fit: cover;
     border: 1px solid var(--color-border);
 }
+.profile-pic-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.profile-pic-overlay i {
+    color: white;
+    font-size: 1.5rem;
+}
+.profile-pic-container:hover .profile-pic-overlay {
+    opacity: 1;
+}
+.profile-pic-container {
+    position: relative;
+    display: inline-block;
+    border-radius: 50%;
+    overflow: hidden;
+}
 
 /* Onboarding */
 .option {
@@ -300,6 +328,13 @@ input[type="password"]::placeholder {
     padding: 15px;
 }
 
+/* Cerca */
+.highlight {
+    background-color: yellow;
+    font-weight: normal;
+    border-radius: 2px;
+}
+
 /* Footer */
 .footer .nav-link:hover {
     text-decoration: underline !important;
@@ -308,45 +343,11 @@ input[type="password"]::placeholder {
     text-decoration: underline !important;
 }
 
-/* Hover effect for profile picture */
-.profile-pic-container {
-    position: relative;
-    display: inline-block;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.profile-pic-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    cursor: pointer;
-    border-radius: 50%;
-}
-
-.profile-pic-overlay i {
-    color: white;
-    font-size: 1.5rem;
-}
-
-.profile-pic-container:hover .profile-pic-overlay {
-    opacity: 1;
-}
-
 /* Media queries per responsive design */
 @media (max-width: 768px) {
     .auth-page .gradient-bg {
-        display: none !important; /* Nascondi lo sfondo gradient solo nelle pagine auth (login/signup) */
+        display: none !important; 
     }
-
     .chat-sidebar {
         border-right: none;
         border-bottom: 1px solid var(--color-border);
@@ -357,36 +358,28 @@ input[type="password"]::placeholder {
     .chat-height {
         height: auto;
     }
-    
-    /* Quando il menu della navbar è aperto su mobile, rendi la barra di ricerca full-width */
     .navbar-collapse.show form,
     .navbar-collapse.collapsing form {
         width: 100% !important;
         margin: 0.5rem 0;
     }
-    
     .navbar-collapse.show .w-35,
     .navbar-collapse.collapsing .w-35 {
         width: 100% !important;
     }
-    
-    /* Profilo responsive */
     .profile-header {
         flex-direction: column;
         text-align: center;
     }
-    
     .profile-image-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         margin-bottom: 1.5rem;
     }
-    
     .profile-section-mobile {
         padding: 1rem;
     }
-    
     .profile-card-mobile {
         margin-bottom: 1rem;
     }
