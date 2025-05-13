@@ -66,16 +66,20 @@ router.post('/signup', (req, res) => {
         req.flash('error_msg', 'Le password non corrispondono.');
         return res.redirect('/signup');
     }
-
-    // Verifica se l'email è già registrata
-    db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
+    
+    // Verifica se l'email o l'username sono già registrati
+    db.get('SELECT * FROM users WHERE email = ? OR username = ?', [email, username], (err, user) => {
         if (err) {
             console.error(err);
             req.flash('error_msg', 'Si è verificato un errore. Si prega di riprovare.');
             return res.redirect('/signup');
         }
         if (user) {
-            req.flash('error_msg', 'L\'email risulta già associata ad un account.');
+            if (user.email === email) {
+                req.flash('error_msg', 'L\'email risulta già associata ad un account.');
+            } else {
+                req.flash('error_msg', 'L\'username è già in uso. Scegli un altro username.');
+            }
             return res.redirect('/signup');
         }
 

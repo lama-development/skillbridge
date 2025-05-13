@@ -22,10 +22,9 @@ router.get('/', (req, res) => {
     if (req.isAuthenticated() && !req.user.type) {
         showOnboardingAlert = true;
     }
-    
-    // Query per prendere le offerte di lavoro con i dati dell'azienda
+      // Query per prendere le offerte di lavoro con i dati dell'azienda
     const jobOffersQuery = `
-        SELECT p.*, u.businessName, u.website, u.profilePicture 
+        SELECT p.*, u.businessName, u.website, u.profilePicture, u.username 
         FROM posts p 
         JOIN users u ON p.userId = u.id 
         WHERE p.type = 'job_offer' 
@@ -34,7 +33,7 @@ router.get('/', (req, res) => {
     
     // Query per prendere le promozioni dei freelancer con i dati dell'utente
     const freelancerPromosQuery = `
-        SELECT p.*, u.firstName, u.lastName, u.website, u.profilePicture 
+        SELECT p.*, u.firstName, u.lastName, u.website, u.profilePicture, u.username 
         FROM posts p 
         JOIN users u ON p.userId = u.id 
         WHERE p.type = 'freelancer_promo' 
@@ -86,17 +85,15 @@ router.post('/onboarding', (req, res) => {
     if (!req.isAuthenticated()) {
         req.flash('error_msg', 'Devi essere loggato per completare l\'onboarding.');
         return res.redirect('/login');
-    }
-
-    const { type, firstName, lastName, businessName, website } = req.body;
+    }    const { type, firstName, lastName, businessName, website, phone } = req.body;
     let updateQuery, updateData;
 
     if (type === 'freelancer') {
-        updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ? WHERE id = ?';
-        updateData = [type, firstName, lastName, website, req.user.id];
+        updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ?, phone = ? WHERE id = ?';
+        updateData = [type, firstName, lastName, website, phone, req.user.id];
     } else if (type === 'business') {
-        updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ? WHERE id = ?';
-        updateData = [type, businessName, website, req.user.id];
+        updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ? WHERE id = ?';
+        updateData = [type, businessName, website, phone, req.user.id];
     } else {
         req.flash('error_msg', 'Tipo utente non valido.');
         return res.redirect('/onboarding');
@@ -158,30 +155,29 @@ router.get('/profile', (req, res) => {
 });
 
 // Rotta per visualizzare il profilo di un altro utente
-router.get('/profile/:userId', (req, res) => {
+router.get('/profile/:username', (req, res) => {
     if (!req.isAuthenticated()) {
         req.flash('error_msg', 'Devi essere loggato per visualizzare i profili.');
         return res.redirect('/login');
     }
     
-    const userId = req.params.userId;
+    const username = req.params.username;
     
     // Controllo se l'utente sta cercando di visualizzare il proprio profilo
-    if (userId == req.user.id) {
+    if (username === req.user.username) {
         return res.redirect('/profile');
     }
     
-    // Query per recuperare i dati dell'utente
-    const userQuery = 'SELECT * FROM users WHERE id = ?';
+    // Query per recuperare i dati dell'utente tramite username
+    const userQuery = 'SELECT * FROM users WHERE username = ?';
     
-    // Query per recuperare gli annunci pubblicati dall'utente
+    // Query per recuperare gli annunci pubblicati dall'utente (useremo l'id trovato)
     const userPostsQuery = `
         SELECT * FROM posts 
         WHERE userId = ? 
         ORDER BY createdAt DESC
     `;
-    
-    db.get(userQuery, [userId], (err, otherUser) => {
+      db.get(userQuery, [username], (err, otherUser) => {
         if (err) {
             console.error('Errore durante il recupero dei dati dell\'utente:', err);
             req.flash('error_msg', 'Si è verificato un errore durante il recupero dei dati dell\'utente.');
@@ -193,7 +189,7 @@ router.get('/profile/:userId', (req, res) => {
             return res.redirect('/');
         }
         
-        db.all(userPostsQuery, [userId], (err, userPosts) => {
+        db.all(userPostsQuery, [otherUser.id], (err, userPosts) => {
             if (err) {
                 console.error('Errore durante il recupero degli annunci dell\'utente:', err);
                 userPosts = [];
@@ -215,9 +211,7 @@ router.get('/search', (req, res) => {
     
     if (!query) {
         return res.redirect('/');
-    }
-
-    // Query per cercare sia nelle offerte di lavoro che nelle promozioni freelancer
+    }    // Query per cercare sia nelle offerte di lavoro che nelle promozioni freelancer
     // Includendo anche il nome dell'utente o dell'azienda
     const searchQuery = `
         SELECT 
@@ -226,7 +220,8 @@ router.get('/search', (req, res) => {
             u.firstName,
             u.lastName,
             u.website,
-            u.profilePicture
+            u.profilePicture,
+            u.username
         FROM posts p
         JOIN users u ON p.userId = u.id
         WHERE (

@@ -27,7 +27,7 @@
     </div>
     <p class="card-text"><%- post.content %></p>
     <% if (post.userId !== user?.id) { %>
-      <a href="/profile/<%= post.userId %>" class="btn btn-outline-primary btn-sm">
+      <a href="/profile/<%= post.username %>" class="btn btn-outline-primary btn-sm">
         <i class="bi bi-person-circle me-1"></i> Visualizza profilo
       </a>
     <% } %>
