@@ -38,7 +38,7 @@ const isFreelancerUser = (req, res, next) => {
 
 // Creazione di un post di offerta di lavoro (solo aziende)
 router.post('/job-offer', isOnboardingComplete, isBusinessUser, (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, category } = req.body;
     
     // Validazione dei dati
     if (!title || !content) {
@@ -48,8 +48,8 @@ router.post('/job-offer', isOnboardingComplete, isBusinessUser, (req, res) => {
     
     // Inserimento nel database
     db.run(
-        'INSERT INTO posts (userId, type, title, content, createdAt) VALUES (?, ?, ?, ?, ?)',
-        [req.user.id, 'job_offer', title, content, new Date().toISOString()],
+        'INSERT INTO posts (userId, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
+        [req.user.id, 'job_offer', title, content, category || 'Altro', new Date().toISOString()],
         function(err) {
             if (err) {
                 console.error('Errore durante la creazione del post:', err);
@@ -65,7 +65,7 @@ router.post('/job-offer', isOnboardingComplete, isBusinessUser, (req, res) => {
 
 // Creazione di un post di promozione freelancer (solo freelancer)
 router.post('/freelancer-promo', isOnboardingComplete, isFreelancerUser, (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, category } = req.body;
     
     // Validazione dei dati
     if (!title || !content) {
@@ -75,8 +75,8 @@ router.post('/freelancer-promo', isOnboardingComplete, isFreelancerUser, (req, r
     
     // Inserimento nel database
     db.run(
-        'INSERT INTO posts (userId, type, title, content, createdAt) VALUES (?, ?, ?, ?, ?)',
-        [req.user.id, 'freelancer_promo', title, content, new Date().toISOString()],
+        'INSERT INTO posts (userId, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
+        [req.user.id, 'freelancer_promo', title, content, category || 'Altro', new Date().toISOString()],
         function(err) {
             if (err) {
                 console.error('Errore durante la creazione del post:', err);

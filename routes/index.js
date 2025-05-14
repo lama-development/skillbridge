@@ -205,12 +205,14 @@ router.get('/profile/:username', (req, res) => {
 // Rotta per la ricerca
 router.get('/search', (req, res) => {
     const query = req.query.q?.trim();
+    const category = req.query.category?.trim();
     
     if (!query) {
         return res.redirect('/');
-    }    // Query per cercare sia nelle offerte di lavoro che nelle promozioni freelancer
-    // Includendo anche il nome dell'utente o dell'azienda
-    const searchQuery = `
+    }
+    
+    // Costruisci la query in base ai parametri di ricerca
+    let searchQuery = `
         SELECT 
             p.*,
             u.businessName,
@@ -227,12 +229,22 @@ router.get('/search', (req, res) => {
             u.businessName LIKE ? OR
             (u.firstName || ' ' || u.lastName) LIKE ?
         )
-        ORDER BY p.createdAt DESC
     `;
 
+    const queryParams = [];
     const searchParam = `%${query}%`;
+    queryParams.push(searchParam, searchParam, searchParam, searchParam);
     
-    db.all(searchQuery, [searchParam, searchParam, searchParam, searchParam], (err, results) => {
+    // Aggiungi filtro per categoria se specificato
+    if (category) {
+        searchQuery += ` AND p.category = ?`;
+        queryParams.push(category);
+    }
+    
+    // Aggiungi ordinamento
+    searchQuery += ` ORDER BY p.createdAt DESC`;
+    
+    db.all(searchQuery, queryParams, (err, results) => {
         if (err) {
             console.error('Errore durante la ricerca:', err);
             req.flash('error_msg', 'Si è verificato un errore durante la ricerca.');
@@ -241,6 +253,7 @@ router.get('/search', (req, res) => {
         
         res.render('search', { 
             query,
+            selectedCategory: category || '',
             results: results || [],
             package: pkg,
             user: req.user

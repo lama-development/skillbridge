@@ -31,6 +31,7 @@ db.serialize(() => {
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     userId INTEGER NOT NULL,
     type TEXT NOT NULL,
+    category TEXT DEFAULT 'Altro',
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
