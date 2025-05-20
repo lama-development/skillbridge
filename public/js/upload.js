@@ -1,36 +1,43 @@
-"use strict";
+/*
+Script per la gestione dell'upload di immagini con Multer
+- Salvare le immagini nella cartella uploads
+- Assegnare nomi univoci basati su username e timestamp
+- Filtrare i file per accettare solo immagini
+- Limitare la dimensione massima a 5MB
+*/
 
+"use strict";
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
-// Ricavo __dirname siccome non è disponibile in ES6
+// Otteniamo __dirname che non è disponibile direttamente in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configurazione di Multer per l'upload delle immagini del profilo
+// Configurazione dello storage per Multer
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: (req, file, cb) => {
         const uploadDir = path.join(__dirname, '../uploads');
-        // Assicuriamoci che la cartella esista
+        // Crea la directory se non esiste
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
         cb(null, uploadDir);
     },
-    filename: function (req, file, cb) {
-        // Usa userId + timestamp come nome file per evitare conflitti
-        // Il file.mimetype è ad esempio 'image/jpeg' quindi estraggo 'jpeg'
+    
+    filename: (req, file, cb) => {
+        // Estrazione dell'estensione dal MIME type (es. 'image/jpeg' > 'jpeg')
         const fileExtension = file.mimetype.split('/')[1];
-        const uniqueFilename = `user_${req.user.id}_${Date.now()}.${fileExtension}`;
+        // Creazione nome univoco con username e timestamp
+        const uniqueFilename = `user_${req.user.username}_${Date.now()}.${fileExtension}`;
         cb(null, uniqueFilename);
     }
 });
 
-// Filtro per consentire solo immagini
+// Permette solo formati immagine (mime type che inizia con 'image/')
 const fileFilter = (req, file, cb) => {
-    // Accetta solo immagini
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
     } else {
@@ -38,11 +45,11 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Creazione dell'uploader con le configurazioni
+// Configurazione di Multer con le impostazioni definite
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // Limite a 5MB
+        fileSize: 5 * 1024 * 1024 // 5MB
     },
     fileFilter: fileFilter
 });

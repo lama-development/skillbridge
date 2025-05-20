@@ -34,32 +34,13 @@ body {
 .text-primary, .text-secondary {
     color: var(--color-primary) !important;
 }
-.cursor-pointer {
-    cursor: pointer;
-}
 
 /* Profilo */
-.profile-header {
-    display: flex;
-    flex-direction: column;
-}
-.profile-info-container {
-    padding: 1.5rem;
-}
 .profile-section {
     margin-bottom: 1.5rem;
 }
 .profile-section:last-child {
     margin-bottom: 0;
-}
-.profile-section-title {
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    display: flex;
-    align-items: center;
-}
-.profile-section-title i {
-    margin-right: 0.5rem;
 }
 .contact-link {
     color: var(--color-text-dark);
@@ -159,16 +140,16 @@ a:hover {
     background-color: var(--color-bg-input);
     border: 1px solid var(--color-border);
 }
-input[type="password"] {
-    letter-spacing: 0.2em;
-}
-input[type="password"]::placeholder {
-    letter-spacing: normal; /* Ripristina lo spaziamento normale per il placeholder */
-}
 .form-control:focus {
     background-color: var(--color-bg-input);
     border-color: var(--color-primary);
     box-shadow: none;
+}
+input[type="password"] {
+    letter-spacing: 0.2em;
+}
+input[type="password"]::placeholder {
+    letter-spacing: normal;
 }
 .form-check-input:checked {
     background-color: var(--color-primary);
@@ -179,17 +160,12 @@ input[type="password"]::placeholder {
 .logo-small {
     height: 20px;
 }
-.profile-image {
-    width: 125px;
-    height: 125px;
-    object-fit: cover;
-}
 .profile-image-small {
-    width: 32px;
-    height: 32px;
+    width: 42px;
+    height: 42px;
 }
 .banner-image {
-    max-width: 300px;
+    max-width: 250px;
 }
 
 /* Dropdown e menu */
@@ -210,8 +186,8 @@ input[type="password"]::placeholder {
 
 /* Profilo */
 .profile-image {
-    width: 125px;
-    height: 125px;
+    width: 75px;
+    height: 75px;
     object-fit: cover;
     border: 1px solid var(--color-border);
 }
@@ -345,9 +321,21 @@ input[type="password"]::placeholder {
 
 /* Media queries per responsive design */
 @media (max-width: 768px) {
+    /* Navbar */
+    .navbar-collapse.show form,
+    .navbar-collapse.collapsing form {
+        width: 100% !important;
+        margin: 0.5rem 0;
+    }
+    .navbar-collapse.show .w-35,
+    .navbar-collapse.collapsing .w-35 {
+        width: 100% !important;
+    }
+    /* Login/Signup */
     .auth-page .gradient-bg {
         display: none !important; 
     }
+    /* Chat */
     .chat-sidebar {
         border-right: none;
         border-bottom: 1px solid var(--color-border);
@@ -358,19 +346,7 @@ input[type="password"]::placeholder {
     .chat-height {
         height: auto;
     }
-    .navbar-collapse.show form,
-    .navbar-collapse.collapsing form {
-        width: 100% !important;
-        margin: 0.5rem 0;
-    }
-    .navbar-collapse.show .w-35,
-    .navbar-collapse.collapsing .w-35 {
-        width: 100% !important;
-    }
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
+    /* Profilo */
     .profile-image-container {
         display: flex;
         flex-direction: column;

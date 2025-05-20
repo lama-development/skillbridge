@@ -27,12 +27,10 @@
                         <input type="hidden" name="q" value="<%= query %>">
                         <select class="form-select me-2" name="category" onchange="this.form.submit()">
                             <option value="">Tutte le categorie</option>
-                            <option value="Sviluppo Web" <%= selectedCategory === 'Sviluppo Web' ? 'selected' : '' %>>Sviluppo Web</option>
-                            <option value="Sviluppo Mobile" <%= selectedCategory === 'Sviluppo Mobile' ? 'selected' : '' %>>Sviluppo Mobile</option>
+                            <option value="Sviluppo" <%= selectedCategory === 'Sviluppo' ? 'selected' : '' %>>Sviluppo</option>
                             <option value="Design" <%= selectedCategory === 'Design' ? 'selected' : '' %>>Design</option>
                             <option value="Marketing" <%= selectedCategory === 'Marketing' ? 'selected' : '' %>>Marketing</option>
                             <option value="Copywriting" <%= selectedCategory === 'Copywriting' ? 'selected' : '' %>>Copywriting</option>
-                            <option value="Traduzione" <%= selectedCategory === 'Traduzione' ? 'selected' : '' %>>Traduzione</option>
                             <option value="Altro" <%= selectedCategory === 'Altro' ? 'selected' : '' %>>Altro</option>
                         </select>
                     </form>
@@ -40,7 +38,6 @@
             </div>
             <% if (results.length > 0) { %>
                 <%
-                    // Funzione per evidenziare le parole cercate
                     function highlightText(text, searchQuery) {
                         if (!text) return '';
                         // Escape special regex characters in the search query

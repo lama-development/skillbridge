@@ -69,5 +69,5 @@ const startServer = async () => {
     }
 };
 
-// Chiamiamo la funzione asincrona per avviare il server
+// Avvio del server
 startServer();

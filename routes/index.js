@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
         const jobOffersQuery = `
             SELECT p.*, u.businessName, u.website, u.profilePicture, u.username 
             FROM posts p 
-            JOIN users u ON p.userId = u.id 
+            JOIN users u ON p.userId = u.username 
             WHERE p.type = 'job_offer' 
             ORDER BY p.createdAt DESC
         `;
@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
         const freelancerPromosQuery = `
             SELECT p.*, u.firstName, u.lastName, u.website, u.profilePicture, u.username 
             FROM posts p 
-            JOIN users u ON p.userId = u.id 
+            JOIN users u ON p.userId = u.username
             WHERE p.type = 'freelancer_promo' 
             ORDER BY p.createdAt DESC
         `;
@@ -98,11 +98,11 @@ router.post('/onboarding', async (req, res) => {
         let updateQuery, updateData;
 
         if (type === 'freelancer') {
-            updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ?, phone = ? WHERE id = ?';
-            updateData = [type, firstName, lastName, website, phone, req.user.id];
+            updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ?, phone = ? WHERE username = ?';
+            updateData = [type, firstName, lastName, website, phone, req.user.username];
         } else if (type === 'business') {
-            updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ? WHERE id = ?';
-            updateData = [type, businessName, website, phone, req.user.id];
+            updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ? WHERE username = ?';
+            updateData = [type, businessName, website, phone, req.user.username];
         } else {
             req.flash('error_msg', 'Tipo utente non valido.');
             return res.redirect('/onboarding');
@@ -148,7 +148,7 @@ router.get('/profile', async (req, res) => {
             ORDER BY createdAt DESC
         `;
         
-        const userPosts = await db.all(userPostsQuery, [req.user.id])
+        const userPosts = await db.all(userPostsQuery, [req.user.username])
             .catch(err => {
                 console.error('Errore durante il recupero degli annunci dell\'utente:', err);
                 return [];
@@ -196,7 +196,7 @@ router.get('/profile/:username', async (req, res) => {
             ORDER BY createdAt DESC
         `;
         
-        const userPosts = await db.all(userPostsQuery, [otherUser.id])
+        const userPosts = await db.all(userPostsQuery, [otherUser.username])
             .catch(err => {
                 console.error('Errore durante il recupero degli annunci dell\'utente:', err);
                 return [];
@@ -237,7 +237,7 @@ router.get('/search', async (req, res) => {
                 u.profilePicture,
                 u.username
             FROM posts p
-            JOIN users u ON p.userId = u.id
+            JOIN users u ON p.userId = u.username
             WHERE (
                 p.title LIKE ? OR 
                 p.content LIKE ? OR
@@ -313,7 +313,7 @@ router.post('/profile/upload-photo', upload.single('profilePicture'), async (req
         const relativePath = `/uploads/${req.file.filename}`;
         
         // Aggiorna il profilo dell'utente con il nuovo percorso dell'immagine
-        await db.run('UPDATE users SET profilePicture = ? WHERE id = ?', [relativePath, req.user.id]);
+        await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [relativePath, req.user.username]);
         
         // Aggiorna la foto profilo nell'oggetto utente nella sessione
         req.user.profilePicture = relativePath;
@@ -356,7 +356,7 @@ router.post('/profile/remove-photo', async (req, res) => {
         }
         
         // Imposta l'immagine predefinita nel database
-        await db.run('UPDATE users SET profilePicture = ? WHERE id = ?', ['img/profile.png', req.user.id]);
+        await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', ['img/profile.png', req.user.username]);
         
         // Aggiorna la foto profilo nell'oggetto utente nella sessione
         req.user.profilePicture = 'img/profile.png';

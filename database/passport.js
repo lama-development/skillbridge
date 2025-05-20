@@ -15,12 +15,9 @@ passport.use(new LocalStrategy(
         try {
             // Utilizzo della versione promise di db.get
             const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
-            
             if (!user) return done(null, false, { message: 'Email errata.' });
-            
             // Utilizzo della versione promise di bcrypt.compare
             const isMatch = await compareAsync(password, user.password);
-            
             if (isMatch) return done(null, user);
             return done(null, false, { message: 'Password errata.' });
         } catch (err) {
@@ -30,12 +27,12 @@ passport.use(new LocalStrategy(
 ));
 
 passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.username);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (username, done) => {
     try {
-        const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
+        const user = await db.get('SELECT * FROM users WHERE username = ?', [username]);
         done(null, user);
     } catch (err) {
         done(err, null);

@@ -29,12 +29,12 @@
       </div>
     </div>
     <p class="card-text"><%- post.content %></p>
-    <% if (!user || (user && post.userId !== user.id)) { %>
+    <% if (!user || (user && post.userId !== user.username)) { %>
       <a href="/profile/<%= post.username %>" class="btn btn-outline-primary btn-sm">
         <i class="bi bi-person-circle me-1"></i> Visualizza profilo
       </a>
     <% } %>
-    <% if (user && user.id === post.userId) { %>
+    <% if (user && user.username === post.userId) { %>
       <form action="/posts/<%= post.id %>/delete" method="POST" class="d-inline-block ms-2">
         <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Sei sicuro di voler eliminare questo post?')">
           <i class="bi bi-trash-fill me-1"></i> Elimina

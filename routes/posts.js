@@ -50,7 +50,7 @@ router.post('/job-offer', isOnboardingComplete, isBusinessUser, async (req, res)
         // Inserimento nel database con async/await
         await db.run(
             'INSERT INTO posts (userId, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-            [req.user.id, 'job_offer', title, content, category || 'Altro', new Date().toISOString()]
+            [req.user.username, 'job_offer', title, content, category || 'Altro', new Date().toISOString()]
         );
         
         req.flash('success_msg', 'Offerta di lavoro pubblicata con successo!');
@@ -76,7 +76,7 @@ router.post('/freelancer-promo', isOnboardingComplete, isFreelancerUser, async (
         // Inserimento nel database con async/await
         await db.run(
             'INSERT INTO posts (userId, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-            [req.user.id, 'freelancer_promo', title, content, category || 'Altro', new Date().toISOString()]
+            [req.user.username, 'freelancer_promo', title, content, category || 'Altro', new Date().toISOString()]
         );
         
         req.flash('success_msg', 'Promozione dei tuoi servizi pubblicata con successo!');
@@ -102,7 +102,7 @@ router.post('/:id/delete', isOnboardingComplete, async (req, res) => {
         }
         
         // Verifica che l'utente sia il proprietario del post
-        if (post.userId !== req.user.id) {
+        if (post.userId !== req.user.username) {
             req.flash('error_msg', 'Non sei autorizzato a eliminare questo post.');
             return res.redirect('/');
         }

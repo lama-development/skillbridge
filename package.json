@@ -1,8 +1,8 @@
 {
   "name": "skillbridge",
-  "version": "1.0.0",
+  "version": "0.1.15",
   "author": "Davide La Marca",
-  "description": "A web app that helps freelancers and businesses connect, collaborate, and grow.",
+  "description": "SkillBridge è un'applicazione web che aiuta i freelancer e le aziende a connettersi, collaborare e crescere.",
   "license": "ISC",
   "type": "module",
   "main": "index.js",

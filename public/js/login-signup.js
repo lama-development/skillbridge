@@ -1,35 +1,41 @@
-"use strict";
+/*
+Script per gestire funzionalità nelle pagine di login e registrazione
+- Funzionalità mostra/nascondi password con icona
+- Validazione username in tempo reale
+*/
 
+"use strict";
 const usernameInput = document.getElementById('username');
 
-// Initialize tooltips with hover and focus/touch support
-const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl, {
-        trigger: 'hover focus' // Works on both hover and focus/touch
+// Configurazione pulsanti per mostrare/nascondere password
+const setupPasswordToggles = () => {
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            // Cambia il tipo di input e l'icona in base allo stato attuale
+            if (input.type === "password") {
+                input.type = "text";
+                this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+            } else {
+                input.type = "password";
+                this.innerHTML = '<i class="bi bi-eye"></i>';
+            }
+        });
     });
-});
+};
 
-document.querySelectorAll('.toggle-password').forEach(function (button) {
-    button.addEventListener('click', function () {
-        const input = this.parentElement.querySelector('input');
-        if (input.type === "password") {
-            input.type = "text";
-            this.innerHTML = '<i class="bi bi-eye-slash"></i>';
-        } else {
-            input.type = "password";
-            this.innerHTML = '<i class="bi bi-eye"></i>';
-        }
-    });
-});
-
-if (usernameInput) {
-    usernameInput.addEventListener('input', function () {
-        // Converte il testo in minuscolo
-        let currentValue = this.value.toLowerCase();
-        // Rimuove caratteri non ammessi tramite regex (solo a-z, 0-9 e trattini)
-        let cleanedValue = currentValue.replace(/[^a-z0-9-]/g, '');
-        // Aggiorna il valore dell'input con il testo ripulito
+// Validazione username in tempo reale con solo caratteri consentiti
+const setupUsernameValidation = () => {
+    if (!usernameInput) return;
+    usernameInput.addEventListener('input', function() {
+        // Converte il testo in minuscolo 
+        const currentValue = this.value.toLowerCase();
+        // Rimuove caratteri non ammessi (solo a-z, 0-9 e trattini)
+        const cleanedValue = currentValue.replace(/[^a-z0-9-]/g, '');
+        // Aggiorna l'input con il valore ripulito
         this.value = cleanedValue;
     });
-}
+};
+
+setupPasswordToggles();
+setupUsernameValidation();
