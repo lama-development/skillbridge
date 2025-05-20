@@ -20,7 +20,7 @@
                     <div class="mb-4">
                         <a href="/" class="text-decoration-none d-flex align-items-center">
                             <img src="/favicon.ico" alt="Logo" class="me-2 logo-small" />
-                            <span class="fs-5 text-dark fw-bold login-logo-text">SkillBridge</span>
+                            <span class="fs-5 text-dark fw-bold auth-form-logo">SkillBridge</span>
                         </a>
                     </div>
                     <h1 class="mb-2 fw-bold">Crea un account</h1>
@@ -67,11 +67,6 @@
                                 <%= error_msg %>
                             </div>
                         <% } %>
-                        <% if (error && error.length > 0) { %>
-                            <div class="alert alert-danger">
-                                <%= error %>
-                            </div>
-                        <% } %>
                         <% if (success_msg && success_msg.length > 0) { %>
                             <div class="alert alert-success">
                                 <%= success_msg %>
@@ -90,7 +85,7 @@
             <!-- Sezione Destra -->
             <div class="col-md-6 gradient-bg p-4 d-flex flex-column justify-content-center">
                 <div class="text-center mb-4">
-                    <img src="/img/handshake.png" alt="Handshake" class="img-fluid mb-4 banner-image" />
+                    <img src="/img/handshake.png" alt="Handshake" class="img-fluid mb-4 auth-form-image" />
                 </div>
                 <div class="text-center px-4">
                     <h2 class="mb-3 fw-bold">Il tuo ponte verso la crescita professionale</h2>

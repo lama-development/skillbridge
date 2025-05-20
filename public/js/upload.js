@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
         // Estrazione dell'estensione dal MIME type (es. 'image/jpeg' > 'jpeg')
         const fileExtension = file.mimetype.split('/')[1];
         // Creazione nome univoco con username e timestamp
-        const uniqueFilename = `user_${req.user.username}_${Date.now()}.${fileExtension}`;
+        const uniqueFilename = `${req.user.username}_${Date.now()}.${fileExtension}`;
         cb(null, uniqueFilename);
     }
 });

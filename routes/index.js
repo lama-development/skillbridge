@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
             showOnboardingAlert = true;
         }
           // Query per prendere le offerte di lavoro con i dati dell'azienda
-        const jobOffersQuery = `
+        const businessPostsQuery = `
             SELECT p.*, u.businessName, u.website, u.profilePicture, u.username 
             FROM posts p 
             JOIN users u ON p.userId = u.username 
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
         `;
         
         // Query per prendere le promozioni dei freelancer con i dati dell'utente
-        const freelancerPromosQuery = `
+        const freelancerPostsQuery = `
             SELECT p.*, u.firstName, u.lastName, u.website, u.profilePicture, u.username 
             FROM posts p 
             JOIN users u ON p.userId = u.username
@@ -42,27 +42,27 @@ router.get('/', async (req, res) => {
         `;
         
         // Esegui entrambe le query in parallelo usando async/await
-        let [jobOffers, freelancerPromos] = await Promise.all([
-            db.all(jobOffersQuery, []).catch(err => {
+        let [businessPosts, freelancerPosts] = await Promise.all([
+            db.all(businessPostsQuery, []).catch(err => {
                 console.error('Errore durante il recupero delle offerte di lavoro:', err);
                 return [];
             }),
-            db.all(freelancerPromosQuery, []).catch(err => {
+            db.all(freelancerPostsQuery, []).catch(err => {
                 console.error('Errore durante il recupero delle promozioni freelancer:', err);
                 return [];
             })
         ]);
         
-        // Assicurati che jobOffers e freelancerPromos non siano null
-        jobOffers = jobOffers || [];
-        freelancerPromos = freelancerPromos || [];
+        // Assicurati che businessPosts e freelancerPosts non siano null
+        businessPosts = businessPosts || [];
+        freelancerPosts = freelancerPosts || [];
         
         res.render('index', { 
             showOnboardingAlert, 
             package: pkg, 
             user: req.user,
-            jobOffers,
-            freelancerPromos
+            businessPosts,
+            freelancerPosts
         });
     } catch (error) {
         console.error('Errore nella rotta della homepage:', error);

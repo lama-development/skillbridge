@@ -24,6 +24,9 @@
     font-optical-sizing: auto;
     scroll-behavior: smooth;
 }
+::-ms-reveal {
+    display: none;
+}
 body {
     background-color: var(--color-bg-body);
     color: var(--color-text-dark);
@@ -34,21 +37,9 @@ body {
 .text-primary, .text-secondary {
     color: var(--color-primary) !important;
 }
-
-/* Profilo */
-.profile-section {
-    margin-bottom: 1.5rem;
-}
-.profile-section:last-child {
-    margin-bottom: 0;
-}
-.contact-link {
-    color: var(--color-text-dark);
-    text-decoration: none;
-}
-.contact-link:hover {
-    text-decoration: underline;
-    color: var(--color-primary);
+.gradient-bg {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    color: var(--color-text-light);
 }
 
 /* Link e pulsanti */
@@ -81,53 +72,6 @@ a:hover {
     color: var(--color-text-light) !important;
 }
 
-/* Navbar */
-.navbar {
-    background-color: #fff !important;
-    border-bottom: 1px solid var(--color-border);
-}
-.navbar-compact {
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-}
-.navbar-brand-text {
-    font-size: 1rem;
-    font-weight: bold;
-}
-.navbar .w-35 {
-    width: 45% !important;
-}
-.chat-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-}
-.chat-button:hover {
-    background-color: var(--color-bg-input);
-}
-.chat-button i {
-    font-size: 1.25rem;
-}
-
-/* Login e Signup */
-.login-logo-text {
-    font-weight: bold;
-}
-.gradient-bg {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    color: var(--color-text-light);
-}
-.auth-link:hover {
-    text-decoration: underline;
-}
-.auth-container {
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
 /* Form e input */
 .form-container {
     max-width: 450px;
@@ -145,27 +89,24 @@ a:hover {
     border-color: var(--color-primary);
     box-shadow: none;
 }
+.form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
 input[type="password"] {
     letter-spacing: 0.2em;
 }
 input[type="password"]::placeholder {
     letter-spacing: normal;
 }
-.form-check-input:checked {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-}
 
 /* Immagini e loghi */
 .logo-small {
     height: 20px;
 }
-.profile-image-small {
+.profile-img-small {
     width: 42px;
     height: 42px;
-}
-.banner-image {
-    max-width: 250px;
 }
 
 /* Dropdown e menu */
@@ -184,77 +125,7 @@ input[type="password"]::placeholder {
     border: 1px solid var(--color-border);
 }
 
-/* Profilo */
-.profile-image {
-    width: 75px;
-    height: 75px;
-    object-fit: cover;
-    border: 1px solid var(--color-border);
-}
-.profile-pic-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    cursor: pointer;
-    border-radius: 50%;
-}
-.profile-pic-overlay i {
-    color: white;
-    font-size: 1.5rem;
-}
-.profile-pic-container:hover .profile-pic-overlay {
-    opacity: 1;
-}
-.profile-pic-container {
-    position: relative;
-    display: inline-block;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-/* Onboarding */
-.option {
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-}
-.option:hover {
-    border-color: var(--color-border);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-.option[onclick="selectRole('freelancer')"] i,
-.option[onclick="selectRole('freelancer')"] div {
-    color: var(--color-primary);
-}
-.option[onclick="selectRole('freelancer')"].selected {
-    border-color: var(--color-primary) !important;
-    background-color: var(--color-primary) !important;
-}
-.option[onclick="selectRole('freelancer')"].selected i,
-.option[onclick="selectRole('freelancer')"].selected div {
-    color: var(--color-text-light);
-}
-.option[onclick="selectRole('business')"] i,
-.option[onclick="selectRole('business')"] div {
-    color: var(--color-primary);
-}
-.option[onclick="selectRole('business')"].selected {
-    border-color: var(--color-secondary) !important;
-    background-color: var(--color-secondary) !important;
-}
-.option[onclick="selectRole('business')"].selected i,
-.option[onclick="selectRole('business')"].selected div {
-    color: var(--color-text-dark);
-}
-
-/* Badge ruolo */
+/* Badge colorati */
 .badge.bg-primary {
     background-color: var(--color-primary) !important;
     color: var(--color-text-light);
@@ -262,101 +133,4 @@ input[type="password"]::placeholder {
 .badge.bg-secondary {
     background-color: var(--color-secondary) !important;
     color: var(--color-text-dark);
-}
-
-/* Chat */
-.chat-height {
-    height: calc(100vh - 150px);
-}
-.chat-sidebar {
-    border-right: 1px solid var(--color-border);
-}
-.chat-contact {
-    border-bottom: 1px solid var(--color-border);
-}
-.chat-contact:hover, .chat-contact.active {
-    background-color: var(--color-bg-input);
-    cursor: pointer;
-}
-.chat-messages {
-    overflow-y: auto;
-    height: calc(100% - 70px);
-}
-.message {
-    max-width: 75%;
-    margin-bottom: 10px;
-    padding: 10px 15px;
-    border-radius: 20px;
-}
-.message-received {
-    background-color: var(--color-bg-input);
-    align-self: flex-start;
-    border-bottom-left-radius: 5px;
-}
-.message-sent {
-    background-color: var(--color-primary);
-    color: var(--color-text-light);
-    align-self: flex-end;
-    border-bottom-right-radius: 5px;
-}
-.chat-input {
-    border-top: 1px solid var(--color-border);
-    padding: 15px;
-}
-
-/* Cerca */
-.highlight {
-    background-color: yellow;
-    font-weight: normal;
-    border-radius: 2px;
-}
-
-/* Footer */
-.footer .nav-link:hover {
-    text-decoration: underline !important;
-}
-.hover-underline:hover {
-    text-decoration: underline !important;
-}
-
-/* Media queries per responsive design */
-@media (max-width: 768px) {
-    /* Navbar */
-    .navbar-collapse.show form,
-    .navbar-collapse.collapsing form {
-        width: 100% !important;
-        margin: 0.5rem 0;
-    }
-    .navbar-collapse.show .w-35,
-    .navbar-collapse.collapsing .w-35 {
-        width: 100% !important;
-    }
-    /* Login/Signup */
-    .auth-page .gradient-bg {
-        display: none !important; 
-    }
-    /* Chat */
-    .chat-sidebar {
-        border-right: none;
-        border-bottom: 1px solid var(--color-border);
-        height: auto;
-        max-height: 300px;
-        overflow-y: auto;
-    }
-    .chat-height {
-        height: auto;
-    }
-    /* Profilo */
-    .profile-image-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-    .profile-section-mobile {
-        padding: 1rem;
-    }
-    .profile-card-mobile {
-        margin-bottom: 1rem;
-    }
 }

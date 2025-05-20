@@ -47,20 +47,18 @@ router.get('/login', (req, res) => {
 // Rotta POST per gestire il login
 router.post('/login', async (req, res, next) => {
     try {
-        const { emailOrUsername, password } = req.body;
+        const { email, password } = req.body;
         
-        // Cerca l'utente nel database usando email o username
+        // Cerca l'utente nel database usando solo email
         const user = await db.get(
-            'SELECT * FROM users WHERE email = ? OR username = ?', 
-            [emailOrUsername, emailOrUsername]
+            'SELECT * FROM users WHERE email = ?', 
+            [email]
         );
         
         if (!user) {
             req.flash('error_msg', 'Credenziali non valide.');
             return res.redirect('/login');
         }
-        
-        // Confronta la password inserita con quella hashata nel database
         const isMatch = await compareAsync(password, user.password);
         
         if (!isMatch) {
@@ -72,9 +70,7 @@ router.post('/login', async (req, res, next) => {
         await logInAsync(req, user);
         
         // Se l'onboarding non è completato, reindirizza alla pagina di onboarding
-        if (!user.type) {
-            return res.redirect('/onboarding');
-        }
+        if (!user.type) return res.redirect('/onboarding');
         return res.redirect('/');
     } catch (err) {
         console.error(err);
@@ -105,11 +101,8 @@ router.post('/signup', async (req, res) => {
         );
         
         if (existingUser) {
-            if (existingUser.email === email) {
-                req.flash('error_msg', 'L\'email risulta già associata ad un account.');
-            } else {
-                req.flash('error_msg', 'L\'username è già in uso. Scegli un altro username.');
-            }
+            if (existingUser.email === email) req.flash('error_msg', 'L\'email risulta già associata ad un account.');
+            else req.flash('error_msg', 'L\'username è già in uso. Scegli un altro username.');
             return res.redirect('/signup');
         }
 

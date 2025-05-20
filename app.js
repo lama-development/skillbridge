@@ -38,8 +38,8 @@ app.use(passport.session());
 // Middleware per i messaggi flash e l'utente corrente
 app.use((req, res, next) => {
     res.locals.user = req.user;
+    res.locals.currentUser = req.user; 
     res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
     res.locals.success_msg = req.flash('success_msg');
     res.locals.info_msg = req.flash('info_msg'); 
     next();

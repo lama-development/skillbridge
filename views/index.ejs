@@ -91,7 +91,7 @@
                                     <i class='bi bi-briefcase-fill fs-1 mb-3 text-primary'></i>
                                     <h3 class="card-title">Cerca Opportunità di Lavoro</h3>
                                     <p class="text-muted">Esplora le offerte delle aziende e trova il tuo prossimo progetto</p>
-                                    <a href="#jobOffers" class="btn btn-outline-primary mt-2">
+                                    <a href="#businessPosts" class="btn btn-outline-primary mt-2">
                                         <i class="bi bi-chevron-down me-1"></i> Scorri alle offerte
                                     </a>
                                 </div>
@@ -105,7 +105,7 @@
                                     <i class='bi bi-person-fill fs-1 mb-3 text-primary'></i>
                                     <h3 class="card-title">Trova Professionisti</h3>
                                     <p class="text-muted">Scopri talenti qualificati per i tuoi progetti</p>
-                                    <a href="#freelancerPromos" class="btn btn-outline-primary mt-2">
+                                    <a href="#freelancerPosts" class="btn btn-outline-primary mt-2">
                                         <i class="bi bi-chevron-down me-1"></i> Scorri ai professionisti
                                     </a>
                                 </div>
@@ -115,12 +115,12 @@
                 </div>
             </section>
             <!-- Sezione Offerte di Lavoro -->
-            <section class="mb-5" id="jobOffers">
+            <section class="mb-5" id="businessPosts">
                 <h2 class="display-6 mb-4 fw-bold">Offerte di Lavoro</h2>
-                <% if (jobOffers && jobOffers.length > 0) { %>
+                <% if (businessPosts && businessPosts.length > 0) { %>
                     <div class="row">
                         <div class="col-12">
-                            <% jobOffers.forEach(post => { %>
+                            <% businessPosts.forEach(post => { %>
                                 <%- include('partials/post-card', { post }) %>
                             <% }) %>
                         </div>
@@ -139,12 +139,12 @@
                 <% } %>
             </section>
             <!-- Sezione Freelancer -->
-            <section id="freelancerPromos">
+            <section id="freelancerPosts">
                 <h2 class="display-6 mb-4 fw-bold">Freelancer Disponibili</h2>
-                <% if (freelancerPromos && freelancerPromos.length > 0) { %>
+                <% if (freelancerPosts && freelancerPosts.length > 0) { %>
                     <div class="row">
                         <div class="col-12">
-                            <% freelancerPromos.forEach(post => { %>
+                            <% freelancerPosts.forEach(post => { %>
                                 <%- include('partials/post-card', { post }) %>
                             <% }) %>
                         </div>

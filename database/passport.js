@@ -15,11 +15,11 @@ passport.use(new LocalStrategy(
         try {
             // Utilizzo della versione promise di db.get
             const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
-            if (!user) return done(null, false, { message: 'Email errata.' });
+            if (!user) return done(null, false);
             // Utilizzo della versione promise di bcrypt.compare
             const isMatch = await compareAsync(password, user.password);
             if (isMatch) return done(null, user);
-            return done(null, false, { message: 'Password errata.' });
+            return done(null, false);
         } catch (err) {
             return done(err);
         }

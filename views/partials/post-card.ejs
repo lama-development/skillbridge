@@ -31,7 +31,10 @@
     <p class="card-text"><%- post.content %></p>
     <% if (!user || (user && post.userId !== user.username)) { %>
       <a href="/profile/<%= post.username %>" class="btn btn-outline-primary btn-sm">
-        <i class="bi bi-person-circle me-1"></i> Visualizza profilo
+        <i class="bi bi-person-circle me-1"></i> Visita profilo
+      </a>
+      <a href="/chat/<%= post.username %>" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-chat-dots-fill"></i> Inizia chat
       </a>
     <% } %>
     <% if (user && user.username === post.userId) { %>

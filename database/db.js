@@ -23,7 +23,7 @@ db.serialize(() => {
     website TEXT,
     phone TEXT,
     bio TEXT DEFAULT '',
-    profilePicture TEXT DEFAULT 'img/profile.png'
+    profilePicture TEXT
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS posts (

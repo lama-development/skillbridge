@@ -45,7 +45,7 @@
                         // Create a regex pattern to match the query (case insensitive)
                         const regex = new RegExp(`(${escapedQuery})`, 'gi');
                         // Replace matches with highlighted spans
-                        return text.replace(regex, '<span class="highlight">$1</span>');
+                        return text.replace(regex, '<span class="search-highlight">$1</span>');
                     }
                 %>
                 <div class="row">

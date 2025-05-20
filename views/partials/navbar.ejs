@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg fixed-top navbar-compact">
+<nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="/favicon.ico" alt="Logo" class="me-2 logo-small">
@@ -8,7 +8,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarContent">
-            <form class="d-flex mx-auto w-35" action="/search" method="GET">
+            <form class="d-flex mx-auto searchbar" action="/search" method="GET">
                 <div class="input-group">
                     <input type="search" name="q" class="form-control" placeholder="Cerca annunci o professionisti..." aria-label="Cerca" required>
                     <button class="btn btn-outline-secondary" type="submit">
@@ -18,20 +18,19 @@
             </form>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
                 <li class="nav-item">
-                    <a href="/" class="nav-link chat-button">
+                    <a href="/" class="nav-link navbar-button">
                         <i class="bi bi-house"></i>
                         <span>Home</span>
-                    </a>
-                </li>
-                <% if (user) { %>
+                    </a>                </li>
+                <% if (typeof currentUser !== 'undefined' && currentUser) { %>
                 <li class="nav-item">
-                    <a href="/chat" class="nav-link chat-button">
+                    <a href="/chat" class="nav-link navbar-button">
                         <i class="bi bi-chat"></i>
                         <span>Chat</span>
                     </a>
                 </li>
                 <li class="nav-item dropdown ms-2">
-                    <a class="nav-link dropdown-toggle chat-button d-flex align-items-center" href="#" role="button"
+                    <a class="nav-link dropdown-toggle navbar-button d-flex align-items-center" href="#" role="button"
                         data-bs-toggle="dropdown">
                         <i class="bi bi-person me-0"></i>
                         <span>Profilo</span>
@@ -47,11 +46,10 @@
                                 </button>
                             </form>
                         </li>
-                    </ul>
-                </li>
+                    </ul>                </li>
                 <% } else { %>
                 <li class="nav-item">
-                    <a href="/login" class="nav-link chat-button">
+                    <a href="/login" class="nav-link navbar-button">
                         <i class="bi bi-box-arrow-in-right"></i>
                         <span>Accedi</span>
                     </a>
