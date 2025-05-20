@@ -94,15 +94,15 @@ router.post('/onboarding', async (req, res) => {
             return res.redirect('/login');
         }    
         
-        const { type, firstName, lastName, businessName, website, phone } = req.body;
+        const { type, firstName, lastName, businessName, website, phone, defaultProfilePicture } = req.body;
         let updateQuery, updateData;
 
         if (type === 'freelancer') {
-            updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ?, phone = ? WHERE username = ?';
-            updateData = [type, firstName, lastName, website, phone, req.user.username];
+            updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ?, phone = ?, profilePicture = ? WHERE username = ?';
+            updateData = [type, firstName, lastName, website, phone, defaultProfilePicture, req.user.username];
         } else if (type === 'business') {
-            updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ? WHERE username = ?';
-            updateData = [type, businessName, website, phone, req.user.username];
+            updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ?, profilePicture = ? WHERE username = ?';
+            updateData = [type, businessName, website, phone, defaultProfilePicture, req.user.username];
         } else {
             req.flash('error_msg', 'Tipo utente non valido.');
             return res.redirect('/onboarding');
@@ -334,9 +334,11 @@ router.post('/profile/remove-photo', async (req, res) => {
             req.flash('error_msg', 'Devi essere loggato per modificare la foto profilo.');
             return res.redirect('/login');
         }
+          // Determina l'immagine predefinita in base al tipo di utente
+        const defaultProfilePicture = req.user.type === 'business' ? 'img/business.png' : 'img/freelancer.png';
         
         // Verifica se l'utente ha una foto profilo personalizzata
-        if (req.user.profilePicture === 'img/profile.png' || !req.user.profilePicture) {
+        if (req.user.profilePicture === defaultProfilePicture || !req.user.profilePicture) {
             req.flash('info_msg', 'Non hai una foto profilo personalizzata da rimuovere.');
             return res.redirect('/profile');
         }
@@ -345,7 +347,7 @@ router.post('/profile/remove-photo', async (req, res) => {
         const fullPath = path.join(__dirname, '../public', req.user.profilePicture);
         
         // Verifica se il file esiste e non è l'immagine predefinita
-        if (req.user.profilePicture !== 'img/profile.png' && fs.existsSync(fullPath)) {
+        if (req.user.profilePicture !== defaultProfilePicture && fs.existsSync(fullPath)) {
             // Rimuovi il file
             try {
                 fs.unlinkSync(fullPath);
@@ -355,11 +357,10 @@ router.post('/profile/remove-photo', async (req, res) => {
             }
         }
         
-        // Imposta l'immagine predefinita nel database
-        await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', ['img/profile.png', req.user.username]);
-        
-        // Aggiorna la foto profilo nell'oggetto utente nella sessione
-        req.user.profilePicture = 'img/profile.png';
+        // Imposta l'immagine predefinita nel database in base al tipo di utente
+        await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [defaultProfilePicture, req.user.username]);
+          // Aggiorna la foto profilo nell'oggetto utente nella sessione
+        req.user.profilePicture = defaultProfilePicture;
         
         req.flash('success_msg', 'Foto profilo rimossa con successo!');
         res.redirect('/profile');

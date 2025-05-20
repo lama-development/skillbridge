@@ -1,7 +1,11 @@
 <div class="card shadow-sm mb-4">
   <div class="card-body p-4">
     <div class="d-flex align-items-center mb-3">
-      <img src="<%= post.profilePicture || '/img/profile.png' %>" alt="Profile" class="rounded-circle me-3 profile-image-small">
+      <% 
+        let defaultImg = 'img/freelancer.png';
+        if (post.type === 'job_offer') defaultImg = 'img/business.png';
+      %>
+      <img src="<%= post.profilePicture || defaultImg %>" alt="Profile" class="rounded-circle me-3 profile-img-small">
       <div>
         <h5 class="card-title mb-0">
           <%- post.title %>

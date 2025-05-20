@@ -24,15 +24,19 @@
                         <div class="col-md-4">
                             <div class="profile-img-container text-center text-md-start">
                                 <div class="position-relative mb-3">
+                                    <% 
+                                        const defaultImg = user.type === 'business' ? '/img/business.png' : '/img/freelancer.png';
+                                        const profilePic = user.profilePicture ? (user.profilePicture.startsWith('/') ? user.profilePicture : '/' + user.profilePicture) : defaultImg;
+                                    %>
                                     <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
                                         <div class="profile-img-container">
-                                            <img src="<%= user.profilePicture.startsWith('/') ? user.profilePicture : '/' + user.profilePicture %>" alt="Foto Profilo" class="rounded-circle profile-img">
+                                            <img src="<%= profilePic %>" alt="Foto Profilo" class="rounded-circle profile-img">
                                             <div class="profile-img-overlay" data-bs-toggle="modal" data-bs-target="#profilePictureModal">
                                                 <i class="bi bi-pencil-fill"></i>
                                             </div>
                                         </div>
                                     <% } else { %>
-                                        <img src="<%= user.profilePicture.startsWith('/') ? user.profilePicture : '/' + user.profilePicture %>" alt="Foto Profilo" class="rounded-circle profile-img">
+                                        <img src="<%= profilePic %>" alt="Foto Profilo" class="rounded-circle profile-img">
                                     <% } %>
                                 </div>  
                                 <div>
@@ -186,9 +190,11 @@
                                     <i class="bi bi-floppy-fill"></i> Salva
                                 </button>
                             </form>
-                        </div
-                        <!-- Elimina foto attuale -->
-                        <% if (user.profilePicture !== 'img/profile.png') { %>
+                        </div>
+                        <% 
+                            const defaultImg = user.type === 'business' ? 'img/business.png' : 'img/freelancer.png';
+                            if (user.profilePicture && user.profilePicture !== defaultImg) { 
+                        %>
                         <div>
                             <h6 class="fw-bold mb-3">Elimina foto attuale</h6>
                             <form action="/profile/remove-photo" method="POST">
