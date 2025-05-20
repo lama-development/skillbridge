@@ -4,19 +4,28 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
 import db from './db.js';
+import { promisify } from 'util';
+
+// Promisify bcrypt.compare
+const compareAsync = promisify(bcrypt.compare);
 
 passport.use(new LocalStrategy(
     { usernameField: 'email', passwordField: 'password' },
-    (email, password, done) => {
-        db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
-            if (err) return done(err);
+    async (email, password, done) => {
+        try {
+            // Utilizzo della versione promise di db.get
+            const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
+            
             if (!user) return done(null, false, { message: 'Email errata.' });
-            bcrypt.compare(password, user.password, (err, isMatch) => {
-                if (err) return done(err);
-                if (isMatch) return done(null, user);
-                return done(null, false, { message: 'Password errata.' });
-            });
-        });
+            
+            // Utilizzo della versione promise di bcrypt.compare
+            const isMatch = await compareAsync(password, user.password);
+            
+            if (isMatch) return done(null, user);
+            return done(null, false, { message: 'Password errata.' });
+        } catch (err) {
+            return done(err);
+        }
     }
 ));
 
@@ -24,10 +33,13 @@ passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-    db.get('SELECT * FROM users WHERE id = ?', [id], (err, user) => {
-        done(err, user);
-    });
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
+        done(null, user);
+    } catch (err) {
+        done(err, null);
+    }
 });
 
 export default passport;

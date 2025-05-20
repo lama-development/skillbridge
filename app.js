@@ -54,7 +54,20 @@ app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/posts', postsRoutes);
 
-// Avvio del server
-app.listen(PORT, () => {
-    console.log(`Server in ascolto su http://localhost:${PORT}`);
-});
+// Avvio del server in modo asincrono
+const startServer = async () => {
+    try {
+        await new Promise((resolve) => {
+            const server = app.listen(PORT, () => {
+                console.log(`Server in ascolto su http://localhost:${PORT}`);
+                resolve(server);
+            });
+        });
+    } catch (error) {
+        console.error('Errore nell\'avvio del server:', error);
+        process.exit(1);
+    }
+};
+
+// Chiamiamo la funzione asincrona per avviare il server
+startServer();
