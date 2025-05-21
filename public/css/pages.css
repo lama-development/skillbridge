@@ -225,4 +225,8 @@
         width: 75px;
         height: 75px;
     }
+    /* Post */
+    .post-btn {
+        margin-top: 8px;
+    }
 }

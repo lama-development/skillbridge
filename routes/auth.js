@@ -49,10 +49,13 @@ router.post('/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
         
+        // Converti l'email in minuscolo
+        const emailLowerCase = email.toLowerCase();
+        
         // Cerca l'utente nel database usando solo email
         const user = await db.get(
             'SELECT * FROM users WHERE email = ?', 
-            [email]
+            [emailLowerCase]
         );
         
         if (!user) {
@@ -89,6 +92,9 @@ router.post('/signup', async (req, res) => {
     try {
         const { email, username, password, 'confirm-password': confirmPassword } = req.body;
 
+        // Converti l'email in minuscolo
+        const emailLowerCase = email.toLowerCase();
+
         if (password !== confirmPassword) {
             req.flash('error_msg', 'Le password non corrispondono.');
             return res.redirect('/signup');
@@ -97,21 +103,20 @@ router.post('/signup', async (req, res) => {
         // Verifica se l'email o l'username sono già registrati
         const existingUser = await db.get(
             'SELECT * FROM users WHERE email = ? OR username = ?', 
-            [email, username]
+            [emailLowerCase, username]
         );
         
         if (existingUser) {
-            if (existingUser.email === email) req.flash('error_msg', 'L\'email risulta già associata ad un account.');
+            if (existingUser.email === emailLowerCase) req.flash('error_msg', 'L\'email risulta già associata ad un account.');
             else req.flash('error_msg', 'L\'username è già in uso. Scegli un altro username.');
             return res.redirect('/signup');
         }
-
         // Hash della password e inserimento del nuovo utente nel database
         const hash = await hashAsync(password, 10);
         
         await db.run(
             'INSERT INTO users (email, username, password) VALUES (?, ?, ?)', 
-            [email, username, hash]
+            [emailLowerCase, username, hash]
         );
         
         req.flash('success_msg', 'Account creato con successo. Si prega di effettuare il login.');

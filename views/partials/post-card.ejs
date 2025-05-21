@@ -5,44 +5,61 @@
         let defaultImg = 'img/freelancer.png';
         if (post.type === 'job_offer') defaultImg = 'img/business.png';
       %>
-      <img src="<%= post.profilePicture || defaultImg %>" alt="Profile" class="rounded-circle me-3 profile-img-small">
+      <a href="/profile/<%= post.userId %>" class="d-inline-block">
+        <img src="<%= post.profilePicture || defaultImg %>" alt="Profile" class="rounded-circle me-3 profile-img-small">
+      </a>
       <div>
-        <h5 class="card-title mb-0">
-          <%- post.title %>
+        <p class="fw-bold mb-0">
+          <a href="/profile/<%= post.userId %>" class="text-decoration-none text-dark">
+            <% if (post.type === 'job_offer') { %>
+              <%- post.businessName || post.userId %>
+            <% } else { %>
+              <%- post.fullName || post.userId %>
+            <% } %>
+          </a>
           <% if (post.type === 'job_offer') { %>
             <span class="badge bg-secondary ms-2">Azienda</span>
           <% } else { %>
             <span class="badge bg-primary ms-2">Freelancer</span>
           <% } %>
-          <% if (post.category) { %>
-            <span class="badge bg-light text-dark ms-1"><%= post.category %></span>
-          <% } %>
-        </h5>
+        </p>
         <p class="text-muted mb-0 small">
-          <% if (post.type === 'job_offer') { %>
-            <%- post.businessName || post.businessName %>
-          <% } else { %>
-            <%- post.fullName %>
-          <% } %>
+          <a href="/profile/<%= post.userId %>" class="text-decoration-none text-muted">@<%= post.userId %></a>
           • <%= new Date(post.createdAt).toLocaleDateString('it-IT') %>
+          <% if (post.category) { %>
+            • <%= post.category %>
+          <% } %>
         </p>
       </div>
     </div>
-    <p class="card-text"><%- post.content %></p>
-    <% if (!user || (user && post.userId !== user.username)) { %>
-      <a href="/profile/<%= post.username %>" class="btn btn-outline-primary btn-sm">
-        <i class="bi bi-person-circle me-1"></i> Visita profilo
-      </a>
-      <a href="/chat/<%= post.username %>" class="btn btn-outline-primary btn-sm">
-        <i class="bi bi-chat-dots-fill"></i> Inizia chat
-      </a>
-    <% } %>
+    <h5 class="card-title fw-bold mb-2"><%- post.title %></h5>    <p class="card-text"><%- post.content %></p>
+    
     <% if (user && user.username === post.userId) { %>
-      <form action="/posts/<%= post.id %>/delete" method="POST" class="d-inline-block ms-2">
+      <!-- Proprietario del post: può solo eliminarlo -->
+      <form action="/posts/<%= post.id %>/delete" method="POST" class="d-inline-block">
         <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Sei sicuro di voler eliminare questo post?')">
           <i class="bi bi-trash-fill me-1"></i> Elimina
         </button>
       </form>
+    <% } else { %>
+      <!-- Bottone Visita profilo sempre presente per tutti gli utenti -->
+      <a href="/profile/<%= post.userId %>" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-person-circle me-1"></i> Visita profilo
+      </a>
+      
+      <% if (user) { %>
+        <% if (user.type === 'freelancer' && post.type === 'job_offer') { %>
+          <!-- Freelancer che vede un post di un'azienda: bottone per inviare candidatura -->
+          <a href="/chat/<%= post.userId %>" class="btn btn-outline-primary btn-sm post-btn">
+            <i class="bi bi-send-fill me-1"></i> Invia candidatura
+          </a>
+        <% } else if (user.type === 'business' && post.type === 'freelancer_promo') { %>
+          <!-- Azienda che vede un post di un freelancer: bottone per invitare a collaborare -->
+          <a href="/chat/<%= post.userId %>" class="btn btn-outline-primary btn-sm post-btn">
+            <i class="bi bi-briefcase-fill me-1"></i> Invita a collaborare
+          </a>
+        <% } %>
+      <% } %>
     <% } %>
   </div>
 </div>

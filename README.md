@@ -8,3 +8,4 @@
 - [X] Unire input nome e cognome in onboarding
 - [X] Sistemare spacing su pagina profilo da mobile
 - [ ] Cambiare favicon da .ico a .svg
+- [ ] Aggiungere funzionalità per modificare/aggiungere informazioni sul profilo

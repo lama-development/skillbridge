@@ -41,6 +41,9 @@ body {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     color: var(--color-text-light);
 }
+.hover-underline:hover {
+    text-decoration: underline !important
+}
 
 /* Link e pulsanti */
 a {

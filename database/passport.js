@@ -13,8 +13,11 @@ passport.use(new LocalStrategy(
     { usernameField: 'email', passwordField: 'password' },
     async (email, password, done) => {
         try {
+            // Converti l'email in minuscolo
+            const emailLowerCase = email.toLowerCase();
+            
             // Utilizzo della versione promise di db.get
-            const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
+            const user = await db.get('SELECT * FROM users WHERE email = ?', [emailLowerCase]);
             if (!user) return done(null, false);
             // Utilizzo della versione promise di bcrypt.compare
             const isMatch = await compareAsync(password, user.password);
