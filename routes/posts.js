@@ -8,7 +8,7 @@ const router = express.Router();
 // Middleware per verificare se l'utente ha completato l'onboarding
 const isOnboardingComplete = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per accedere a questa funzionalità.');
+        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
         return res.redirect('/login');
     }
     if (!req.user.type) {

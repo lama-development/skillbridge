@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
 // Rotta GET per il form di onboarding
 router.get('/onboarding', (req, res) => {
     if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per completare l\'onboarding.');
+        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
         return res.redirect('/login');
     }
     
@@ -89,7 +89,7 @@ router.get('/onboarding', (req, res) => {
 router.post('/onboarding', async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
-            req.flash('error_msg', 'Devi essere loggato per completare l\'onboarding.');
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }    
         
@@ -120,7 +120,7 @@ router.post('/onboarding', async (req, res) => {
 // Rotta POST per saltare l'onboarding
 router.post('/onboarding/skip', (req, res) => {
     if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per accedere a questa funzionalità.');
+        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
         return res.redirect('/login');
     }
 
@@ -132,11 +132,11 @@ router.post('/onboarding/skip', (req, res) => {
 router.get('/profile', async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
-            req.flash('error_msg', 'Devi essere loggato per accedere al tuo profilo.');
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
         if (!req.user.type) {
-            req.flash('error_msg', 'Completa l\'onboarding per accedere al profilo.');
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/onboarding');
         }
         
@@ -312,12 +312,12 @@ router.get('/search', async (req, res) => {
 // Rotta per la pagina chat
 router.get('/chat', (req, res) => {
     if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per accedere alla chat.');
+        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
         return res.redirect('/login');
     }
     
     if (!req.user.type) {
-        req.flash('error_msg', 'Completa l\'onboarding per accedere alla chat.');
+        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
         return res.redirect('/onboarding');
     }
     
@@ -333,7 +333,7 @@ router.get('/chat', (req, res) => {
 router.post('/profile/upload-photo', upload.single('profilePicture'), async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
-            req.flash('error_msg', 'Devi essere loggato per modificare la foto profilo.');
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
         
@@ -365,7 +365,7 @@ router.post('/profile/upload-photo', upload.single('profilePicture'), async (req
 router.post('/profile/remove-photo', async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
-            req.flash('error_msg', 'Devi essere loggato per modificare la foto profilo.');
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
           // Determina l'immagine predefinita in base al tipo di utente
@@ -401,6 +401,66 @@ router.post('/profile/remove-photo', async (req, res) => {
     } catch (err) {
         console.error('Errore durante il reset della foto profilo:', err);
         req.flash('error_msg', 'Si è verificato un errore durante la rimozione della foto profilo.');
+        return res.redirect('/profile');
+    }
+});
+
+// Rotta POST per aggiornare la biografia
+router.post('/profile/update-bio', async (req, res) => {
+    try {
+        if (!req.isAuthenticated()) {
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
+            return res.redirect('/login');
+        }
+        
+        const { bio } = req.body;
+        
+        // Aggiorna la biografia dell'utente nel database
+        await db.run('UPDATE users SET bio = ? WHERE username = ?', [bio, req.user.username]);
+        
+        // Aggiorna la biografia nell'oggetto utente nella sessione
+        req.user.bio = bio;
+        
+        req.flash('success_msg', 'Biografia aggiornata con successo!');
+        res.redirect('/profile');
+    } catch (err) {
+        console.error('Errore durante l\'aggiornamento della biografia:', err);
+        req.flash('error_msg', 'Si è verificato un errore durante l\'aggiornamento della biografia.');
+        return res.redirect('/profile');
+    }
+});
+
+// Rotta POST per aggiornare i contatti
+router.post('/profile/update-contacts', async (req, res) => {
+    try {
+        if (!req.isAuthenticated()) {
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
+            return res.redirect('/login');
+        }
+        
+        const { website, phone } = req.body;
+        
+        // Validazione URL del sito web (opzionale)
+        let validatedWebsite = website ? website.trim() : null;
+        if (validatedWebsite && !validatedWebsite.startsWith('http://') && !validatedWebsite.startsWith('https://')) {
+            validatedWebsite = 'https://' + validatedWebsite;
+        }
+
+        // Aggiorna i contatti dell'utente nel database
+        await db.run(
+            'UPDATE users SET website = ?, phone = ? WHERE username = ?', 
+            [validatedWebsite, phone, req.user.username]
+        );
+        
+        // Aggiorna i contatti nell'oggetto utente nella sessione
+        req.user.website = validatedWebsite;
+        req.user.phone = phone;
+        
+        req.flash('success_msg', 'Contatti aggiornati con successo!');
+        res.redirect('/profile');
+    } catch (err) {
+        console.error('Errore durante l\'aggiornamento dei contatti:', err);
+        req.flash('error_msg', 'Si è verificato un errore durante l\'aggiornamento dei contatti.');
         return res.redirect('/profile');
     }
 });

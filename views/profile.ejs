@@ -54,7 +54,14 @@
                         </div>
                         <div class="col-md-8">
                             <div>
-                                <h4 class="fw-bold mb-3">Bio</h4>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="fw-bold mb-0">Biografia</h4>
+                                    <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
+                                        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editBioModal">
+                                            <i class="bi bi-pencil"></i> Modifica
+                                        </button>
+                                    <% } %>
+                                </div>
                                 <% if (user.bio) { %>
                                     <p class="mb-0"><%= user.bio %></p>
                                 <% } else { %>
@@ -121,7 +128,14 @@
                     <!-- Card Contatti -->
                     <div class="card shadow-sm mb-4">
                         <div class="card-body p-3 p-md-4">
-                            <h4 class="mb-3 fw-bold">Contatti</h4>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="fw-bold mb-0">Contatti</h4>
+                                <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editContactsModal">
+                                        <i class="bi bi-pencil"></i> Modifica
+                                    </button>
+                                <% } %>
+                            </div>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
@@ -209,6 +223,66 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per modifica biografia -->
+    <div class="modal fade" id="editBioModal" tabindex="-1" aria-labelledby="editBioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBioModalLabel">Modifica la tua biografia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/profile/update-bio" method="POST" id="updateBioForm">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="bio" name="bio" rows="10" maxlength="450"placeholder="Raccontaci qualcosa di te..."><%= user.bio || '' %></textarea>
+                            <div class="form-text mt-2" id="wordCount"></div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Annulla</button>
+                            <button type="submit" class="btn btn-primary" id="saveBioBtn">
+                                <i class="bi bi-floppy-fill"></i> Salva
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal per modifica contatti -->
+    <div class="modal fade" id="editContactsModal" tabindex="-1" aria-labelledby="editContactsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editContactsModalLabel">Modifica i tuoi contatti</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/profile/update-contacts" method="POST" id="updateContactsForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" value="<%= user.email %>" disabled>
+                            <div class="form-text text-muted">L'indirizzo email non può essere modificato.</div>
+                        </div>                        <div class="mb-3">
+                            <label for="website" class="form-label">Sito Web</label>
+                            <input type="url" class="form-control" id="website" name="website" placeholder="https://example.com" value="<%= user.website || '' %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Numero di Telefono</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+39 1234567890" value="<%= user.phone || '' %>" pattern="[+0-9 ]+" title="Sono ammessi solo numeri, spazi e il simbolo +">
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Annulla</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-floppy-fill"></i> Salva
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
