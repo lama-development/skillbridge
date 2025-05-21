@@ -31,10 +31,9 @@ router.get('/', async (req, res) => {
             WHERE p.type = 'job_offer' 
             ORDER BY p.createdAt DESC
         `;
-        
-        // Query per prendere le promozioni dei freelancer con i dati dell'utente
+          // Query per prendere le promozioni dei freelancer con i dati dell'utente
         const freelancerPostsQuery = `
-            SELECT p.*, u.firstName, u.lastName, u.website, u.profilePicture, u.username 
+            SELECT p.*, u.fullName, u.website, u.profilePicture, u.username 
             FROM posts p 
             JOIN users u ON p.userId = u.username
             WHERE p.type = 'freelancer_promo' 
@@ -94,12 +93,12 @@ router.post('/onboarding', async (req, res) => {
             return res.redirect('/login');
         }    
         
-        const { type, firstName, lastName, businessName, website, phone, defaultProfilePicture } = req.body;
+        const { type, fullName, businessName, website, phone, defaultProfilePicture } = req.body;
         let updateQuery, updateData;
 
         if (type === 'freelancer') {
-            updateQuery = 'UPDATE users SET type = ?, firstName = ?, lastName = ?, website = ?, phone = ?, profilePicture = ? WHERE username = ?';
-            updateData = [type, firstName, lastName, website, phone, defaultProfilePicture, req.user.username];
+            updateQuery = 'UPDATE users SET type = ?, fullName = ?, website = ?, phone = ?, profilePicture = ? WHERE username = ?';
+            updateData = [type, fullName, website, phone, defaultProfilePicture, req.user.username];
         } else if (type === 'business') {
             updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ?, profilePicture = ? WHERE username = ?';
             updateData = [type, businessName, website, phone, defaultProfilePicture, req.user.username];
@@ -221,18 +220,31 @@ router.get('/search', async (req, res) => {
     try {
         const query = req.query.q?.trim();
         const category = req.query.category?.trim();
+        const page = parseInt(req.query.page) || 1; // Pagina corrente, default 1
+        const resultsPerPage = 5; // Numero di risultati per pagina
         
         if (!query) {
             return res.redirect('/');
         }
         
         // Costruisci la query in base ai parametri di ricerca
+        let countQuery = `
+            SELECT COUNT(*) as total
+            FROM posts p
+            JOIN users u ON p.userId = u.username
+            WHERE (
+                p.title LIKE ? OR 
+                p.content LIKE ? OR
+                u.businessName LIKE ? OR
+                u.fullName LIKE ?
+            )
+        `;
+
         let searchQuery = `
             SELECT 
                 p.*,
                 u.businessName,
-                u.firstName,
-                u.lastName,
+                u.fullName,
                 u.website,
                 u.profilePicture,
                 u.username
@@ -242,31 +254,53 @@ router.get('/search', async (req, res) => {
                 p.title LIKE ? OR 
                 p.content LIKE ? OR
                 u.businessName LIKE ? OR
-                (u.firstName || ' ' || u.lastName) LIKE ?
+                u.fullName LIKE ?
             )
         `;
 
         const queryParams = [];
+        const countParams = [];
         const searchParam = `%${query}%`;
-        queryParams.push(searchParam, searchParam, searchParam, searchParam);
         
-        // Aggiungi filtro per categoria se specificato
+        // Parametri per la query di conteggio
+        countParams.push(searchParam, searchParam, searchParam, searchParam);
+        
+        // Parametri per la query di ricerca
+        queryParams.push(searchParam, searchParam, searchParam, searchParam);
+          // Aggiungi filtro per categoria se specificato
         if (category) {
+            countQuery += ` AND p.category = ?`;
             searchQuery += ` AND p.category = ?`;
+            countParams.push(category);
             queryParams.push(category);
         }
         
-        // Aggiungi ordinamento
-        searchQuery += ` ORDER BY p.createdAt DESC`;
+        // Aggiungi ordinamento e paginazione alla query di ricerca
+        searchQuery += ` ORDER BY p.createdAt DESC LIMIT ? OFFSET ?`;
+        queryParams.push(resultsPerPage, (page - 1) * resultsPerPage);
         
-        const results = await db.all(searchQuery, queryParams);
+        // Esegui entrambe le query in parallelo
+        const [countResult, results] = await Promise.all([
+            db.get(countQuery, countParams),
+            db.all(searchQuery, queryParams)
+        ]);
         
+        const totalResults = countResult.total;
+        const totalPages = Math.ceil(totalResults / resultsPerPage);
         res.render('search', { 
             query,
             selectedCategory: category || '',
             results: results || [],
             package: pkg,
-            user: req.user
+            user: req.user,
+            pagination: {
+                page,
+                totalPages,
+                totalResults,
+                resultsPerPage,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
         });
     } catch (err) {
         console.error('Errore durante la ricerca:', err);

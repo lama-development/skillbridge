@@ -58,10 +58,9 @@
     <main class="flex-shrink-0">
         <div class="container py-5">
             <section class="mb-5">
-                <div class="d-flex justify-content-md-between justify-content-start mb-4 flex-md-row flex-column align-items-md-center align-items-start">
-                    <div>
-                        <% if (user && user.firstName) { %>
-                            <h1 class="display-5 mb-2 fw-bold">Ciao, <%= user.firstName %>.</h1>
+                <div class="d-flex justify-content-md-between justify-content-start mb-4 flex-md-row flex-column align-items-md-center align-items-start">                    <div>
+                        <% if (user && user.fullName) { %>
+                            <h1 class="display-5 mb-2 fw-bold">Ciao, <%= user.fullName %>.</h1>
                         <% } else if (user && user.businessName) { %>
                             <h1 class="display-5 mb-2 fw-bold">Benvenuto, <%= user.businessName %>.</h1>
                         <% } else { %>

@@ -22,10 +22,12 @@
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
                     <p class="text-muted mb-0"><%= results.length === 1 ? '1 risultato trovato' : `${results.length} risultati trovati` %></p>
                     
-                    <!-- Filtro per categoria -->
+                    <!-- Filtri di ricerca -->
                     <form action="/search" method="GET" class="d-flex mt-2 mt-md-0">
                         <input type="hidden" name="q" value="<%= query %>">
-                        <select class="form-select me-2" name="category" onchange="this.form.submit()">
+                        
+                        <!-- Filtro per categoria -->
+                        <select class="form-select" name="category" onchange="this.form.submit()">
                             <option value="">Tutte le categorie</option>
                             <option value="Sviluppo" <%= selectedCategory === 'Sviluppo' ? 'selected' : '' %>>Sviluppo</option>
                             <option value="Design" <%= selectedCategory === 'Design' ? 'selected' : '' %>>Design</option>
@@ -36,53 +38,100 @@
                     </form>
                 </div>
             </div>
-            <% if (results.length > 0) { %>
-                <%
-                    function highlightText(text, searchQuery) {
-                        if (!text) return '';
-                        // Escape special regex characters in the search query
-                        const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                        // Create a regex pattern to match the query (case insensitive)
-                        const regex = new RegExp(`(${escapedQuery})`, 'gi');
-                        // Replace matches with highlighted spans
-                        return text.replace(regex, '<span class="search-highlight">$1</span>');
-                    }
-                %>
-                <div class="row">
-                    <div class="col-12">
-                        <% results.forEach(post => { 
-                            // Create a copy of the post with highlighted content
-                            const highlightedPost = { ...post };
-                            highlightedPost.title = highlightText(post.title, query);
-                            highlightedPost.content = highlightText(post.content, query);
-                            
-                            // Highlight business name or freelancer name
-                            if (post.type === 'job_offer') {
-                                highlightedPost.businessName = highlightText(post.businessName, query);
-                            } else {
-                                // For freelancers, highlight the full name
-                                const fullName = `${post.firstName} ${post.lastName}`;
-                                highlightedPost.fullName = highlightText(fullName, query);
-                                highlightedPost.firstName = post.firstName;
-                                highlightedPost.lastName = post.lastName;
-                            }
-                        %>
-                            <!-- Pass the post with highlighted content -->
-                            <%- include('partials/post-card', { 
-                                post: { 
-                                    ...post, 
-                                    title: highlightedPost.title,
-                                    content: highlightedPost.content,
-                                    businessName: highlightedPost.businessName,
-                                    fullName: highlightedPost.fullName
-                                } 
-                            }) %>
-                        <% }) %>
-                    </div>
-                </div>
+            <% if (results.length > 0) { 
+                function highlightText(text, searchQuery) {
+                    if (!text) return '';
+                    // Escape special regex characters in the search query
+                    const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    // Create a regex pattern to match the query (case insensitive)
+                    const regex = new RegExp(`(${escapedQuery})`, 'gi');
+                    // Replace matches with highlighted spans
+                    return text.replace(regex, '<span class="search-highlight">$1</span>');
+                }
+            %>
+            <div class="row">
+                <div class="col-12">
+                    <% results.forEach(post => { 
+                        const highlightedPost = {
+                            ...post,
+                            title: highlightText(post.title, query),
+                            content: highlightText(post.content, query),
+                            businessName: post.type === 'job_offer' ? highlightText(post.businessName, query) : post.businessName,
+                            fullName: post.type !== 'job_offer' ? highlightText(post.fullName, query) : post.fullName
+                        };
+                    %>
+                    <%- include('partials/post-card', { post: highlightedPost }) %>
+                    <% }); %>                </div>
+            </div>
             <% } else { %>
                 <div class="alert alert-secondary text-center">
                     Nessun risultato trovato per la tua ricerca. Prova con termini diversi o più generici.
+                </div>
+            <% } %>
+            
+            <% if (pagination && pagination.totalPages > 1) { %>                <nav aria-label="Navigazione risultati" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Pulsante "Precedente" -->
+                        <li class="page-item <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
+                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= pagination.page - 1 %>" aria-label="Precedente">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="visually-hidden">Precedente</span>
+                            </a>
+                        </li>
+                        
+                        <% 
+                        // Calcola l'intervallo di pagine da mostrare
+                        let startPage = Math.max(1, pagination.page - 2);
+                        let endPage = Math.min(pagination.totalPages, pagination.page + 2);
+                        
+                        // Assicura di mostrare almeno 5 pagine se disponibili
+                        if (endPage - startPage + 1 < 5) {
+                            if (startPage === 1) {
+                                endPage = Math.min(5, pagination.totalPages);
+                            } else if (endPage === pagination.totalPages) {
+                                startPage = Math.max(1, pagination.totalPages - 4);
+                            }
+                        }
+                          // Pagina 1 (se non inclusa nell'intervallo)
+                        if (startPage > 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=1">1</a>
+                            </li>
+                            <% if (startPage > 2) { %>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            <% } %>
+                        <% }%>                          <!-- Pagine numeriche -->
+                        <% for (let i = startPage; i <= endPage; i++) { %>
+                            <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                        
+                        <!-- Ultima pagina (se non inclusa nell'intervallo) -->
+                        <% if (endPage < pagination.totalPages) { %>
+                            <% if (endPage < pagination.totalPages - 1) { %>
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            <% } %>
+                            <li class="page-item">
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= pagination.totalPages %>"><%= pagination.totalPages %></a>
+                            </li>
+                        <% } %>
+                        <!-- Pulsante "Successiva" -->
+                        <li class="page-item <%= !pagination.hasNextPage ? 'disabled' : '' %>">
+                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= pagination.page + 1 %>" aria-label="Successiva">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="visually-hidden">Successiva</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="text-center text-muted mt-2 small">
+                    Mostrati risultati <%= ((pagination.page - 1) * pagination.resultsPerPage) + 1 %> - <%= Math.min(pagination.page * pagination.resultsPerPage, pagination.totalResults) %> di <%= pagination.totalResults %>
                 </div>
             <% } %>
         </div>

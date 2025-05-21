@@ -42,12 +42,12 @@
                                 <div>
                                     <% if (user.type === 'freelancer') { %>
                                         <span class="badge bg-primary mb-2">Freelancer</span>
-                                        <h1 class="h3 mb-2 fw-bold"><%= user.firstName %> <%= user.lastName %></h1>
+                                        <h1 class="h3 mb-2 fw-bold"><%= user.fullName %></h1>
                                         <p class="text-muted mb-2">@<%= user.username %></p>
                                     <% } else if (user.type === 'business') { %>
+                                        <span class="badge bg-secondary mb-2">Azienda</span>
                                         <h1 class="h3 mb-2 fw-bold"><%= user.businessName %></h1>
                                         <p class="text-muted mb-2">@<%= user.username %></p>
-                                        <span class="badge bg-secondary">Azienda</span>
                                     <% } %>
                                 </div>
                             </div>
@@ -227,7 +227,6 @@
                     previewImage.src = e.target.result;
                     imagePreview.style.display = 'block';
                 }
-                
                 reader.readAsDataURL(file);
             }
         });

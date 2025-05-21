@@ -40,14 +40,12 @@ function handleFreelancerSelection() {
     
     if (freelancerFields) freelancerFields.style.display = 'block';
     if (businessFields) businessFields.style.display = 'none';
-    
-    // Configura i campi per freelancer
+      // Configura i campi per freelancer
     document.querySelectorAll('#freelancer-fields input').forEach(input => {
         input.disabled = false;
-        // Solo nome e cognome sono obbligatori per i freelancer
-        input.required = (input.name === 'firstName' || input.name === 'lastName');
+        // Solo il fullName è obbligatorio per i freelancer
+        input.required = (input.name === 'fullName');
     });
-    
     // Disabilita i campi per business
     document.querySelectorAll('#business-fields input').forEach(input => {
         input.disabled = true;

@@ -22,11 +22,7 @@
           <% if (post.type === 'job_offer') { %>
             <%- post.businessName || post.businessName %>
           <% } else { %>
-            <% if (post.fullName) { %>
-              <%- post.fullName %>
-            <% } else { %>
-              <%= post.firstName %> <%= post.lastName %>
-            <% } %>
+            <%- post.fullName %>
           <% } %>
           • <%= new Date(post.createdAt).toLocaleDateString('it-IT') %>
         </p>

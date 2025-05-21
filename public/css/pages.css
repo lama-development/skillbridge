@@ -117,9 +117,34 @@
 
 /* Cerca */
 .search-highlight {
-    background-color: yellow;
+    background-color: rgba(211, 234, 80, 0.5);
     font-weight: normal;
     border-radius: 2px;
+}
+
+/* Paginazione */
+.pagination .page-link {
+    color: var(--color-primary);
+    border-color: var(--color-border);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: var(--color-border);
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    border-color: var(--color-border);
+    color: var(--color-primary-hover);
 }
 
 /* Chat */
@@ -195,6 +220,9 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-bottom: 1.5rem;
+    }
+    .profile-img {
+        width: 75px;
+        height: 75px;
     }
 }
