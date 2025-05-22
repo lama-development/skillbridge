@@ -93,15 +93,15 @@ router.post('/onboarding', async (req, res) => {
             return res.redirect('/login');
         }    
         
-        const { type, fullName, businessName, website, phone, defaultProfilePicture } = req.body;
+        const { type, fullName, businessName, website, phone, location, defaultProfilePicture } = req.body;
         let updateQuery, updateData;
 
         if (type === 'freelancer') {
-            updateQuery = 'UPDATE users SET type = ?, fullName = ?, website = ?, phone = ?, profilePicture = ? WHERE username = ?';
-            updateData = [type, fullName, website, phone, defaultProfilePicture, req.user.username];
+            updateQuery = 'UPDATE users SET type = ?, fullName = ?, website = ?, phone = ?, location = ?, profilePicture = ? WHERE username = ?';
+            updateData = [type, fullName, website, phone, location, defaultProfilePicture, req.user.username];
         } else if (type === 'business') {
-            updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ?, profilePicture = ? WHERE username = ?';
-            updateData = [type, businessName, website, phone, defaultProfilePicture, req.user.username];
+            updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ?, location = ?, profilePicture = ? WHERE username = ?';
+            updateData = [type, businessName, website, phone, location, defaultProfilePicture, req.user.username];
         } else {
             req.flash('error_msg', 'Tipo utente non valido.');
             return res.redirect('/onboarding');
@@ -438,7 +438,7 @@ router.post('/profile/update-contacts', async (req, res) => {
             return res.redirect('/login');
         }
         
-        const { website, phone } = req.body;
+        const { website, phone, fullName, businessName, location } = req.body;
         
         // Validazione URL del sito web (opzionale)
         let validatedWebsite = website ? website.trim() : null;
@@ -446,15 +446,32 @@ router.post('/profile/update-contacts', async (req, res) => {
             validatedWebsite = 'https://' + validatedWebsite;
         }
 
+        let query;
+        const params = [];
+
+        if (req.user.type === 'freelancer') {
+            query = 'UPDATE users SET website = ?, phone = ?, fullName = ?, location = ? WHERE username = ?';
+            params.push(validatedWebsite, phone, fullName, location, req.user.username);
+            req.user.fullName = fullName;
+        } else if (req.user.type === 'business') {
+            query = 'UPDATE users SET website = ?, phone = ?, businessName = ?, location = ? WHERE username = ?';
+            params.push(validatedWebsite, phone, businessName, location, req.user.username);
+            req.user.businessName = businessName;
+        } else {
+            // Tipo utente non gestito o non dovrebbe essere qui
+            req.flash('error_msg', 'Tipo utente non valido.');
+            return res.redirect('/profile');
+        }
+
         // Aggiorna i contatti dell'utente nel database
-        await db.run(
-            'UPDATE users SET website = ?, phone = ? WHERE username = ?', 
-            [validatedWebsite, phone, req.user.username]
-        );
+        await db.run(query, params);
         
         // Aggiorna i contatti nell'oggetto utente nella sessione
         req.user.website = validatedWebsite;
         req.user.phone = phone;
+        req.user.location = location; // Added location
+        if (req.user.type === 'freelancer') req.user.fullName = fullName;
+        else if (req.user.type === 'business') req.user.businessName = businessName;
         
         req.flash('success_msg', 'Contatti aggiornati con successo!');
         res.redirect('/profile');

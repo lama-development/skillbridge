@@ -21,6 +21,7 @@ db.serialize(() => {
     businessName TEXT,
     website TEXT,
     phone TEXT,
+    location TEXT,
     bio TEXT DEFAULT '',
     profilePicture TEXT
     )`);
