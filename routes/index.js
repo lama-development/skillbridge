@@ -146,12 +146,21 @@ router.get('/profile', async (req, res) => {
             WHERE userId = ? 
             ORDER BY createdAt DESC
         `;
-        
-        const userPosts = await db.all(userPostsQuery, [req.user.username])
-            .catch(err => {
-                console.error('Errore durante il recupero degli annunci dell\'utente:', err);
-                return [];
-            });
+          const [userPosts, userSkills] = await Promise.all([
+            db.all(userPostsQuery, [req.user.username])
+                .catch(err => {
+                    console.error('Errore durante il recupero degli annunci dell\'utente:', err);
+                    return [];
+                }),
+            db.all('SELECT skill FROM skills WHERE username = ?', [req.user.username])
+                .catch(err => {
+                    console.error('Errore durante il recupero delle competenze dell\'utente:', err);
+                    return [];
+                })
+        ]);
+
+        // Aggiungi le skills all'oggetto user
+        req.user.skills = userSkills.map(s => s.skill);
         
         res.render('profile', { 
             user: req.user, 
@@ -194,12 +203,21 @@ router.get('/profile/:username', async (req, res) => {
             WHERE userId = ? 
             ORDER BY createdAt DESC
         `;
-        
-        const userPosts = await db.all(userPostsQuery, [otherUser.username])
-            .catch(err => {
-                console.error('Errore durante il recupero degli annunci dell\'utente:', err);
-                return [];
-            });
+          const [userPosts, userSkills] = await Promise.all([
+            db.all(userPostsQuery, [otherUser.username])
+                .catch(err => {
+                    console.error('Errore durante il recupero degli annunci dell\'utente:', err);
+                    return [];
+                }),
+            db.all('SELECT skill FROM skills WHERE username = ?', [otherUser.username])
+                .catch(err => {
+                    console.error('Errore durante il recupero delle competenze dell\'utente:', err);
+                    return [];
+                })
+        ]);
+
+        // Aggiungi le skills all'oggetto user
+        otherUser.skills = userSkills.map(s => s.skill);
         
         res.render('profile', { 
             user: otherUser, 
@@ -406,7 +424,7 @@ router.post('/profile/remove-photo', async (req, res) => {
 });
 
 // Rotta POST per aggiornare la biografia
-router.post('/profile/update-bio', async (req, res) => {
+router.post('/profile/update-bio', upload.none(), async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
@@ -479,6 +497,52 @@ router.post('/profile/update-contacts', async (req, res) => {
         console.error('Errore durante l\'aggiornamento dei contatti:', err);
         req.flash('error_msg', 'Si è verificato un errore durante l\'aggiornamento dei contatti.');
         return res.redirect('/profile');
+    }
+});
+
+// Aggiornamento skills dell'utente
+router.post('/profile/update-skills', express.urlencoded({ extended: true }), async (req, res) => {
+    try {
+        if (!req.isAuthenticated()) {
+            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
+            return res.redirect('/login');
+        }
+
+        // Controllo più restrittivo: solo i freelancer possono gestire le competenze
+        if (req.user.type !== 'freelancer') {
+            req.flash('error_msg', 'Le competenze sono disponibili solo per i profili freelancer.');
+            return res.redirect('/profile');
+        }
+
+        // Assicurati che skills sia sempre un array, anche se vuoto o con un solo elemento
+        const skills = Array.isArray(req.body.skills) ? req.body.skills : [req.body.skills].filter(Boolean);
+
+        // Validazione
+        if (skills.length > 10) {
+            req.flash('error_msg', 'Non puoi aggiungere più di 10 competenze.');
+            return res.redirect('/profile');
+        }
+
+        await db.run('DELETE FROM skills WHERE username = ?', [req.user.username]);
+
+        if (skills.length > 0) {
+            const insertSkills = skills.map(skill => ({
+                username: req.user.username,
+                skill: skill.trim()
+            }));
+
+            const insertQuery = 'INSERT INTO skills (username, skill) VALUES (?, ?)';
+            for (const skillData of insertSkills) {
+                await db.run(insertQuery, [skillData.username, skillData.skill]);
+            }
+        }
+
+        req.flash('success_msg', 'Competenze aggiornate con successo!');
+        res.redirect('/profile');
+    } catch (err) {
+        console.error('Errore durante l\'aggiornamento delle competenze:', err);
+        req.flash('error_msg', 'Si è verificato un errore durante l\'aggiornamento delle competenze.');
+        res.redirect('/profile');
     }
 });
 

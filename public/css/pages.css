@@ -120,6 +120,7 @@
     background-color: rgba(211, 234, 80, 0.5);
     font-weight: normal;
     border-radius: 2px;
+    font-weight: inherit;
 }
 
 /* Paginazione */

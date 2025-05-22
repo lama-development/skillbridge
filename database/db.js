@@ -26,6 +26,14 @@ db.serialize(() => {
     profilePicture TEXT
     )`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS skills (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    skill TEXT NOT NULL,
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
+    UNIQUE(username, skill)
+    )`);
+
     db.run(`CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     userId INTEGER NOT NULL,
