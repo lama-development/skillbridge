@@ -49,10 +49,12 @@ app.use((req, res, next) => {
 import indexRoutes from './routes/index.js';
 import authRoutes from './routes/auth.js';
 import postsRoutes from './routes/posts.js';
+import chatRoutes from './routes/chat.js';
 
 app.use('/', indexRoutes);
 app.use('/', authRoutes);
 app.use('/posts', postsRoutes);
+app.use('/chat', chatRoutes);
 
 // Avvio del server in modo asincrono
 const startServer = async () => {

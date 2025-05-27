@@ -6,18 +6,24 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-2">
-          <strong>Nome:</strong>
-          <span><%= package.name %></span>
-        </div>
-        <div class="mb-2">
-          <strong>Autore:</strong>
-          <span><%= package.author %></span>
-        </div>
-        <div class="mb-2">
-          <strong>Versione:</strong>
-          <span><%= package.version %></span>
-        </div>
+        <% if (typeof package !== 'undefined') { %>
+          <div class="mb-2">
+            <strong>Nome:</strong>
+            <span><%= package.name %></span>
+          </div>
+          <div class="mb-2">
+            <strong>Autore:</strong>
+            <span><%= package.author %></span>
+          </div>
+          <div class="mb-2">
+            <strong>Versione:</strong>
+            <span><%= package.version %></span>
+          </div>
+        <% } else { %>
+          <div class="alert alert-danger">
+            Informazioni sul pacchetto non disponibili.
+          </div>
+        <% } %>
         <div class="mb-2">
           <strong>Descrizione:</strong>
           <span><%= package.description %></span>

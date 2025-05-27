@@ -146,7 +146,7 @@ router.get('/profile', async (req, res) => {
             WHERE userId = ? 
             ORDER BY createdAt DESC
         `;
-          const [userPosts, userSkills] = await Promise.all([
+        const [userPosts, userSkills] = await Promise.all([
             db.all(userPostsQuery, [req.user.username])
                 .catch(err => {
                     console.error('Errore durante il recupero degli annunci dell\'utente:', err);
@@ -203,7 +203,7 @@ router.get('/profile/:username', async (req, res) => {
             WHERE userId = ? 
             ORDER BY createdAt DESC
         `;
-          const [userPosts, userSkills] = await Promise.all([
+        const [userPosts, userSkills] = await Promise.all([
             db.all(userPostsQuery, [otherUser.username])
                 .catch(err => {
                     console.error('Errore durante il recupero degli annunci dell\'utente:', err);
@@ -325,26 +325,6 @@ router.get('/search', async (req, res) => {
         req.flash('error_msg', 'Si è verificato un errore durante la ricerca.');
         return res.redirect('/');
     }
-});
-
-// Rotta per la pagina chat
-router.get('/chat', (req, res) => {
-    if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
-        return res.redirect('/login');
-    }
-    
-    if (!req.user.type) {
-        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
-        return res.redirect('/onboarding');
-    }
-    
-    // In futuro qui potresti caricare le conversazioni dell'utente dal database
-    // Per ora renderizziamo semplicemente la pagina chat
-    res.render('chat', { 
-        user: req.user, 
-        package: pkg 
-    });
 });
 
 // Rotta POST per l'upload della foto profilo

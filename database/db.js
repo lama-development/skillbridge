@@ -44,6 +44,27 @@ db.serialize(() => {
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userId) REFERENCES users(username) ON DELETE CASCADE
     )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS conversations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user1 TEXT NOT NULL,
+    user2 TEXT NOT NULL,
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user1) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (user2) REFERENCES users(username) ON DELETE CASCADE,
+    UNIQUE(user1, user2)
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    conversationId INTEGER NOT NULL,
+    sender TEXT NOT NULL,
+    content TEXT NOT NULL,
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (conversationId) REFERENCES conversations(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender) REFERENCES users(username) ON DELETE CASCADE
+    )`);
 });
 
 // Wrapping dei metodi del database con Promise

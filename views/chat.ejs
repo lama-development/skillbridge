@@ -7,6 +7,7 @@
     <title>Chat - SkillBridge</title>
     <%- include('partials/head') %>
     <script src="/js/navbar.js" defer></script>
+    <script src="/js/chat.js" defer></script>
 </head>
 
 <body class="d-flex flex-column h-100 has-navbar-padding">
@@ -26,82 +27,86 @@
                                 <h5 class="mb-0 fw-bold">Messaggi</h5>
                             </div>
                             <div class="chat-contacts">
-                                <!-- Contatto attivo -->
-                                <div class="chat-contact active p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <img src="/img/freelancer.png" alt="Profile" class="rounded-circle profile-img-small">
+                                <% if (conversations && conversations.length > 0) { %>
+                                    <% conversations.forEach(conversation => { %>
+                                        <div class="chat-contact p-3 <%= selectedConversation && selectedConversation.id === conversation.id ? 'active' : '' %>">
+                                            <a href="/chat/<%= conversation.otherUser %>" class="text-decoration-none text-dark">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        <img src="<%= conversation.profilePicture || (conversation.type === 'business' ? '/img/business.png' : '/img/freelancer.png') %>" alt="Profile" class="rounded-circle profile-img-small">
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0 fw-bold">
+                                                            <%= conversation.type === 'business' ? conversation.businessName : conversation.fullName %>
+                                                        </h6>
+                                                        <p class="mb-0 small text-truncate text-muted">@<%= conversation.otherUser %></p>
+                                                    </div>
+                                                </div>
+                                            </a>
                                         </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-0 fw-bold">Laura Bianchi</h6>
-                                            <p class="mb-0 small text-truncate">Ciao! Ho visto il tuo profilo...</p>
-                                        </div>
+                                    <% }) %>
+                                <% } else { %>
+                                    <div class="p-3 text-center text-muted">
+                                        <p class="mb-0">Nessuna conversazione ancora</p>
+                                        <small>Inizia una conversazione da un profilo o da un post</small>
                                     </div>
-                                </div>
-                                <!-- Altri contatti -->
-                                <div class="chat-contact p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <img src="/img/freelancer.png" alt="Profile" class="rounded-circle profile-img-small">
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-0 fw-bold">Marco Verdi</h6>
-                                            <p class="mb-0 small text-truncate">Ho completato il design richiesto...</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="chat-contact p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            <img src="/img/business.png" alt="Profile" class="rounded-circle profile-img-small">
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-0 fw-bold">Microsoft</h6>
-                                            <p class="mb-0 small text-truncate">Grazie per l'invio del tuo CV...</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                <% } %>
                             </div>
                         </div>
                         <!-- Area conversazione -->
                         <div class="col-md-8 d-flex flex-column">
-                            <!-- Header conversazione -->
-                            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <img src="/img/freelancer.png" alt="Profile" class="rounded-circle profile-img-small">
+                            <% if (selectedConversation && otherUser) { %>
+                                <!-- Header conversazione -->
+                                <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <a href="/profile/<%= otherUser.username %>" class="text-decoration-none text-dark d-flex align-items-center">
+                                            <div class="me-3">
+                                                <img src="<%= otherUser.profilePicture || (otherUser.type === 'business' ? '/img/business.png' : '/img/freelancer.png') %>" 
+                                                    alt="Profile" class="rounded-circle profile-img-small">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">
+                                                    <%= otherUser.type === 'business' ? otherUser.businessName : otherUser.fullName %>
+                                                </h6>
+                                                <small class="text-muted">@<%= otherUser.username %></small>
+                                            </div>
+                                        </a>
                                     </div>
-                                    <div>
-                                        <h6 class="mb-0 fw-bold">Laura Bianchi</h6>
-                                    </div>
                                 </div>
-                            </div>
-                            <!-- Messaggi -->
-                            <div class="chat-messages p-3 d-flex flex-column">
-                                <!-- Messaggi ricevuti -->
-                                <div class="message message-received">
-                                    <div>Ciao! Ho visto il tuo profilo su SkillBridge e sarei interessata a collaborare per un progetto di sviluppo web.</div>
+                                <!-- Messaggi -->
+                                <div class="chat-messages p-3 d-flex flex-column" id="chat-messages">
+                                    <% if (messages && messages.length > 0) { %>
+                                        <% messages.forEach(message => { %>
+                                            <div class="message <%= message.sender === user.username ? 'message-sent' : 'message-received' %>">
+                                                <div class="message-content"><%= message.content %></div>
+                                                <!-- <small class="text-muted message-time" data-timestamp="<%= message.createdAt %>">
+                                                    <%= new Date(message.createdAt).toLocaleString('it-IT') %>
+                                                </small> -->
+                                            </div>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <div class="text-center text-muted mt-4">
+                                            <p>Ancora nessun messaggio. Inizia la conversazione!</p>
+                                        </div>
+                                    <% } %>
                                 </div>
-                                <div class="message message-received">
-                                    <div>Si tratta di un sito e-commerce per un negozio di abbigliamento. Hai disponibilità nelle prossime settimane?</div>
+                                <!-- Input messaggi -->
+                                <div class="chat-input mt-auto">
+                                    <form action="/chat/<%= otherUser.username %>/send" method="POST" class="d-flex align-items-center p-3">
+                                        <input type="text" name="message" class="form-control me-2" placeholder="Scrivi un messaggio..." maxlength="1000" autocomplete="off" required>
+                                        <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center" style="width: 45px; height: 38px;">
+                                            <i class="bi bi-send"></i>
+                                        </button>
+                                    </form>
                                 </div>
-                                <!-- Messaggi inviati -->
-                                <div class="message message-sent">
-                                    <div>Ciao Laura! Grazie per avermi contattato. Sì, sarei interessato al progetto.</div>
+                            <% } else { %>
+                                <!-- Nessuna conversazione selezionata -->
+                                <div class="d-flex flex-column justify-content-center align-items-center h-100 text-muted">
+                                    <i class="bi bi-chat-dots fs-1 mb-3"></i>
+                                    <h5>Seleziona una conversazione</h5>
+                                    <p class="text-center">Scegli una conversazione dalla lista a sinistra<br>o iniziane una nuova da un profilo utente</p>
                                 </div>
-                                <div class="message message-sent">
-                                    <div>Ho disponibilità a partire dalla prossima settimana. Possiamo discutere i dettagli e il budget?</div>
-                                </div>
-                            </div>
-                            <!-- Input messaggi -->
-                            <div class="chat-input mt-auto">
-                                <form class="d-flex align-items-center">
-                                    <input type="text" class="form-control me-2" placeholder="Scrivi un messaggio...">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-send"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
