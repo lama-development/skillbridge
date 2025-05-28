@@ -22,8 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.target.value !== validValue) {
                 e.target.value = validValue;
             }
-        });
-        
+        }); 
         // Previene incolla di contenuto non valido
         usernameInput.addEventListener('paste', function(e) {
             e.preventDefault();
@@ -45,3 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         messageInput.focus();
     }
 });
+
+function selectConversation(username) {
+    window.location.href = `/chat/${username}`;
+}

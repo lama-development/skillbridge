@@ -29,17 +29,19 @@
                                 <% if (conversations && conversations.length > 0) { %>
                                     <% conversations.forEach(conversation => { %>
                                         <div class="chat-contact p-3 <%= selectedConversation && selectedConversation.id === conversation.id ? 'active' : '' %>" onclick="selectConversation('<%= conversation.otherUser %>')">
-                                            <div class="d-flex align-items-center">
-                                                <div class="me-3">
-                                                    <img src="<%= conversation.profilePicture || (conversation.type === 'business' ? '/img/business.png' : '/img/freelancer.png') %>" alt="Profile" class="rounded-circle profile-img-small">
+                                            <div class="d-flex align-items-center w-100">
+                                                <div class="d-flex align-items-center flex-fill">
+                                                    <div class="me-3">
+                                                        <img src="<%= conversation.profilePicture || (conversation.type === 'business' ? '/img/business.png' : '/img/freelancer.png') %>" alt="Profile" class="rounded-circle profile-img-small">
+                                                    </div>
+                                                    <div class="flex-fill">
+                                                        <h6 class="mb-0 fw-bold">
+                                                            <%= conversation.name %>
+                                                        </h6>
+                                                        <p class="mb-0 small text-truncate text-muted">@<%= conversation.otherUser %></p>
+                                                    </div>
                                                 </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="mb-0 fw-bold">
-                                                        <%= conversation.name %>
-                                                    </h6>
-                                                    <p class="mb-0 small text-truncate text-muted">@<%= conversation.otherUser %></p>
-                                                </div>
-                                                <div class="d-md-none">
+                                                <div class="flex-shrink-0">
                                                     <i class="bi bi-chevron-right text-muted"></i>
                                                 </div>
                                             </div>
@@ -56,21 +58,23 @@
                         <!-- Area conversazione -->
                         <div class="col-md-8 d-flex flex-column chat-conversation" id="chat-conversation">
                             <% if (selectedConversation && otherUser) { %>
-                                <!-- Mobile header with back button -->
+                                <!-- Header mobile con pulsante indietro -->
                                 <div class="mobile-chat-header d-md-none">
-                                    <a href="#" class="mobile-back-btn me-3" onclick="showContactsList()" aria-label="Torna alla lista">
+                                    <a href="/chat" class="mobile-back-btn me-3" aria-label="Torna alla lista">
                                         <i class="bi bi-arrow-left"></i>
                                     </a>
                                     <div class="d-flex align-items-center flex-grow-1">
-                                        <div class="me-3">
-                                            <img src="<%= otherUser.profilePicture || (otherUser.type === 'business' ? '/img/business.png' : '/img/freelancer.png') %>" alt="Profile" class="rounded-circle profile-img-small">
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0 fw-bold">
-                                                <%= otherUser.name %>
-                                            </h6>
-                                            <small class="text-muted">@<%= otherUser.username %></small>
-                                        </div>
+                                        <a href="/profile/<%= otherUser.username %>" class="text-decoration-none text-dark d-flex align-items-center">
+                                            <div class="me-3">
+                                                <img src="<%= otherUser.profilePicture || (otherUser.type === 'business' ? '/img/business.png' : '/img/freelancer.png') %>" alt="Profile" class="rounded-circle profile-img-small">
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">
+                                                    <%= otherUser.name %>
+                                                </h6>
+                                                <small class="text-muted">@<%= otherUser.username %></small>
+                                            </div>
+                                        </a>
                                     </div>
                                 </div>
                                 <!-- Desktop header conversazione -->
