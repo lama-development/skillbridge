@@ -44,7 +44,3 @@ document.addEventListener('DOMContentLoaded', function() {
         messageInput.focus();
     }
 });
-
-function selectConversation(username) {
-    window.location.href = `/chat/${username}`;
-}

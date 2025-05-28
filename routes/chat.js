@@ -28,18 +28,18 @@ router.get('/', isOnboardingComplete, async (req, res) => {
         const conversations = await db.all(`
             SELECT DISTINCT c.*, 
                 CASE 
-                    WHEN c.user1 = ? THEN c.user2 
-                    ELSE c.user1 
+                    WHEN c.username1 = ? THEN c.username2 
+                    ELSE c.username1 
                 END as otherUser,
                 u.name, u.profilePicture, u.type
             FROM conversations c
             LEFT JOIN users u ON (
                 CASE 
-                    WHEN c.user1 = ? THEN u.username = c.user2 
-                    ELSE u.username = c.user1 
+                    WHEN c.username1 = ? THEN u.username = c.username2 
+                    ELSE u.username = c.username1 
                 END
             )
-            WHERE c.user1 = ? OR c.user2 = ?
+            WHERE c.username1 = ? OR c.username2 = ?
             ORDER BY c.updatedAt DESC
         `, [req.user.username, req.user.username, req.user.username, req.user.username]);
         res.render('chat', { 
@@ -74,12 +74,12 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
         // Cerca se esiste già una conversazione tra i due utenti
         let conversation = await db.get(`
             SELECT * FROM conversations 
-            WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)
+            WHERE (username1 = ? AND username2 = ?) OR (username1 = ? AND username2 = ?)
         `, [req.user.username, otherUsername, otherUsername, req.user.username]);
         // Se non esiste, creala
         if (!conversation) {
             const result = await db.run(`
-                INSERT INTO conversations (user1, user2) 
+                INSERT INTO conversations (username1, username2) 
                 VALUES (?, ?)
             `, [req.user.username, otherUsername]);
             
@@ -89,7 +89,7 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
         const messages = await db.all(`
             SELECT m.*, u.profilePicture 
             FROM messages m
-            LEFT JOIN users u ON m.sender = u.username
+            LEFT JOIN users u ON m.senderUsername = u.username
             WHERE m.conversationId = ?
             ORDER BY m.createdAt ASC
         `, [conversation.id]);
@@ -97,18 +97,18 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
         const conversations = await db.all(`
             SELECT DISTINCT c.*, 
                 CASE 
-                    WHEN c.user1 = ? THEN c.user2 
-                    ELSE c.user1 
+                    WHEN c.username1 = ? THEN c.username2 
+                    ELSE c.username1 
                 END as otherUser,
                 u.name, u.profilePicture, u.type
             FROM conversations c
             LEFT JOIN users u ON (
                 CASE 
-                    WHEN c.user1 = ? THEN u.username = c.user2 
-                    ELSE u.username = c.user1 
+                    WHEN c.username1 = ? THEN u.username = c.username2 
+                    ELSE u.username = c.username1 
                 END
             )
-            WHERE c.user1 = ? OR c.user2 = ?
+            WHERE c.username1 = ? OR c.username2 = ?
             ORDER BY c.updatedAt DESC
         `, [req.user.username, req.user.username, req.user.username, req.user.username]);
         res.render('chat', { 
@@ -144,12 +144,12 @@ router.post('/:username/send', isOnboardingComplete, async (req, res) => {
         // Cerca se esiste già una conversazione tra i due utenti
         let conversation = await db.get(`
             SELECT * FROM conversations 
-            WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)
+            WHERE (username1 = ? AND username2 = ?) OR (username1 = ? AND username2 = ?)
         `, [req.user.username, otherUsername, otherUsername, req.user.username]);
         // Se non esiste, creala
         if (!conversation) {
             const result = await db.run(`
-                INSERT INTO conversations (user1, user2) 
+                INSERT INTO conversations (username1, username2) 
                 VALUES (?, ?)
             `, [req.user.username, otherUsername]);
             
@@ -157,7 +157,7 @@ router.post('/:username/send', isOnboardingComplete, async (req, res) => {
         }
         // Inserisci il messaggio
         await db.run(`
-            INSERT INTO messages (conversationId, sender, content) 
+            INSERT INTO messages (conversationId, senderUsername, content) 
             VALUES (?, ?, ?)
         `, [conversation.id, req.user.username, message.trim()]);
         // Aggiorna il timestamp della conversazione

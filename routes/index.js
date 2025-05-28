@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
         const businessPostsQuery = `
             SELECT p.*, u.name, u.website, u.profilePicture, u.username 
             FROM posts p 
-            JOIN users u ON p.userId = u.username 
+            JOIN users u ON p.username = u.username 
             WHERE p.type = 'job_offer' 
             ORDER BY p.createdAt DESC
         `;
@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
         const freelancerPostsQuery = `
             SELECT p.*, u.name, u.website, u.profilePicture, u.username 
             FROM posts p 
-            JOIN users u ON p.userId = u.username
+            JOIN users u ON p.username = u.username
             WHERE p.type = 'freelancer_promo' 
             ORDER BY p.createdAt DESC
         `;
@@ -142,7 +142,7 @@ router.get('/profile', async (req, res) => {
         // Query per recuperare gli annunci pubblicati dall'utente
         const userPostsQuery = `
             SELECT * FROM posts 
-            WHERE userId = ? 
+            WHERE username = ? 
             ORDER BY createdAt DESC
         `;
         const [userPosts, userSkills] = await Promise.all([
@@ -192,7 +192,7 @@ router.get('/profile/:username', async (req, res) => {
         // Query per recuperare gli annunci pubblicati dall'utente
         const userPostsQuery = `
             SELECT * FROM posts 
-            WHERE userId = ? 
+            WHERE username = ? 
             ORDER BY createdAt DESC
         `;
         const [userPosts, userSkills] = await Promise.all([
@@ -237,7 +237,7 @@ router.get('/search', async (req, res) => {
         let countQuery = `
             SELECT COUNT(*) as total
             FROM posts p
-            JOIN users u ON p.userId = u.username
+            JOIN users u ON p.username = u.username
             WHERE (
                 p.title LIKE ? OR 
                 p.content LIKE ? OR
@@ -252,7 +252,7 @@ router.get('/search', async (req, res) => {
                 u.profilePicture,
                 u.username
             FROM posts p
-            JOIN users u ON p.userId = u.username
+            JOIN users u ON p.username = u.username
             WHERE (
                 p.title LIKE ? OR 
                 p.content LIKE ? OR

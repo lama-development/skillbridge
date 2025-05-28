@@ -17,4 +17,4 @@
 - [x] Migliorare la pagina Chat su mobile
 - [ ] Aggiungere più contenuti alla pagina Home
 - [ ] Valutare timestamp chat
-- [ ] Eliminare funzione client side selectConversation
+- [x] Eliminare funzione client side selectConversation

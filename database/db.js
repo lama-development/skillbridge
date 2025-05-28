@@ -14,15 +14,19 @@ const db = new sqlite3.Database(dbPath);
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
     username TEXT PRIMARY KEY,
-    email TEXT UNIQUE,
-    password TEXT,
-    type TEXT CHECK (type IN ('business', 'freelancer')),
+    email TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    password TEXT NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('freelancer', 'business')),
     name TEXT,
     website TEXT,
     phone TEXT,
     location TEXT,
     bio TEXT DEFAULT '',
-    profilePicture TEXT
+    profilePicture TEXT,
+    CONSTRAINT chk_username_format CHECK (
+        username GLOB '[a-z0-9-]*' AND 
+        length(username) BETWEEN 3 AND 30
+    )
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS skills (
@@ -35,34 +39,33 @@ db.serialize(() => {
 
     db.run(`CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
-    userId INTEGER NOT NULL,
+    username TEXT NOT NULL,
     type TEXT NOT NULL CHECK (type IN ('job_offer', 'freelancer_promo')),
-    category TEXT DEFAULT 'Altro',
+    category TEXT DEFAULT 'Altro' CHECK (category IN ('Sviluppo', 'Design', 'Marketing', 'Copywriting', 'Altro')),
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userId) REFERENCES users(username) ON DELETE CASCADE
+    createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS conversations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user1 TEXT NOT NULL,
-    user2 TEXT NOT NULL,
-    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    username1 TEXT NOT NULL,
+    username2 TEXT NOT NULL,
     updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user1) REFERENCES users(username) ON DELETE CASCADE,
-    FOREIGN KEY (user2) REFERENCES users(username) ON DELETE CASCADE,
-    UNIQUE(user1, user2)
+    FOREIGN KEY (username1) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (username2) REFERENCES users(username) ON DELETE CASCADE,
+    UNIQUE(username1, username2)
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     conversationId INTEGER NOT NULL,
-    sender TEXT NOT NULL,
+    senderUsername TEXT NOT NULL,
     content TEXT NOT NULL,
-    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (conversationId) REFERENCES conversations(id) ON DELETE CASCADE,
-    FOREIGN KEY (sender) REFERENCES users(username) ON DELETE CASCADE
+    FOREIGN KEY (senderUsername) REFERENCES users(username) ON DELETE CASCADE
     )`);
 });
 
