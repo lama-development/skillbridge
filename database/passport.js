@@ -15,7 +15,6 @@ passport.use(new LocalStrategy(
         try {
             // Converti l'email in minuscolo
             const emailLowerCase = email.toLowerCase();
-            
             // Utilizzo della versione promise di db.get
             const user = await db.get('SELECT * FROM users WHERE email = ?', [emailLowerCase]);
             if (!user) return done(null, false);

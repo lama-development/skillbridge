@@ -5,8 +5,8 @@
 :root {
     --color-primary: #017A40;
     --color-primary-hover: #0E5741;
-    --color-secondary: #D3EA50;
-    --color-secondary-hover: #AFCF4E;
+    --color-secondary: #b5c845;
+    --color-secondary-hover: #9bb64d;
     --color-bg-body: #F8F9FA;
     --color-bg-input: #F5F5F5;
     --color-bg-card: #FFF;
@@ -40,6 +40,9 @@ body {
 .gradient-bg {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     color: var(--color-text-light);
+}
+.cursor-pointer {
+    cursor: pointer;
 }
 .hover-underline:hover {
     text-decoration: underline !important

@@ -45,33 +45,29 @@
     border: 1px solid var(--color-border);
     cursor: pointer;
 }
-.option:hover {
-    border-color: var(--color-border);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-.option[onclick="selectRole('freelancer')"] i,
-.option[onclick="selectRole('freelancer')"] div {
+.option:has(input[value="freelancer"]) i,
+.option:has(input[value="freelancer"]) div {
     color: var(--color-primary);
 }
-.option[onclick="selectRole('freelancer')"].selected {
+.option:has(input[value="business"]) i,
+.option:has(input[value="business"]) div {
+    color: var(--color-secondary);
+}
+.option:has(input[value="freelancer"]:checked) {
     border-color: var(--color-primary) !important;
     background-color: var(--color-primary) !important;
 }
-.option[onclick="selectRole('freelancer')"].selected i,
-.option[onclick="selectRole('freelancer')"].selected div {
-    color: var(--color-text-light);
+.option:has(input[value="freelancer"]:checked) i,
+.option:has(input[value="freelancer"]:checked) div {
+    color: var(--color-text-light) !important;
 }
-.option[onclick="selectRole('business')"] i,
-.option[onclick="selectRole('business')"] div {
-    color: var(--color-primary);
-}
-.option[onclick="selectRole('business')"].selected {
+.option:has(input[value="business"]:checked) {
     border-color: var(--color-secondary) !important;
     background-color: var(--color-secondary) !important;
 }
-.option[onclick="selectRole('business')"].selected i,
-.option[onclick="selectRole('business')"].selected div {
-    color: var(--color-text-dark);
+.option:has(input[value="business"]:checked) i,
+.option:has(input[value="business"]:checked) div {
+    color: var(--color-text-light) !important;
 }
 
 /* Profilo */
@@ -128,20 +124,17 @@
     color: var(--color-primary);
     border-color: var(--color-border);
 }
-
 .pagination .page-item.active .page-link {
     background-color: var(--color-primary);
     border-color: var(--color-primary);
     color: white;
 }
-
 .pagination .page-item.disabled .page-link {
     color: #6c757d;
     pointer-events: none;
     background-color: #fff;
     border-color: var(--color-border);
 }
-
 .pagination .page-link:hover {
     background-color: #e9ecef;
     border-color: var(--color-border);
@@ -161,6 +154,10 @@
 .chat-contact:hover, .chat-contact.active {
     background-color: var(--color-bg-input);
     cursor: pointer;
+}
+.chat-input {
+    border-top: 1px solid var(--color-border);
+    padding: 15px;
 }
 .chat-messages {
     overflow-y: auto;
@@ -182,10 +179,6 @@
     color: var(--color-text-light);
     align-self: flex-end;
     border-bottom-right-radius: 5px;
-}
-.chat-input {
-    border-top: 1px solid var(--color-border);
-    padding: 15px;
 }
 
 /* Footer */
