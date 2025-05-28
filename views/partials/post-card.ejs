@@ -28,7 +28,8 @@
         </p>
       </div>
     </div>
-    <h5 class="card-title fw-bold mb-2"><%- post.title %></h5>    <p class="card-text"><%- post.content %></p>
+    <h5 class="card-title fw-bold mb-2"><%- post.title %></h5>
+    <p class="card-text"><%- post.content %></p>
     <% if (user && user.username === post.userId) { %>
       <!-- Proprietario del post: può solo eliminarlo -->
       <form action="/posts/<%= post.id %>/delete" method="POST" class="d-inline-block">

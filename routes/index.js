@@ -136,7 +136,7 @@ router.get('/profile', async (req, res) => {
             return res.redirect('/login');
         }
         if (!req.user.type) {
-            req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
+            req.flash('error_msg', 'Completa l\'onboarding per accedere a questa funzionalità.');
             return res.redirect('/onboarding');
         } 
         // Query per recuperare gli annunci pubblicati dall'utente
@@ -313,12 +313,8 @@ const deleteExistingProfilePictures = (username, excludeFilename = null) => {
         possibleExtensions.forEach(ext => {
             const fileName = `${username}.${ext}`;
             const existingFile = path.join(uploadDir, fileName);
-            
             // Non eliminare il file se è quello che abbiamo appena caricato
-            if (excludeFilename && fileName === excludeFilename) {
-                return;
-            }
-            
+            if (excludeFilename && fileName === excludeFilename) return;
             if (fs.existsSync(existingFile)) {
                 try {
                     fs.unlinkSync(existingFile);
@@ -339,12 +335,10 @@ router.post('/profile/upload-photo', upload.single('profilePicture'), handleMult
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
-
         if (!req.file) {
             req.flash('error_msg', 'Nessun file è stato caricato o è avvenuto un errore.');
             return res.redirect('/profile');
         }
-        
         // Verifica che il file sia stato effettivamente salvato
         const fullFilePath = req.file.path;
         if (!fs.existsSync(fullFilePath)) {
@@ -352,19 +346,14 @@ router.post('/profile/upload-photo', upload.single('profilePicture'), handleMult
             req.flash('error_msg', 'Errore durante il salvataggio del file.');
             return res.redirect('/profile');
         }
-        
         // Percorso relativo all'immagine per la memorizzazione nel database 
-        const relativePath = `/uploads/${req.file.filename}`;
-        
+        const relativePath = `/uploads/${req.file.filename}`;   
         // Aggiorna il profilo dell'utente con il nuovo percorso dell'immagine
         try {
-            await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [relativePath, req.user.username]);
-            
+            await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [relativePath, req.user.username]);   
             // Solo dopo il successo dell'aggiornamento del database, elimina i file esistenti (diversi dal nuovo)
             deleteExistingProfilePictures(req.user.username, req.file.filename);
-            
             req.user.profilePicture = relativePath;
-            
             res.redirect('/profile');
         } catch (dbErr) {
             // Se l'aggiornamento del database fallisce, elimina il file appena caricato
