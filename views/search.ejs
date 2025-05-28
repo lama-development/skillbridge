@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Risultati Ricerca - SkillBridge</title>
     <%- include('partials/head') %>
-    <script src="/js/navbar.js" defer></script>
 </head>
 
 <body class="d-flex flex-column h-100 has-navbar-padding">
@@ -56,12 +55,12 @@
                             ...post,
                             title: highlightText(post.title, query),
                             content: highlightText(post.content, query),
-                            businessName: post.type === 'job_offer' ? highlightText(post.businessName, query) : post.businessName,
-                            fullName: post.type !== 'job_offer' ? highlightText(post.fullName, query) : post.fullName
+                            name: highlightText(post.name, query)
                         };
                     %>
                     <%- include('partials/post-card', { post: highlightedPost }) %>
-                    <% }); %>                </div>
+                    <% }); %>
+                </div>
             </div>
             <% } else { %>
                 <div class="alert alert-secondary text-center">
@@ -69,7 +68,8 @@
                 </div>
             <% } %>
             
-            <% if (pagination && pagination.totalPages > 1) { %>                <nav aria-label="Navigazione risultati" class="mt-4">
+            <% if (pagination && pagination.totalPages > 1) { %>
+                <nav aria-label="Navigazione risultati" class="mt-4">
                     <ul class="pagination justify-content-center">
                         <!-- Pulsante "Precedente" -->
                         <li class="page-item <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
@@ -92,7 +92,7 @@
                                 startPage = Math.max(1, pagination.totalPages - 4);
                             }
                         }
-                          // Pagina 1 (se non inclusa nell'intervallo)
+                        // Pagina 1 (se non inclusa nell'intervallo)
                         if (startPage > 1) { %>
                             <li class="page-item">
                                 <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=1">1</a>
@@ -102,7 +102,8 @@
                                     <span class="page-link">...</span>
                                 </li>
                             <% } %>
-                        <% }%>                          <!-- Pagine numeriche -->
+                        <% }%>
+                        <!-- Pagine numeriche -->
                         <% for (let i = startPage; i <= endPage; i++) { %>
                             <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
                                 <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= i %>"><%= i %></a>

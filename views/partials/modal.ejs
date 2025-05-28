@@ -12,6 +12,10 @@
             <span><%= package.name %></span>
           </div>
           <div class="mb-2">
+            <strong>Descrizione:</strong>
+            <span><%= package.description %></span>
+          </div>
+          <div class="mb-2">
             <strong>Autore:</strong>
             <span><%= package.author %></span>
           </div>
@@ -19,15 +23,6 @@
             <strong>Versione:</strong>
             <span><%= package.version %></span>
           </div>
-        <% } else { %>
-          <div class="alert alert-danger">
-            Informazioni sul pacchetto non disponibili.
-          </div>
-        <% } %>
-        <div class="mb-2">
-          <strong>Descrizione:</strong>
-          <span><%= package.description %></span>
-        </div>
         <div class="mb-2">
           <strong>Licenza:</strong>
           <span><%= package.license %></span>
@@ -44,6 +39,11 @@
             <%= package.bugs.url %>
           </a>
         </div>
+        <% } else { %>
+          <div class="alert alert-danger">
+            Informazioni sul pacchetto non disponibili.
+          </div>
+        <% } %>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Chiudi</button>

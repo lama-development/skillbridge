@@ -56,6 +56,11 @@ app.use('/', authRoutes);
 app.use('/posts', postsRoutes);
 app.use('/chat', chatRoutes);
 
+// Middleware per gestire pagine non esistenti
+app.use((req, res) => {
+    res.status(404).render('404');
+});
+
 // Avvio del server in modo asincrono
 const startServer = async () => {
     try {

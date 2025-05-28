@@ -1,12 +1,17 @@
 # To-Do
 
-- [X] Risolvere problemi di visualizzazione dell'immagine del profilo
+- [x] Risolvere problemi di visualizzazione dell'immagine del profilo
 - [ ] Implementare chat in tempo reale tra utenti
-- [X] Aggiungere selezione della categoria durante la creazione dei post
-- [X] Aggiungere filtri per categoria alla ricerca dei post
+- [x] Aggiungere selezione della categoria durante la creazione dei post
+- [x] Aggiungere filtri per categoria alla ricerca dei post
 - [ ] Migliorare ed ottimizzare rotte
-- [X] Unire input nome e cognome in onboarding
-- [X] Sistemare spacing su pagina profilo da mobile
+- [x] Unire input nome e cognome in onboarding
+- [x] Sistemare spacing su pagina profilo da mobile
 - [ ] Cambiare favicon da .ico a .svg
-- [X] Aggiungere funzionalità per modificare/aggiungere informazioni sul profilo
-- [X] Aggiungere skills ai profili dei freelancer
+- [x] Aggiungere funzionalità per modificare/aggiungere informazioni sul profilo
+- [x] Aggiungere skills ai profili dei freelancer
+- [x] Aggiungere pagina 404
+- [ ] Validare tutti gli input lato server
+- [ ] Aggiungere filtro ricerca in base al tipo di utente
+- [ ] Aggiungere messaggio personalizzato per invio candidatura
+- [ ] Aggiungere supporto dark mode con toggle (?)

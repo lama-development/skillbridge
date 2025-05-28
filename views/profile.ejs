@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profilo - SkillBridge</title>
     <%- include('partials/head') %>
-    <script src="/js/navbar.js" defer></script>
-    <script src="/js/skills.js" defer></script>
 </head>
 
 <body class="d-flex flex-column h-100 has-navbar-padding">
@@ -18,6 +16,13 @@
     <!-- Main content -->
     <main class="flex-shrink-0">
         <div class="container py-4 py-md-5">
+            <!-- Flash Messages -->
+            <% if (error_msg && error_msg.length > 0) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= error_msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
             <!-- Header del profilo -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body p-3 p-md-4">
@@ -43,11 +48,11 @@
                                 <div>
                                     <% if (user.type === 'freelancer') { %>
                                         <span class="badge bg-primary mb-2">Freelancer</span>
-                                        <h1 class="h3 mb-2 fw-bold"><%= user.fullName %></h1>
+                                        <h1 class="h3 mb-2 fw-bold"><%= user.name %></h1>
                                         <p class="text-muted mb-2">@<%= user.username %></p>
                                     <% } else if (user.type === 'business') { %>
                                         <span class="badge bg-secondary mb-2">Azienda</span>
-                                        <h1 class="h3 mb-2 fw-bold"><%= user.businessName %></h1>
+                                        <h1 class="h3 mb-2 fw-bold"><%= user.name %></h1>
                                         <p class="text-muted mb-2">@<%= user.username %></p>
                                     <% } %>
                                 </div>
@@ -59,7 +64,7 @@
                                     <h4 class="fw-bold mb-0">Biografia</h4>
                                     <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
                                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editBioModal">
-                                            <i class="bi bi-pencil"></i> Modifica
+                                            <i class="bi bi-pencil-fill"></i> Modifica
                                         </button>
                                     <% } %>
                                 </div>
@@ -74,7 +79,6 @@
                                         Nessuna bio aggiunta.
                                     </div>
                                 <% } %>
-                                
                                 <% if (!isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
                                     <div class="text-end mt-3">
                                         <a href="/chat/<%= user.username %>" class="btn btn-primary">
@@ -87,7 +91,6 @@
                     </div>
                 </div>
             </div>
-            
             <div class="row g-4">
                 <div class="col-lg-8">
                     <% if (user.type === 'freelancer') { %>
@@ -98,7 +101,7 @@
                                 <h4 class="fw-bold mb-0">Competenze</h4>
                                 <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
                                     <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editSkillsModal">
-                                        <i class="bi bi-pencil"></i> Modifica
+                                        <i class="bi bi-pencil-fill"></i> Modifica
                                     </button>
                                 <% } %>
                             </div>
@@ -129,7 +132,7 @@
                                                 <h5 class="card-title mb-2 fw-bold"><%= post.title %></h5>
                                                 <p class="card-text mb-2">
                                                     <small class="text-muted">
-                                                        Pubblicato il: <%= new Date(post.createdAt).toLocaleDateString('it-IT') %>
+                                                        Pubblicato il <%= new Date(post.createdAt).toLocaleDateString('it-IT') %>
                                                     </small>
                                                 </p>
                                                 <p class="card-text mb-0"><%= post.content %></p>
@@ -154,25 +157,20 @@
                                 <h4 class="fw-bold mb-0">Contatti</h4>
                                 <% if (isOwnProfile && typeof currentUser !== 'undefined' && currentUser) { %>
                                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editContactsModal">
-                                        <i class="bi bi-pencil"></i> Modifica
+                                        <i class="bi bi-pencil-fill"></i> Modifica
                                     </button>
                                 <% } %>
                             </div>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
-                                        <% if (user.type === 'freelancer') { %>
-                                            <i class="bi bi-person text-primary me-2 fs-5"></i>
-                                            <div><%= user.fullName %></div>
-                                        <% } else if (user.type === 'business') { %>
-                                            <i class="bi bi-tags text-primary me-2 fs-5"></i>
-                                            <div><%= user.businessName %></div>
-                                        <% } %>
+                                        <i class="bi bi-person-circle text-primary me-2 fs-5"></i>
+                                        <div><%= user.name %></div>
                                     </div>
                                 </li>
                                 <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-envelope text-primary me-2 fs-5"></i>
+                                        <i class="bi bi-envelope-fill text-primary me-2 fs-5"></i>
                                         <div>
                                             <a href="mailto:<%= user.email %>" class="profile-contact"><%= user.email %></a>
                                         </div>
@@ -191,7 +189,7 @@
                                 <% if (user.phone) { %>
                                 <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-telephone text-primary me-2 fs-5"></i>
+                                        <i class="bi bi-telephone-fill text-primary me-2 fs-5"></i>
                                         <div>
                                             <a href="tel:<%= user.phone %>" class="profile-contact"><%= user.phone %></a>
                                         </div>
@@ -201,7 +199,7 @@
                                 <% if (user.location) { %>
                                 <li class="list-group-item px-0 py-2 border-0">
                                     <div class="d-flex align-items-center">
-                                        <i class="bi bi-geo-alt text-primary me-2 fs-5"></i>
+                                        <i class="bi bi-geo-alt-fill text-primary me-2 fs-5"></i>
                                         <div>
                                             <span><%= user.location %></span>
                                         </div>
@@ -249,7 +247,7 @@
                             </form>
                         </div>
                         <% 
-                            const defaultImg = user.type === 'business' ? 'img/business.png' : 'img/freelancer.png';
+                            const defaultImg = user.type === 'business' ? '/img/business.png' : '/img/freelancer.png';
                             if (user.profilePicture && user.profilePicture !== defaultImg) { 
                         %>
                         <div>
@@ -257,7 +255,7 @@
                             <form action="/profile/remove-photo" method="POST">
                                 <p class="text-muted">La foto attuale verrà rimossa e sostituita con l'immagine predefinita.</p>
                                 <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-trash"></i> Elimina foto
+                                    <i class="bi bi-trash-fill"></i> Elimina foto
                                 </button>
                             </form>
                         </div>
@@ -307,17 +305,10 @@
                 </div>
                 <div class="modal-body">
                     <form action="/profile/update-contacts" method="POST" id="updateContactsForm">
-                        <% if (user.type === 'freelancer') { %>
-                            <div class="mb-3">
-                                <label for="fullName" class="form-label">Nome e Cognome</label>
-                                <input type="text" class="form-control" id="fullName" name="fullName" value="<%= user.fullName || '' %>">
-                            </div>
-                        <% } else if (user.type === 'business') { %>
-                            <div class="mb-3">
-                                <label for="businessName" class="form-label">Nome Azienda</label>
-                                <input type="text" class="form-control" id="businessName" name="businessName" value="<%= user.businessName || '' %>">
-                            </div>
-                        <% } %>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="name" name="name" value="<%= user.name || '' %>">
+                        </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" value="<%= user.email %>" disabled>
@@ -356,28 +347,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/profile/update-skills" method="POST" id="updateSkillsForm" enctype="application/x-www-form-urlencoded">
+                    <form action="/profile/update-skills" method="POST">
                         <div class="mb-3">
-                            <div class="d-flex gap-2 mb-2">
-                                <input type="text" class="form-control" id="skillInput" placeholder="Aggiungi una competenza">
-                                <button type="button" class="btn btn-primary" id="addSkillBtn">
-                                    <i class="bi bi-plus-lg"></i>
-                                </button>
-                            </div>
-                            <div class="form-text">Puoi aggiungere fino a 10 competenze.</div>
-                        </div>
-                        <div id="skillsList" class="d-flex flex-wrap gap-2 mb-3">
-                            <% if (user.skills && user.skills.length > 0) { %>
-                                <% user.skills.forEach(skill => { %>
-                                    <div class="skill-badge">
-                                        <input type="hidden" name="skills[]" value="<%= skill %>">
-                                        <span class="badge bg-primary d-flex align-items-center">
-                                            <%= skill %>
-                                            <button type="button" class="btn-close btn-close-white ms-2" onclick="removeSkill(this)"></button>
-                                        </span>
-                                    </div>
-                                <% }); %>
-                            <% } %>
+                            <label for="skillsTextarea" class="form-label">Le tue competenze</label>
+                            <textarea class="form-control" id="skillsTextarea" name="skills" rows="4" placeholder="Inserisci le tue competenze separate da virgole"><% if (user.skills && user.skills.length > 0) { %><%= user.skills.join(', ') %><% } %></textarea>
+                            <div class="form-text">Inserisci le competenze separate da virgole. Massimo 10 competenze.</div>
                         </div>
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Annulla</button>
@@ -391,23 +365,6 @@
         </div>
     </div>
 
-    <!-- Script per l'anteprima dell'immagine -->
-    <script>
-        document.getElementById('profilePicture').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                const imagePreview = document.getElementById('imagePreview');
-                const previewImage = imagePreview.querySelector('img');
-                
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
     <% } %>
 </body>
 </html>

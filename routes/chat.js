@@ -31,7 +31,7 @@ router.get('/', isOnboardingComplete, async (req, res) => {
                     WHEN c.user1 = ? THEN c.user2 
                     ELSE c.user1 
                 END as otherUser,
-                u.fullName, u.businessName, u.profilePicture, u.type
+                u.name, u.profilePicture, u.type
             FROM conversations c
             LEFT JOIN users u ON (
                 CASE 
@@ -42,7 +42,6 @@ router.get('/', isOnboardingComplete, async (req, res) => {
             WHERE c.user1 = ? OR c.user2 = ?
             ORDER BY c.updatedAt DESC
         `, [req.user.username, req.user.username, req.user.username, req.user.username]);
-
         res.render('chat', { 
             user: req.user,
             package: pkg,
@@ -61,26 +60,22 @@ router.get('/', isOnboardingComplete, async (req, res) => {
 router.get('/:username', isOnboardingComplete, async (req, res) => {
     try {
         const otherUsername = req.params.username;
-        
         // Verifica che l'altro utente esista
         const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
         if (!otherUser) {
             req.flash('error_msg', 'Utente non trovato.');
             return res.redirect('/chat');
         }
-
         // Non permettere di chattare con se stessi
         if (otherUsername === req.user.username) {
             req.flash('error_msg', 'Non puoi avviare una conversazione con te stesso.');
             return res.redirect('/chat');
         }
-
         // Cerca se esiste già una conversazione tra i due utenti
         let conversation = await db.get(`
             SELECT * FROM conversations 
             WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)
         `, [req.user.username, otherUsername, otherUsername, req.user.username]);
-
         // Se non esiste, creala
         if (!conversation) {
             const result = await db.run(`
@@ -90,7 +85,6 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
             
             conversation = await db.get('SELECT * FROM conversations WHERE id = ?', [result.lastID]);
         }
-
         // Recupera tutti i messaggi della conversazione
         const messages = await db.all(`
             SELECT m.*, u.profilePicture 
@@ -99,7 +93,6 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
             WHERE m.conversationId = ?
             ORDER BY m.createdAt ASC
         `, [conversation.id]);
-
         // Recupera tutte le conversazioni per la sidebar
         const conversations = await db.all(`
             SELECT DISTINCT c.*, 
@@ -107,7 +100,7 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
                     WHEN c.user1 = ? THEN c.user2 
                     ELSE c.user1 
                 END as otherUser,
-                u.fullName, u.businessName, u.profilePicture, u.type
+                u.name, u.profilePicture, u.type
             FROM conversations c
             LEFT JOIN users u ON (
                 CASE 
@@ -118,7 +111,6 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
             WHERE c.user1 = ? OR c.user2 = ?
             ORDER BY c.updatedAt DESC
         `, [req.user.username, req.user.username, req.user.username, req.user.username]);
-
         res.render('chat', { 
             user: req.user,
             package: pkg,
@@ -139,25 +131,21 @@ router.post('/:username/send', isOnboardingComplete, async (req, res) => {
     try {
         const otherUsername = req.params.username;
         const { message } = req.body;
-        
         if (!message || message.trim() === '') {
             req.flash('error_msg', 'Il messaggio non può essere vuoto.');
             return res.redirect(`/chat/${otherUsername}`);
         }
-
         // Verifica che l'altro utente esista
         const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
         if (!otherUser) {
             req.flash('error_msg', 'Utente non trovato.');
             return res.redirect('/chat');
         }
-
         // Cerca se esiste già una conversazione tra i due utenti
         let conversation = await db.get(`
             SELECT * FROM conversations 
             WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)
         `, [req.user.username, otherUsername, otherUsername, req.user.username]);
-
         // Se non esiste, creala
         if (!conversation) {
             const result = await db.run(`
@@ -167,19 +155,16 @@ router.post('/:username/send', isOnboardingComplete, async (req, res) => {
             
             conversation = await db.get('SELECT * FROM conversations WHERE id = ?', [result.lastID]);
         }
-
         // Inserisci il messaggio
         await db.run(`
             INSERT INTO messages (conversationId, sender, content) 
             VALUES (?, ?, ?)
         `, [conversation.id, req.user.username, message.trim()]);
-
         // Aggiorna il timestamp della conversazione
         await db.run(`
             UPDATE conversations SET updatedAt = CURRENT_TIMESTAMP 
             WHERE id = ?
         `, [conversation.id]);
-
         res.redirect(`/chat/${otherUsername}`);
     } catch (err) {
         console.error('Errore durante l\'invio del messaggio:', err);

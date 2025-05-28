@@ -48,30 +48,24 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        
         // Converti l'email in minuscolo
         const emailLowerCase = email.toLowerCase();
-        
         // Cerca l'utente nel database usando solo email
         const user = await db.get(
             'SELECT * FROM users WHERE email = ?', 
             [emailLowerCase]
         );
-        
         if (!user) {
             req.flash('error_msg', 'Credenziali non valide.');
             return res.redirect('/login');
         }
-        const isMatch = await compareAsync(password, user.password);
-        
+        const isMatch = await compareAsync(password, user.password); 
         if (!isMatch) {
             req.flash('error_msg', 'Credenziali non valide.');
             return res.redirect('/login');
         }
-        
         // Autentica l'utente con Passport
         await logInAsync(req, user);
-        
         // Se l'onboarding non è completato, reindirizza alla pagina di onboarding
         if (!user.type) return res.redirect('/onboarding');
         return res.redirect('/');
@@ -91,21 +85,28 @@ router.get('/signup', (req, res) => {
 router.post('/signup', async (req, res) => {
     try {
         const { email, username, password, 'confirm-password': confirmPassword } = req.body;
-
         // Converti l'email in minuscolo
         const emailLowerCase = email.toLowerCase();
-
+        // Validazione username - deve contenere solo lettere minuscole, numeri e trattini
+        const usernameRegex = /^[a-z0-9-]+$/;
+        if (!usernameRegex.test(username)) {
+            req.flash('error_msg', 'Username non valido. Sono ammessi solo lettere minuscole, numeri e trattini.');
+            return res.redirect('/signup');
+        }
+        // Verifica lunghezza username
+        if (username.length < 3 || username.length > 30) {
+            req.flash('error_msg', 'L\'username deve essere lungo tra 3 e 30 caratteri.');
+            return res.redirect('/signup');
+        }
         if (password !== confirmPassword) {
             req.flash('error_msg', 'Le password non corrispondono.');
             return res.redirect('/signup');
         }
-        
         // Verifica se l'email o l'username sono già registrati
         const existingUser = await db.get(
             'SELECT * FROM users WHERE email = ? OR username = ?', 
             [emailLowerCase, username]
         );
-        
         if (existingUser) {
             if (existingUser.email === emailLowerCase) req.flash('error_msg', 'L\'email risulta già associata ad un account.');
             else req.flash('error_msg', 'L\'username è già in uso. Scegli un altro username.');
@@ -113,14 +114,15 @@ router.post('/signup', async (req, res) => {
         }
         // Hash della password e inserimento del nuovo utente nel database
         const hash = await hashAsync(password, 10);
-        
         await db.run(
             'INSERT INTO users (email, username, password) VALUES (?, ?, ?)', 
             [emailLowerCase, username, hash]
         );
-        
-        req.flash('success_msg', 'Account creato con successo. Si prega di effettuare il login.');
-        res.redirect('/login');
+        // Recupera l'utente appena creato per il login automatico
+        const newUser = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+        // Login automatico
+        await logInAsync(req, newUser);
+        res.redirect('/onboarding');
     } catch (err) {
         console.error(err);
         req.flash('error_msg', 'Si è verificato un errore. Si prega di riprovare.');

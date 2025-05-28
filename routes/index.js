@@ -3,7 +3,7 @@
 import express from 'express';
 import db from '../database/db.js';
 import { createRequire } from "module";
-import upload from '../public/js/upload.js';
+import upload from '../upload.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -15,6 +15,25 @@ const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
 const router = express.Router();
 
+// Middleware per gestire gli errori di Multer
+const handleMulterError = (err, req, res, next) => {
+    if (err) {
+        // Se c'è un file temporaneo creato da Multer prima dell'errore, eliminalo
+        if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch (cleanupErr) {
+                console.error('Errore durante la pulizia del file temporaneo:', cleanupErr);
+            }
+        }
+        if (err.code === 'LIMIT_FILE_SIZE') req.flash('error_msg', 'Il file è troppo grande. La dimensione massima consentita è 5MB.');
+        else if (err.message === 'INVALID_FILE_TYPE') req.flash('error_msg', 'Solo i file immagine sono ammessi!');
+        else req.flash('error_msg', 'Si è verificato un errore durante l\'upload del file.');
+        return res.redirect('/profile');
+    }
+    next();
+};
+
 // Rotta per la home page
 router.get('/', async (req, res) => {
     try {
@@ -23,23 +42,22 @@ router.get('/', async (req, res) => {
         if (req.isAuthenticated() && !req.user.type) {
             showOnboardingAlert = true;
         }
-          // Query per prendere le offerte di lavoro con i dati dell'azienda
+        // Query per prendere le offerte di lavoro con i dati dell'azienda
         const businessPostsQuery = `
-            SELECT p.*, u.businessName, u.website, u.profilePicture, u.username 
+            SELECT p.*, u.name, u.website, u.profilePicture, u.username 
             FROM posts p 
             JOIN users u ON p.userId = u.username 
             WHERE p.type = 'job_offer' 
             ORDER BY p.createdAt DESC
         `;
-          // Query per prendere le promozioni dei freelancer con i dati dell'utente
+        // Query per prendere le promozioni dei freelancer con i dati dell'utente
         const freelancerPostsQuery = `
-            SELECT p.*, u.fullName, u.website, u.profilePicture, u.username 
+            SELECT p.*, u.name, u.website, u.profilePicture, u.username 
             FROM posts p 
             JOIN users u ON p.userId = u.username
             WHERE p.type = 'freelancer_promo' 
             ORDER BY p.createdAt DESC
         `;
-        
         // Esegui entrambe le query in parallelo usando async/await
         let [businessPosts, freelancerPosts] = await Promise.all([
             db.all(businessPostsQuery, []).catch(err => {
@@ -51,11 +69,9 @@ router.get('/', async (req, res) => {
                 return [];
             })
         ]);
-        
         // Assicurati che businessPosts e freelancerPosts non siano null
         businessPosts = businessPosts || [];
         freelancerPosts = freelancerPosts || [];
-        
         res.render('index', { 
             showOnboardingAlert, 
             package: pkg, 
@@ -75,13 +91,11 @@ router.get('/onboarding', (req, res) => {
         req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
         return res.redirect('/login');
     }
-    
     // Controlla se l'utente ha già completato l'onboarding
     if (req.user.type) {
         req.flash('info_msg', 'Hai già completato l\'onboarding.');
         return res.redirect('/');
     }
-    
     res.render('onboarding');
 });
 
@@ -92,23 +106,10 @@ router.post('/onboarding', async (req, res) => {
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }    
-        
-        const { type, fullName, businessName, website, phone, location, defaultProfilePicture } = req.body;
-        let updateQuery, updateData;
-
-        if (type === 'freelancer') {
-            updateQuery = 'UPDATE users SET type = ?, fullName = ?, website = ?, phone = ?, location = ?, profilePicture = ? WHERE username = ?';
-            updateData = [type, fullName, website, phone, location, defaultProfilePicture, req.user.username];
-        } else if (type === 'business') {
-            updateQuery = 'UPDATE users SET type = ?, businessName = ?, website = ?, phone = ?, location = ?, profilePicture = ? WHERE username = ?';
-            updateData = [type, businessName, website, phone, location, defaultProfilePicture, req.user.username];
-        } else {
-            req.flash('error_msg', 'Tipo utente non valido.');
-            return res.redirect('/onboarding');
-        }
-
+        const { type, name, website, phone, location, defaultProfilePicture } = req.body;
+        const updateQuery = 'UPDATE users SET type = ?, name = ?, website = ?, phone = ?, location = ?, profilePicture = ? WHERE username = ?';
+        const updateData = [type, name, website, phone, location, defaultProfilePicture, req.user.username];
         await db.run(updateQuery, updateData);
-        req.flash('success_msg', 'Onboarding completato con successo!');
         res.redirect('/');
     } catch (err) {
         console.error(err);
@@ -123,7 +124,6 @@ router.post('/onboarding/skip', (req, res) => {
         req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
         return res.redirect('/login');
     }
-
     // Semplicemente reindirizza l'utente alla pagina principale
     res.redirect('/');
 });
@@ -138,8 +138,7 @@ router.get('/profile', async (req, res) => {
         if (!req.user.type) {
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/onboarding');
-        }
-        
+        } 
         // Query per recuperare gli annunci pubblicati dall'utente
         const userPostsQuery = `
             SELECT * FROM posts 
@@ -158,10 +157,8 @@ router.get('/profile', async (req, res) => {
                     return [];
                 })
         ]);
-
         // Aggiungi le skills all'oggetto user
         req.user.skills = userSkills.map(s => s.skill);
-        
         res.render('profile', { 
             user: req.user, 
             package: pkg,
@@ -180,23 +177,18 @@ router.get('/profile', async (req, res) => {
 router.get('/profile/:username', async (req, res) => {
     try {
         const username = req.params.username;
-        
         // Controllo se l'utente è autenticato e sta cercando di visualizzare il proprio profilo
         if (req.isAuthenticated() && username === req.user.username) {
             return res.redirect('/profile');
         }
-        
         // Query per recuperare i dati dell'utente tramite username
         const userQuery = 'SELECT * FROM users WHERE username = ?';
-        
         // Recupera i dati dell'utente
         const otherUser = await db.get(userQuery, [username]);
-        
         if (!otherUser) {
             req.flash('error_msg', 'Utente non trovato.');
             return res.redirect('/');
         }
-        
         // Query per recuperare gli annunci pubblicati dall'utente
         const userPostsQuery = `
             SELECT * FROM posts 
@@ -215,10 +207,8 @@ router.get('/profile/:username', async (req, res) => {
                     return [];
                 })
         ]);
-
         // Aggiungi le skills all'oggetto user
         otherUser.skills = userSkills.map(s => s.skill);
-        
         res.render('profile', { 
             user: otherUser, 
             package: pkg,
@@ -240,11 +230,9 @@ router.get('/search', async (req, res) => {
         const category = req.query.category?.trim();
         const page = parseInt(req.query.page) || 1; // Pagina corrente, default 1
         const resultsPerPage = 5; // Numero di risultati per pagina
-        
         if (!query) {
             return res.redirect('/');
         }
-        
         // Costruisci la query in base ai parametri di ricerca
         let countQuery = `
             SELECT COUNT(*) as total
@@ -253,16 +241,13 @@ router.get('/search', async (req, res) => {
             WHERE (
                 p.title LIKE ? OR 
                 p.content LIKE ? OR
-                u.businessName LIKE ? OR
-                u.fullName LIKE ?
+                u.name LIKE ?
             )
         `;
-
         let searchQuery = `
             SELECT 
                 p.*,
-                u.businessName,
-                u.fullName,
+                u.name,
                 u.website,
                 u.profilePicture,
                 u.username
@@ -271,38 +256,31 @@ router.get('/search', async (req, res) => {
             WHERE (
                 p.title LIKE ? OR 
                 p.content LIKE ? OR
-                u.businessName LIKE ? OR
-                u.fullName LIKE ?
+                u.name LIKE ?
             )
         `;
-
         const queryParams = [];
         const countParams = [];
         const searchParam = `%${query}%`;
-        
         // Parametri per la query di conteggio
-        countParams.push(searchParam, searchParam, searchParam, searchParam);
-        
+        countParams.push(searchParam, searchParam, searchParam);
         // Parametri per la query di ricerca
-        queryParams.push(searchParam, searchParam, searchParam, searchParam);
-          // Aggiungi filtro per categoria se specificato
+        queryParams.push(searchParam, searchParam, searchParam);
+        // Aggiungi filtro per categoria se specificato
         if (category) {
             countQuery += ` AND p.category = ?`;
             searchQuery += ` AND p.category = ?`;
             countParams.push(category);
             queryParams.push(category);
         }
-        
         // Aggiungi ordinamento e paginazione alla query di ricerca
         searchQuery += ` ORDER BY p.createdAt DESC LIMIT ? OFFSET ?`;
         queryParams.push(resultsPerPage, (page - 1) * resultsPerPage);
-        
         // Esegui entrambe le query in parallelo
         const [countResult, results] = await Promise.all([
             db.get(countQuery, countParams),
             db.all(searchQuery, queryParams)
         ]);
-        
         const totalResults = countResult.total;
         const totalPages = Math.ceil(totalResults / resultsPerPage);
         res.render('search', { 
@@ -327,31 +305,80 @@ router.get('/search', async (req, res) => {
     }
 });
 
+// Funzione helper per eliminare foto profilo esistenti (escluso un file specifico)
+const deleteExistingProfilePictures = (username, excludeFilename = null) => {
+    try {
+        const uploadDir = path.join(__dirname, '../public/uploads');
+        const possibleExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+        possibleExtensions.forEach(ext => {
+            const fileName = `${username}.${ext}`;
+            const existingFile = path.join(uploadDir, fileName);
+            
+            // Non eliminare il file se è quello che abbiamo appena caricato
+            if (excludeFilename && fileName === excludeFilename) {
+                return;
+            }
+            
+            if (fs.existsSync(existingFile)) {
+                try {
+                    fs.unlinkSync(existingFile);
+                } catch (err) {
+                    console.error(`Errore durante l'eliminazione: ${err}`);
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Errore durante l\'eliminazione delle foto esistenti:', err);
+    }
+};
+
 // Rotta POST per l'upload della foto profilo
-router.post('/profile/upload-photo', upload.single('profilePicture'), async (req, res) => {
+router.post('/profile/upload-photo', upload.single('profilePicture'), handleMulterError, async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
-        
+
         if (!req.file) {
             req.flash('error_msg', 'Nessun file è stato caricato o è avvenuto un errore.');
             return res.redirect('/profile');
         }
         
-        // Percorso relativo all'immagine per la memorizzazione nel database
-        // Per renderlo accessibile tramite browser, salviamo il percorso relativo a /public
+        // Verifica che il file sia stato effettivamente salvato
+        const fullFilePath = req.file.path;
+        if (!fs.existsSync(fullFilePath)) {
+            console.error('Il file non è stato salvato correttamente:', fullFilePath);
+            req.flash('error_msg', 'Errore durante il salvataggio del file.');
+            return res.redirect('/profile');
+        }
+        
+        // Percorso relativo all'immagine per la memorizzazione nel database 
         const relativePath = `/uploads/${req.file.filename}`;
         
         // Aggiorna il profilo dell'utente con il nuovo percorso dell'immagine
-        await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [relativePath, req.user.username]);
-        
-        // Aggiorna la foto profilo nell'oggetto utente nella sessione
-        req.user.profilePicture = relativePath;
-        
-        req.flash('success_msg', 'Foto profilo aggiornata con successo!');
-        res.redirect('/profile');
+        try {
+            await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [relativePath, req.user.username]);
+            
+            // Solo dopo il successo dell'aggiornamento del database, elimina i file esistenti (diversi dal nuovo)
+            deleteExistingProfilePictures(req.user.username, req.file.filename);
+            
+            req.user.profilePicture = relativePath;
+            
+            res.redirect('/profile');
+        } catch (dbErr) {
+            // Se l'aggiornamento del database fallisce, elimina il file appena caricato
+            console.error('Errore durante l\'aggiornamento del database:', dbErr);
+            if (fs.existsSync(fullFilePath)) {
+                try {
+                    fs.unlinkSync(fullFilePath);
+                } catch (cleanupErr) {
+                    console.error('Errore durante la pulizia dopo errore database:', cleanupErr);
+                }
+            }
+            req.flash('error_msg', 'Si è verificato un errore durante l\'aggiornamento del profilo.');
+            return res.redirect('/profile');
+        }
     } catch (err) {
         console.error('Errore durante l\'aggiornamento della foto profilo:', err);
         req.flash('error_msg', 'Si è verificato un errore durante l\'aggiornamento della foto profilo.');
@@ -366,18 +393,15 @@ router.post('/profile/remove-photo', async (req, res) => {
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
-          // Determina l'immagine predefinita in base al tipo di utente
-        const defaultProfilePicture = req.user.type === 'business' ? 'img/business.png' : 'img/freelancer.png';
-        
+        // Determina l'immagine predefinita in base al tipo di utente
+        const defaultProfilePicture = req.user.type === 'business' ? '/img/business.png' : '/img/freelancer.png';
         // Verifica se l'utente ha una foto profilo personalizzata
         if (req.user.profilePicture === defaultProfilePicture || !req.user.profilePicture) {
             req.flash('info_msg', 'Non hai una foto profilo personalizzata da rimuovere.');
             return res.redirect('/profile');
         }
-        
         // Percorso completo del file della foto profilo attuale
-        const fullPath = path.join(__dirname, '../public', req.user.profilePicture);
-        
+        const fullPath = path.join(__dirname, '../public', 'uploads', req.user.profilePicture);
         // Verifica se il file esiste e non è l'immagine predefinita
         if (req.user.profilePicture !== defaultProfilePicture && fs.existsSync(fullPath)) {
             // Rimuovi il file
@@ -388,12 +412,10 @@ router.post('/profile/remove-photo', async (req, res) => {
                 // Continua comunque con l'aggiornamento del DB
             }
         }
-        
         // Imposta l'immagine predefinita nel database in base al tipo di utente
         await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [defaultProfilePicture, req.user.username]);
-          // Aggiorna la foto profilo nell'oggetto utente nella sessione
+        // Aggiorna la foto profilo nell'oggetto utente nella sessione
         req.user.profilePicture = defaultProfilePicture;
-        
         req.flash('success_msg', 'Foto profilo rimossa con successo!');
         res.redirect('/profile');
     } catch (err) {
@@ -410,15 +432,11 @@ router.post('/profile/update-bio', upload.none(), async (req, res) => {
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
-        
         const { bio } = req.body;
-        
         // Aggiorna la biografia dell'utente nel database
         await db.run('UPDATE users SET bio = ? WHERE username = ?', [bio, req.user.username]);
-        
         // Aggiorna la biografia nell'oggetto utente nella sessione
         req.user.bio = bio;
-        
         req.flash('success_msg', 'Biografia aggiornata con successo!');
         res.redirect('/profile');
     } catch (err) {
@@ -435,42 +453,22 @@ router.post('/profile/update-contacts', async (req, res) => {
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
-        
-        const { website, phone, fullName, businessName, location } = req.body;
-        
+        const { website, phone, name, location } = req.body;
         // Validazione URL del sito web (opzionale)
         let validatedWebsite = website ? website.trim() : null;
         if (validatedWebsite && !validatedWebsite.startsWith('http://') && !validatedWebsite.startsWith('https://')) {
             validatedWebsite = 'https://' + validatedWebsite;
         }
-
-        let query;
-        const params = [];
-
-        if (req.user.type === 'freelancer') {
-            query = 'UPDATE users SET website = ?, phone = ?, fullName = ?, location = ? WHERE username = ?';
-            params.push(validatedWebsite, phone, fullName, location, req.user.username);
-            req.user.fullName = fullName;
-        } else if (req.user.type === 'business') {
-            query = 'UPDATE users SET website = ?, phone = ?, businessName = ?, location = ? WHERE username = ?';
-            params.push(validatedWebsite, phone, businessName, location, req.user.username);
-            req.user.businessName = businessName;
-        } else {
-            // Tipo utente non gestito o non dovrebbe essere qui
-            req.flash('error_msg', 'Tipo utente non valido.');
-            return res.redirect('/profile');
-        }
-
+        // Usa il campo unificato 'name' per entrambi i tipi di utente
+        const query = 'UPDATE users SET website = ?, phone = ?, name = ?, location = ? WHERE username = ?';
+        const params = [validatedWebsite, phone, name, location, req.user.username];
         // Aggiorna i contatti dell'utente nel database
         await db.run(query, params);
-        
         // Aggiorna i contatti nell'oggetto utente nella sessione
         req.user.website = validatedWebsite;
         req.user.phone = phone;
-        req.user.location = location; // Added location
-        if (req.user.type === 'freelancer') req.user.fullName = fullName;
-        else if (req.user.type === 'business') req.user.businessName = businessName;
-        
+        req.user.location = location;
+        req.user.name = name;
         req.flash('success_msg', 'Contatti aggiornati con successo!');
         res.redirect('/profile');
     } catch (err) {
@@ -487,36 +485,37 @@ router.post('/profile/update-skills', express.urlencoded({ extended: true }), as
             req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
             return res.redirect('/login');
         }
-
-        // Controllo più restrittivo: solo i freelancer possono gestire le competenze
+        // Solo i freelancer possono gestire le competenze
         if (req.user.type !== 'freelancer') {
             req.flash('error_msg', 'Le competenze sono disponibili solo per i profili freelancer.');
             return res.redirect('/profile');
         }
-
-        // Assicurati che skills sia sempre un array, anche se vuoto o con un solo elemento
-        const skills = Array.isArray(req.body.skills) ? req.body.skills : [req.body.skills].filter(Boolean);
-
+        // Parsa le comma-separated skills dalla textarea
+        let skills = [];
+        if (req.body.skills && typeof req.body.skills === 'string') {
+            skills = req.body.skills
+                .split(',')
+                .map(skill => skill.trim())
+                .filter(skill => skill.length > 0);
+        } else if (Array.isArray(req.body.skills)) {
+            skills = req.body.skills.filter(Boolean);
+        }
         // Validazione
         if (skills.length > 10) {
             req.flash('error_msg', 'Non puoi aggiungere più di 10 competenze.');
             return res.redirect('/profile');
         }
-
         await db.run('DELETE FROM skills WHERE username = ?', [req.user.username]);
-
         if (skills.length > 0) {
             const insertSkills = skills.map(skill => ({
                 username: req.user.username,
                 skill: skill.trim()
             }));
-
             const insertQuery = 'INSERT INTO skills (username, skill) VALUES (?, ?)';
             for (const skillData of insertSkills) {
                 await db.run(insertQuery, [skillData.username, skillData.skill]);
             }
         }
-
         req.flash('success_msg', 'Competenze aggiornate con successo!');
         res.redirect('/profile');
     } catch (err) {

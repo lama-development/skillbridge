@@ -40,19 +40,16 @@ const isFreelancerUser = (req, res, next) => {
 router.post('/job-offer', isOnboardingComplete, isBusinessUser, async (req, res) => {
     try {
         const { title, content, category } = req.body;
-        
         // Validazione dei dati
         if (!title || !content) {
             req.flash('error_msg', 'Titolo e descrizione sono obbligatori.');
             return res.redirect('/');
         }
-        
         // Inserimento nel database con async/await
         await db.run(
             'INSERT INTO posts (userId, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
             [req.user.username, 'job_offer', title, content, category || 'Altro', new Date().toISOString()]
         );
-        
         req.flash('success_msg', 'Offerta di lavoro pubblicata con successo!');
         res.redirect('/');
     } catch (err) {
@@ -66,19 +63,16 @@ router.post('/job-offer', isOnboardingComplete, isBusinessUser, async (req, res)
 router.post('/freelancer-promo', isOnboardingComplete, isFreelancerUser, async (req, res) => {
     try {
         const { title, content, category } = req.body;
-        
         // Validazione dei dati
         if (!title || !content) {
             req.flash('error_msg', 'Titolo e descrizione sono obbligatori.');
             return res.redirect('/');
         }
-        
         // Inserimento nel database con async/await
         await db.run(
             'INSERT INTO posts (userId, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
             [req.user.username, 'freelancer_promo', title, content, category || 'Altro', new Date().toISOString()]
         );
-        
         req.flash('success_msg', 'Promozione dei tuoi servizi pubblicata con successo!');
         res.redirect('/');
     } catch (err) {
@@ -92,24 +86,19 @@ router.post('/freelancer-promo', isOnboardingComplete, isFreelancerUser, async (
 router.post('/:id/delete', isOnboardingComplete, async (req, res) => {
     try {
         const postId = req.params.id;
-        
         // Prima verifichiamo che l'utente sia il proprietario del post
         const post = await db.get('SELECT * FROM posts WHERE id = ?', [postId]);
-        
         if (!post) {
             req.flash('error_msg', 'Post non trovato.');
             return res.redirect('/');
         }
-        
         // Verifica che l'utente sia il proprietario del post
         if (post.userId !== req.user.username) {
             req.flash('error_msg', 'Non sei autorizzato a eliminare questo post.');
             return res.redirect('/');
         }
-        
         // Eliminazione del post
         await db.run('DELETE FROM posts WHERE id = ?', [postId]);
-        
         req.flash('success_msg', 'Post eliminato con successo!');
         res.redirect('/');
     } catch (err) {
