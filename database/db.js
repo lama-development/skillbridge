@@ -16,7 +16,7 @@ db.serialize(() => {
     username TEXT PRIMARY KEY,
     email TEXT NOT NULL UNIQUE COLLATE NOCASE,
     password TEXT NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('freelancer', 'business')),
+    type TEXT CHECK (type IN ('freelancer', 'business')),
     name TEXT,
     website TEXT,
     phone TEXT,

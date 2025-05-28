@@ -11,10 +11,10 @@
 - [x] Aggiungere skills ai profili dei freelancer
 - [x] Aggiungere pagina 404
 - [ ] Validare tutti gli input lato server
-- [ ] Aggiungere filtro ricerca in base al tipo di utente
+- [x] Aggiungere filtro ricerca in base al tipo di utente
 - [ ] Aggiungere messaggio personalizzato per invio candidatura
 - [ ] Aggiungere supporto dark mode con toggle
 - [x] Migliorare la pagina Chat su mobile
 - [ ] Aggiungere più contenuti alla pagina Home
-- [ ] Valutare timestamp chat
+- [x] Valutare timestamp chat
 - [x] Eliminare funzione client side selectConversation

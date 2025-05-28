@@ -228,6 +228,7 @@ router.get('/search', async (req, res) => {
     try {
         const query = req.query.q?.trim();
         const category = req.query.category?.trim();
+        const userType = req.query.userType?.trim();
         const page = parseInt(req.query.page) || 1; // Pagina corrente, default 1
         const resultsPerPage = 5; // Numero di risultati per pagina
         if (!query) {
@@ -273,6 +274,13 @@ router.get('/search', async (req, res) => {
             countParams.push(category);
             queryParams.push(category);
         }
+        // Aggiungi filtro per tipo di utente se specificato
+        if (userType) {
+            countQuery += ` AND p.type = ?`;
+            searchQuery += ` AND p.type = ?`;
+            countParams.push(userType);
+            queryParams.push(userType);
+        }
         // Aggiungi ordinamento e paginazione alla query di ricerca
         searchQuery += ` ORDER BY p.createdAt DESC LIMIT ? OFFSET ?`;
         queryParams.push(resultsPerPage, (page - 1) * resultsPerPage);
@@ -286,6 +294,7 @@ router.get('/search', async (req, res) => {
         res.render('search', { 
             query,
             selectedCategory: category || '',
+            selectedUserType: userType || '',
             results: results || [],
             package: pkg,
             user: req.user,
