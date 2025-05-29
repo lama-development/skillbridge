@@ -21,6 +21,35 @@ const isOnboardingComplete = (req, res, next) => {
     next();
 };
 
+// Middleware per verificare se l'utente può chattare con un altro utente
+// (solo tra freelancer e business, non tra stesso tipo)
+const isValidChatPartner = async (req, res, next) => {
+    try {
+        const otherUsername = req.params.username;
+        
+        // Recupera il tipo dell'altro utente
+        const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
+        
+        if (!otherUser) {
+            req.flash('error_msg', 'Utente non trovato.');
+            return res.redirect('/chat');
+        }
+        
+        // Verifica che i tipi di utente siano compatibili per chattare
+        if (req.user.type === otherUser.type) {
+            req.flash('error_msg', 'Non puoi chattare con utenti dello stesso tipo. Le chat sono consentite solo tra freelancer e aziende.');
+            return res.redirect('/chat');
+        }
+        
+        // Continua con la richiesta
+        next();
+    } catch (err) {
+        console.error('Errore nella verifica della compatibilità degli utenti:', err);
+        req.flash('error_msg', 'Si è verificato un errore durante la verifica della compatibilità degli utenti.');
+        return res.redirect('/chat');
+    }
+};
+
 // Rotta per la pagina chat principale
 router.get('/', isOnboardingComplete, async (req, res) => {
     try {
@@ -57,7 +86,7 @@ router.get('/', isOnboardingComplete, async (req, res) => {
 });
 
 // Rotta per iniziare una conversazione con un utente specifico
-router.get('/:username', isOnboardingComplete, async (req, res) => {
+router.get('/:username', isOnboardingComplete, isValidChatPartner, async (req, res) => {
     try {
         const otherUsername = req.params.username;
         // Verifica che l'altro utente esista
@@ -78,6 +107,12 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
         `, [req.user.username, otherUsername, otherUsername, req.user.username]);
         // Se non esiste, creala
         if (!conversation) {
+            // Doppio controllo per sicurezza - verifichiamo nuovamente i tipi di utente
+            if (req.user.type === otherUser.type) {
+                req.flash('error_msg', 'Non puoi chattare con utenti dello stesso tipo. Le chat sono consentite solo tra freelancer e aziende.');
+                return res.redirect('/chat');
+            }
+            
             const result = await db.run(`
                 INSERT INTO conversations (username1, username2) 
                 VALUES (?, ?)
@@ -127,7 +162,7 @@ router.get('/:username', isOnboardingComplete, async (req, res) => {
 });
 
 // Rotta per inviare un messaggio
-router.post('/:username/send', isOnboardingComplete, async (req, res) => {
+router.post('/:username/send', isOnboardingComplete, isValidChatPartner, async (req, res) => {
     try {
         const otherUsername = req.params.username;
         const { message } = req.body;
@@ -148,6 +183,12 @@ router.post('/:username/send', isOnboardingComplete, async (req, res) => {
         `, [req.user.username, otherUsername, otherUsername, req.user.username]);
         // Se non esiste, creala
         if (!conversation) {
+            // Doppio controllo per sicurezza - verifichiamo nuovamente i tipi di utente
+            if (req.user.type === otherUser.type) {
+                req.flash('error_msg', 'Non puoi chattare con utenti dello stesso tipo. Le chat sono consentite solo tra freelancer e aziende.');
+                return res.redirect('/chat');
+            }
+            
             const result = await db.run(`
                 INSERT INTO conversations (username1, username2) 
                 VALUES (?, ?)

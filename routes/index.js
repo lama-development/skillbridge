@@ -266,6 +266,21 @@ router.get('/search', async (req, res) => {
         countParams.push(searchParam, searchParam, searchParam);
         // Parametri per la query di ricerca
         queryParams.push(searchParam, searchParam, searchParam);
+        
+        // Aggiungi filtro per tipo di post in base al tipo di utente
+        if (req.isAuthenticated() && req.user.type) {
+            if (req.user.type === 'freelancer') {
+                // Freelancer: mostra solo post delle aziende (offerte di lavoro)
+                countQuery += ` AND p.type = 'job_offer'`;
+                searchQuery += ` AND p.type = 'job_offer'`;
+            } else if (req.user.type === 'business') {
+                // Azienda: mostra solo post dei freelancer (promozioni)
+                countQuery += ` AND p.type = 'freelancer_promo'`;
+                searchQuery += ` AND p.type = 'freelancer_promo'`;
+            }
+            // Nota: gli utenti ospiti o senza tipo vedono tutti i post (nessun filtro aggiuntivo)
+        }
+        
         // Aggiungi filtro per categoria se specificato
         if (category) {
             countQuery += ` AND p.category = ?`;

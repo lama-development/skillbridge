@@ -17,6 +17,13 @@
     <!-- Main content -->
     <main class="flex-shrink-0">
         <div class="container py-4">
+            <!-- Flash Messages -->
+            <% if (error_msg && error_msg.length > 0) { %>
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <%= error_msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
             <div class="card">
                 <div class="card-body p-0">
                     <div class="row g-0 chat-height <%= selectedConversation && otherUser ? 'chat-mobile-conversation-view' : 'chat-mobile-contacts-view' %>" id="chat-container">
