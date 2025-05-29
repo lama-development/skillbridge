@@ -13,7 +13,6 @@
 - [ ] Validare tutti gli input lato server
 - [x] Aggiungere filtro ricerca in base al tipo di utente
 - [ ] Aggiungere messaggio personalizzato per invio candidatura
-- [ ] Aggiungere supporto dark mode con toggle
 - [x] Migliorare la pagina Chat su mobile
 - [ ] Aggiungere più contenuti alla pagina Home
 - [x] Valutare timestamp chat

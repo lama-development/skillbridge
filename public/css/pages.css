@@ -194,19 +194,16 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 2rem;
-    background-color: rgba(255, 255, 255, 0.1);
+    padding: .5rem 1rem;
     color: var(--color-text-light);
     text-decoration: none;
     border-radius: 0.5rem;
     font-weight: 500;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
+    border: 2px solid #fff;
 }
 .notfound-button:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-    color: var(--color-text-light);
-    border-color: rgba(255, 255, 255, 0.5);
+    background-color: #fff;
+    color: var(--color-primary);
 }
 
 /* Media queries */

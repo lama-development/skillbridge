@@ -34,13 +34,6 @@
                             <option value="Copywriting" <%= selectedCategory === 'Copywriting' ? 'selected' : '' %>>Copywriting</option>
                             <option value="Altro" <%= selectedCategory === 'Altro' ? 'selected' : '' %>>Altro</option>
                         </select>
-                        
-                        <!-- Filtro per tipo di utente -->
-                        <select class="form-select" name="userType" onchange="this.form.submit()">
-                            <option value="">Tutti i tipi</option>
-                            <option value="job_offer" <%= selectedUserType === 'job_offer' ? 'selected' : '' %>>Offerte di Lavoro</option>
-                            <option value="freelancer_promo" <%= selectedUserType === 'freelancer_promo' ? 'selected' : '' %>>Freelancer</option>
-                        </select>
                     </form>
                 </div>
             </div>
@@ -80,7 +73,7 @@
                     <ul class="pagination justify-content-center">
                         <!-- Pulsante "Precedente" -->
                         <li class="page-item <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
-                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&userType=<%= selectedUserType %>&page=<%= pagination.page - 1 %>" aria-label="Precedente">
+                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= pagination.page - 1 %>" aria-label="Precedente">
                                 <span aria-hidden="true">&laquo;</span>
                                 <span class="visually-hidden">Precedente</span>
                             </a>
@@ -102,7 +95,7 @@
                         // Pagina 1 (se non inclusa nell'intervallo)
                         if (startPage > 1) { %>
                             <li class="page-item">
-                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&userType=<%= selectedUserType %>&page=1">1</a>
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=1">1</a>
                             </li>
                             <% if (startPage > 2) { %>
                                 <li class="page-item disabled">
@@ -113,7 +106,7 @@
                         <!-- Pagine numeriche -->
                         <% for (let i = startPage; i <= endPage; i++) { %>
                             <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
-                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&userType=<%= selectedUserType %>&page=<%= i %>"><%= i %></a>
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= i %>"><%= i %></a>
                             </li>
                         <% } %>
                         
@@ -125,12 +118,12 @@
                                 </li>
                             <% } %>
                             <li class="page-item">
-                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&userType=<%= selectedUserType %>&page=<%= pagination.totalPages %>"><%= pagination.totalPages %></a>
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= pagination.totalPages %>"><%= pagination.totalPages %></a>
                             </li>
                         <% } %>
                         <!-- Pulsante "Successiva" -->
                         <li class="page-item <%= !pagination.hasNextPage ? 'disabled' : '' %>">
-                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&userType=<%= selectedUserType %>&page=<%= pagination.page + 1 %>" aria-label="Successiva">
+                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory %>&page=<%= pagination.page + 1 %>" aria-label="Successiva">
                                 <span aria-hidden="true">&raquo;</span>
                                 <span class="visually-hidden">Successiva</span>
                             </a>
