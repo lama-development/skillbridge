@@ -14,9 +14,8 @@
     <%- include('partials/modal') %>
     <%- include('partials/post-modals') %>
     
-    <!-- Alert banners in container -->
     <div class="container">
-        <!-- Onboarding se non ancora completato -->
+        <!-- Annuncio onboarding se non ancora completato -->
         <% if (showOnboardingAlert) { %>
             <div class="alert alert-warning alert-dismissible show mt-3" role="alert">
                 <div class="d-flex">
@@ -56,6 +55,7 @@
     <main class="flex-shrink-0">
         <div class="container py-5">
             <section class="mb-5">
+                <!-- Intestazione della sezione -->
                 <div class="d-flex justify-content-md-between justify-content-start mb-4 flex-md-row flex-column align-items-md-center align-items-start">
                     <div>
                         <% if (user && user.name) { %>
@@ -82,7 +82,6 @@
                             </div>
                         </div>
                     <% } %>
-
                     <!-- Trova professionisti (per ospiti o aziende) -->
                     <% if (!user || !user.type || user.type === 'business') { %>
                         <div class="col-md-6">
@@ -98,7 +97,6 @@
                             </div>
                         </div>
                     <% } %>
-                    
                     <!-- Promuovi servizi (per freelancer) -->
                     <% if (user && user.type === 'freelancer') { %>
                         <div class="col-md-6">
@@ -114,7 +112,6 @@
                             </div>
                         </div>
                     <% } %>
-                    
                     <!-- Pubblica offerta (per aziende) -->
                     <% if (user && user.type === 'business') { %>
                         <div class="col-md-6">
@@ -133,7 +130,7 @@
                 </div>
             </section>
 
-            <!-- Hero Section -->
+            <!-- Banner Section -->
             <section class="gradient-bg py-md-5 py-4 mb-5 rounded-3">
                 <div class="container-fluid py-md-4 py-3">
                     <div class="row align-items-center g-4">
@@ -151,9 +148,7 @@
                 </div>
             </section>
 
-
-
-            <!-- Categorie di competenze -->
+            <!-- Categorie -->
             <section class="mb-5 py-4">
                 <h2 class="display-6 mb-4 fw-bold text-center">Esplora per categorie</h2>
                 <div class="row g-4">
@@ -198,7 +193,7 @@
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="/search?q=&category=Altro" class="text-decoration-none">
+                        <a href="/search?q=&category=Traduzioni" class="text-decoration-none">
                             <div class="card category-card h-100">
                                 <div class="card-body text-center p-3">
                                     <i class="bi bi-translate fs-1 text-primary mb-2"></i>
@@ -230,6 +225,14 @@
                             <% businessPosts.forEach(post => { %>
                                 <%- include('partials/post-card', { post }) %>
                             <% }) %>
+                            
+                            <% if (businessCount > businessPosts.length) { %>
+                                <div class="text-center mt-4">
+                                    <a href="/search?q=&category=all" class="btn btn-outline-primary">
+                                        Vedi tutti i post
+                                    </a>
+                                </div>
+                            <% } %>
                         </div>
                     </div>
                 <% } else { %>
@@ -238,7 +241,7 @@
                         <% if (user && user.type === 'business') { %>
                             <div class="mt-2">
                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#job-offer-modal">
-                                    Pubblica offerta di lavoro
+                                    Pubblica un annuncio
                                 </button>
                             </div>
                         <% } %>
@@ -257,6 +260,14 @@
                             <% freelancerPosts.forEach(post => { %>
                                 <%- include('partials/post-card', { post }) %>
                             <% }) %>
+                            
+                            <% if (freelancerCount > freelancerPosts.length) { %>
+                                <div class="text-center mt-4">
+                                    <a href="/search?q=&category=all" class="btn btn-outline-primary">
+                                        Vedi tutti i post
+                                    </a>
+                                </div>
+                            <% } %>
                         </div>
                     </div>
                 <% } else { %>
@@ -265,7 +276,7 @@
                         <% if (user && user.type === 'freelancer') { %>
                             <div class="mt-2">
                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#freelancer-promo-modal">
-                                    Promuovi i tuoi servizi
+                                    Pubblica un annuncio
                                 </button>
                             </div>
                         <% } %>
@@ -285,7 +296,7 @@
                                     <span class="fs-4 text-white fw-bold">1</span>
                                 </div>
                                 <h3 class="card-title fs-4">Registrati</h3>
-                                <p class="text-muted">Registrati e completa il tuo profilo specificando le tue competenze o le esigenze della tua azienda.</p>
+                                <p class="text-muted">Registrati e completa il tuo profilo specificando le tue competenze o le informazioni della tua azienda.</p>
                             </div>
                         </div>
                     </div>
@@ -307,7 +318,7 @@
                                     <span class="fs-4 text-white fw-bold">3</span>
                                 </div>
                                 <h3 class="card-title fs-4">Collabora</h3>
-                                <p class="text-muted">Avvia una collaborazione tramite la nostra piattaforma sicura e concentrati sul tuo successo.</p>
+                                <p class="text-muted">Avvia una collaborazione tramite la nostra piattaforma sicura e concentrati sul tuo progetto.</p>
                             </div>
                         </div>
                     </div>
@@ -331,7 +342,10 @@
                                 </h2>
                                 <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Inizia con la <a href="/signup">registrazione gratuita</a>, poi completa il tuo profilo selezionando se sei un freelancer o un'azienda. Per i freelancer, aggiungi le tue competenze e crea il tuo portfolio. Per le aziende, inserisci le informazioni della tua attività. Dopo l'onboarding, avrai accesso completo a tutte le funzionalità della piattaforma.
+                                        Per iniziare, <a href="/signup" class="hover-underline">crea un account</a> e indica se sei un freelancer o un'azienda.  
+                                        I freelancer possono aggiungere le proprie competenze e personalizzare il profilo per attirare nuovi clienti.  
+                                        Le aziende, invece, possono inserire le informazioni sull'attività e pubblicare progetti.  
+                                        Dopo il breve processo di onboarding, avrai accesso completo a tutte le funzionalità della piattaforma.
                                     </div>
                                 </div>
                             </div>
@@ -343,7 +357,7 @@
                                 </h2>
                                 <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Puoi utilizzare la nostra <a href="/search">funzione di ricerca avanzata</a> per filtrare i professionisti per categoria, competenze specifiche o parole chiave. Inoltre, puoi esplorare la homepage per categorie o consultare i profili dei freelancer in evidenza. Una volta trovato un professionista adatto, contattalo direttamente attraverso la piattaforma per discutere del tuo progetto.
+                                        Puoi utilizzare la nostra funzione di ricerca in alto per filtrare i professionisti in base alla categoria o parole chiave. Inoltre, puoi esplorare la homepage per categorie o consultare i profili dei freelancer in evidenza. Una volta trovato un professionista adatto, contattalo direttamente attraverso la piattaforma per discutere del tuo progetto.
                                     </div>
                                 </div>
                             </div>
@@ -355,19 +369,19 @@
                                 </h2>
                                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        Per le aziende: dalla dashboard principale, clicca su "Pubblica offerta di lavoro" e compila il modulo con i dettagli del progetto, budget e requisiti. Per i freelancer: vai su "Promuovi i tuoi servizi" e descrivi le tue competenze, esperienza e tariffe. Le pubblicazioni sono completamente gratuite e saranno immediatamente visibili agli utenti interessati sulla piattaforma.
+                                        Per le aziende: dalla dashboard principale, clicca su "Pubblica offerta di lavoro" e compila il modulo con i dettagli del progetto. Per i freelancer: vai su "Promuovi i tuoi servizi" e pubblica una promozione descrivendo le tue competenze. Le pubblicazioni saranno immediatamente visibili agli utenti interessati sulla piattaforma.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item border rounded">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                                        Come funziona la comunicazione e il sistema di pagamento?
+                                        Come funziona la comunicazione tra freelancer e aziende?
                                     </button>
                                 </h2>
                                 <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        SkillBridge offre una <a href="/chat">chat integrata</a> per facilitare la comunicazione tra freelancer e aziende. I dettagli del progetto, scadenze e feedback possono essere discussi direttamente sulla piattaforma. Per quanto riguarda i pagamenti, questi sono gestiti direttamente tra le parti secondo i termini concordati. Consigliamo di formalizzare gli accordi e stabilire milestone chiare prima di iniziare i progetti.
+                                        SkillBridge offre una <a href="/chat" class="hover-underline">chat</a> per facilitare la comunicazione tra freelancer e aziende. I dettagli del progetto, scadenze e feedback possono essere discussi direttamente sulla piattaforma. Per quanto riguarda i pagamenti, questi sono gestiti direttamente tra le parti secondo i termini concordati.
                                     </div>
                                 </div>
                             </div>
@@ -375,7 +389,6 @@
                     </div>
                 </div>
             </section>
-
         </div>
     </main>
 

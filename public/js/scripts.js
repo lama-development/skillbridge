@@ -31,11 +31,23 @@ document.addEventListener('DOMContentLoaded', function() {
             e.target.value = validPaste;
         });
     }
-
-    // Auto-scroll chat alla fine
+    
+    // Gestione scrolling chat
     const messagesContainer = document.querySelector('.chat-messages');
     if (messagesContainer) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        // Scrolla alla fine della chat all'apertura
+        scrollChatToBottom();
+        
+        // Quando un messaggio viene caricato o il DOM cambia, scrolla alla fine
+        const chatObserver = new MutationObserver(scrollChatToBottom);
+        chatObserver.observe(messagesContainer, { childList: true, subtree: true });
+    }
+
+    function scrollChatToBottom() {
+        const messagesContainer = document.querySelector('.chat-messages');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
     }
 
     // Auto-focus su input messaggio chat

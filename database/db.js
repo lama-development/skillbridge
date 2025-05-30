@@ -41,7 +41,7 @@ db.serialize(() => {
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     username TEXT NOT NULL,
     type TEXT NOT NULL CHECK (type IN ('job_offer', 'freelancer_promo')),
-    category TEXT DEFAULT 'Altro' CHECK (category IN ('Sviluppo', 'Design', 'Marketing', 'Copywriting', 'Altro')),
+    category TEXT DEFAULT 'Altro' CHECK (category IN ('Sviluppo', 'Design', 'Marketing', 'Copywriting', 'Traduzioni', 'Altro')),
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,

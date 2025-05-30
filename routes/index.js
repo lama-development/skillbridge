@@ -42,42 +42,71 @@ router.get('/', async (req, res) => {
         if (req.isAuthenticated() && !req.user.type) {
             showOnboardingAlert = true;
         }
-        // Query per prendere le offerte di lavoro con i dati dell'azienda
+        
+        // Limite per il numero di post da mostrare nella homepage
+        const postLimit = 5;
+        
+        // Query per prendere le offerte di lavoro con i dati dell'azienda (limitate a 5)
         const businessPostsQuery = `
             SELECT p.*, u.name, u.website, u.profilePicture, u.username 
             FROM posts p 
             JOIN users u ON p.username = u.username 
             WHERE p.type = 'job_offer' 
             ORDER BY p.createdAt DESC
+            LIMIT ?
         `;
-        // Query per prendere le promozioni dei freelancer con i dati dell'utente
+        
+        // Query per prendere le promozioni dei freelancer con i dati dell'utente (limitate a 5)
         const freelancerPostsQuery = `
             SELECT p.*, u.name, u.website, u.profilePicture, u.username 
             FROM posts p 
             JOIN users u ON p.username = u.username
             WHERE p.type = 'freelancer_promo' 
             ORDER BY p.createdAt DESC
+            LIMIT ?
         `;
-        // Esegui entrambe le query in parallelo usando async/await
-        let [businessPosts, freelancerPosts] = await Promise.all([
-            db.all(businessPostsQuery, []).catch(err => {
+        
+        // Query per contare tutte le offerte di lavoro
+        const businessPostsCountQuery = `SELECT COUNT(*) as total FROM posts WHERE type = 'job_offer'`;
+        
+        // Query per contare tutte le promozioni dei freelancer
+        const freelancerPostsCountQuery = `SELECT COUNT(*) as total FROM posts WHERE type = 'freelancer_promo'`;
+        
+        // Esegui tutte le query in parallelo usando async/await
+        let [businessPosts, freelancerPosts, businessPostsCount, freelancerPostsCount] = await Promise.all([
+            db.all(businessPostsQuery, [postLimit]).catch(err => {
                 console.error('Errore durante il recupero delle offerte di lavoro:', err);
                 return [];
             }),
-            db.all(freelancerPostsQuery, []).catch(err => {
+            db.all(freelancerPostsQuery, [postLimit]).catch(err => {
                 console.error('Errore durante il recupero delle promozioni freelancer:', err);
                 return [];
+            }),
+            db.get(businessPostsCountQuery).catch(err => {
+                console.error('Errore durante il conteggio delle offerte di lavoro:', err);
+                return { total: 0 };
+            }),
+            db.get(freelancerPostsCountQuery).catch(err => {
+                console.error('Errore durante il conteggio delle promozioni freelancer:', err);
+                return { total: 0 };
             })
         ]);
         // Assicurati che businessPosts e freelancerPosts non siano null
         businessPosts = businessPosts || [];
         freelancerPosts = freelancerPosts || [];
+        
+        // Conteggio totale dei post
+        const businessCount = businessPostsCount?.total || 0;
+        const freelancerCount = freelancerPostsCount?.total || 0;
+        
         res.render('index', { 
             showOnboardingAlert, 
             package: pkg, 
             user: req.user,
             businessPosts,
-            freelancerPosts
+            freelancerPosts,
+            businessCount,
+            freelancerCount
         });
     } catch (error) {
         console.error('Errore nella rotta della homepage:', error);
@@ -230,7 +259,8 @@ router.get('/search', async (req, res) => {
         const category = req.query.category?.trim();
         const page = parseInt(req.query.page) || 1; // Pagina corrente, default 1
         const resultsPerPage = 5; // Numero di risultati per pagina
-        if (!query) {
+          // Reindirizza solo se sia query che category sono vuote (ma non quando category è "all")
+        if (!query && !category) {
             return res.redirect('/');
         }
         // Costruisci la query in base ai parametri di ricerca
@@ -238,11 +268,7 @@ router.get('/search', async (req, res) => {
             SELECT COUNT(*) as total
             FROM posts p
             JOIN users u ON p.username = u.username
-            WHERE (
-                p.title LIKE ? OR 
-                p.content LIKE ? OR
-                u.name LIKE ?
-            )
+            WHERE 1=1
         `;
         let searchQuery = `
             SELECT 
@@ -253,22 +279,39 @@ router.get('/search', async (req, res) => {
                 u.username
             FROM posts p
             JOIN users u ON p.username = u.username
-            WHERE (
-                p.title LIKE ? OR 
-                p.content LIKE ? OR
-                u.name LIKE ?
-            )
+            WHERE 1=1
         `;
         const queryParams = [];
         const countParams = [];
-        const searchParam = `%${query}%`;
-        // Parametri per la query di conteggio
-        countParams.push(searchParam, searchParam, searchParam);
-        // Parametri per la query di ricerca
-        queryParams.push(searchParam, searchParam, searchParam);
         
-        // Aggiungi filtro per tipo di post in base al tipo di utente
-        if (req.isAuthenticated() && req.user.type) {
+        // Aggiungi filtro per il testo della ricerca, se presente
+        if (query) {
+            countQuery += ` AND (
+                p.title LIKE ? OR 
+                p.content LIKE ? OR
+                u.name LIKE ?
+            )`;
+            searchQuery += ` AND (
+                p.title LIKE ? OR 
+                p.content LIKE ? OR
+                u.name LIKE ?
+            )`;
+            const searchParam = `%${query}%`;
+            // Parametri per la query di conteggio
+            countParams.push(searchParam, searchParam, searchParam);
+            // Parametri per la query di ricerca
+            queryParams.push(searchParam, searchParam, searchParam);
+        }
+        // Aggiungi filtro esplicito per tipo di post, se specificato nell'URL
+        const type = req.query.type?.trim();
+        if (type) {
+            // Se è stato specificato un tipo nella query, usa quello
+            countQuery += ` AND p.type = ?`;
+            searchQuery += ` AND p.type = ?`;
+            countParams.push(type);
+            queryParams.push(type);
+        } else if (req.isAuthenticated() && req.user.type) {
+            // Altrimenti usa il filtro per tipo in base al tipo di utente
             if (req.user.type === 'freelancer') {
                 // Freelancer: mostra solo post delle aziende (offerte di lavoro)
                 countQuery += ` AND p.type = 'job_offer'`;
@@ -280,9 +323,8 @@ router.get('/search', async (req, res) => {
             }
             // Nota: gli utenti ospiti o senza tipo vedono tutti i post (nessun filtro aggiuntivo)
         }
-        
-        // Aggiungi filtro per categoria se specificato
-        if (category) {
+        // Aggiungi filtro per categoria se specificato e diverso da "all"
+        if (category && category !== 'all') {
             countQuery += ` AND p.category = ?`;
             searchQuery += ` AND p.category = ?`;
             countParams.push(category);
@@ -300,7 +342,7 @@ router.get('/search', async (req, res) => {
         const totalPages = Math.ceil(totalResults / resultsPerPage);
         res.render('search', { 
             query,
-            selectedCategory: category || '',
+            selectedCategory: category || 'all',
             results: results || [],
             package: pkg,
             user: req.user,
