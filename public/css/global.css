@@ -113,6 +113,10 @@ input[type="password"]::placeholder {
     width: 42px;
     height: 42px;
 }
+.banner-image {
+    max-height: 350px;
+    object-fit: contain;
+}
 
 /* Dropdown e menu */
 .dropdown-menu {
@@ -137,4 +141,11 @@ input[type="password"]::placeholder {
 .badge.bg-secondary {
     background-color: var(--color-secondary) !important;
     color: var(--color-text-dark);
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+    .banner-image {
+        max-height: 200px;
+    }
 }

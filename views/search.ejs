@@ -77,7 +77,7 @@
             <% if (pagination && pagination.totalPages > 1) { %>
                 <nav aria-label="Navigazione risultati" class="mt-4">
                     <ul class="pagination justify-content-center">
-                        !-- Pulsante "Precedente" -->
+                        <!-- Pulsante "Precedente" -->
                         <li class="page-item <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
                             <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory || 'all' %>&page=<%= pagination.page - 1 %>" aria-label="Precedente">
                                 <span aria-hidden="true">&laquo;</span>
@@ -125,7 +125,7 @@
                             </li>
                         <% } %>
                         <!-- Pulsante "Successiva" -->
-                         <li class="page-item <%= !pagination.hasNextPage ? 'disabled' : '' %>">
+                        <li class="page-item <%= !pagination.hasNextPage ? 'disabled' : '' %>">
                             <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory || 'all' %>&page=<%= pagination.page + 1 %>" aria-label="Successiva">
                                 <span aria-hidden="true">&raquo;</span>
                                 <span class="visually-hidden">Successiva</span>
