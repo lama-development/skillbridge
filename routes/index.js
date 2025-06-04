@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
         }
         
         // Limite per il numero di post da mostrare nella homepage
-        const postLimit = 5;
+        const postLimit = 3;
         
         // Query per prendere le offerte di lavoro con i dati dell'azienda (limitate a 5)
         const businessPostsQuery = `
@@ -259,7 +259,7 @@ router.get('/search', async (req, res) => {
         const category = req.query.category?.trim();
         const page = parseInt(req.query.page) || 1; // Pagina corrente, default 1
         const resultsPerPage = 5; // Numero di risultati per pagina
-          // Reindirizza solo se sia query che category sono vuote (ma non quando category è "all")
+        // Reindirizza solo se sia query che category sono vuote (ma non quando category è "all")
         if (!query && !category) {
             return res.redirect('/');
         }
