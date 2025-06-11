@@ -26,21 +26,17 @@ const isOnboardingComplete = (req, res, next) => {
 const isValidChatPartner = async (req, res, next) => {
     try {
         const otherUsername = req.params.username;
-        
         // Recupera il tipo dell'altro utente
         const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
-        
         if (!otherUser) {
             req.flash('error_msg', 'Utente non trovato.');
             return res.redirect('/chat');
         }
-        
         // Verifica che i tipi di utente siano compatibili per chattare
         if (req.user.type === otherUser.type) {
             req.flash('error_msg', 'Non puoi chattare con utenti dello stesso tipo. Le chat sono consentite solo tra freelancer e aziende.');
             return res.redirect('/chat');
         }
-        
         // Continua con la richiesta
         next();
     } catch (err) {
@@ -117,7 +113,6 @@ router.get('/:username', isOnboardingComplete, isValidChatPartner, async (req, r
                 INSERT INTO conversations (username1, username2) 
                 VALUES (?, ?)
             `, [req.user.username, otherUsername]);
-            
             conversation = await db.get('SELECT * FROM conversations WHERE id = ?', [result.lastID]);
         }
         // Recupera tutti i messaggi della conversazione
@@ -163,16 +158,23 @@ router.get('/:username', isOnboardingComplete, isValidChatPartner, async (req, r
 
 // Rotta per inviare un messaggio
 router.post('/:username/send', isOnboardingComplete, isValidChatPartner, async (req, res) => {
+    const isAjax = req.headers.accept?.includes('application/json');
     try {
         const otherUsername = req.params.username;
-        const { message } = req.body;
+        const message = req.body?.message;
         if (!message || message.trim() === '') {
+            if (isAjax) {
+                return res.status(400).json({ error: 'Il messaggio non può essere vuoto.' });
+            }
             req.flash('error_msg', 'Il messaggio non può essere vuoto.');
             return res.redirect(`/chat/${otherUsername}`);
         }
         // Verifica che l'altro utente esista
         const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
         if (!otherUser) {
+            if (isAjax) {
+                return res.status(404).json({ error: 'Utente non trovato.' });
+            }
             req.flash('error_msg', 'Utente non trovato.');
             return res.redirect('/chat');
         }
@@ -185,19 +187,20 @@ router.post('/:username/send', isOnboardingComplete, isValidChatPartner, async (
         if (!conversation) {
             // Doppio controllo per sicurezza - verifichiamo nuovamente i tipi di utente
             if (req.user.type === otherUser.type) {
+                if (isAjax) {
+                    return res.status(400).json({ error: 'Non puoi chattare con utenti dello stesso tipo. Le chat sono consentite solo tra freelancer e aziende.' });
+                }
                 req.flash('error_msg', 'Non puoi chattare con utenti dello stesso tipo. Le chat sono consentite solo tra freelancer e aziende.');
                 return res.redirect('/chat');
             }
-            
             const result = await db.run(`
                 INSERT INTO conversations (username1, username2) 
                 VALUES (?, ?)
             `, [req.user.username, otherUsername]);
-            
             conversation = await db.get('SELECT * FROM conversations WHERE id = ?', [result.lastID]);
         }
         // Inserisci il messaggio
-        await db.run(`
+        const messageResult = await db.run(`
             INSERT INTO messages (conversationId, senderUsername, content) 
             VALUES (?, ?, ?)
         `, [conversation.id, req.user.username, message.trim()]);
@@ -205,12 +208,57 @@ router.post('/:username/send', isOnboardingComplete, isValidChatPartner, async (
         await db.run(`
             UPDATE conversations SET updatedAt = CURRENT_TIMESTAMP 
             WHERE id = ?
-        `, [conversation.id]);
+        `, [conversation.id]);        
+        // Se è una richiesta AJAX, restituisci JSON
+        if (isAjax) {
+            return res.json({ 
+                success: true, 
+                messageId: messageResult.lastID,
+                message: 'Messaggio inviato con successo'
+            });
+        }
+        // Altrimenti, reindirizza come prima
         res.redirect(`/chat/${otherUsername}`);
     } catch (err) {
         console.error('Errore durante l\'invio del messaggio:', err);
+        if (isAjax) {
+            return res.status(500).json({ error: 'Si è verificato un errore durante l\'invio del messaggio.' });
+        }
         req.flash('error_msg', 'Si è verificato un errore durante l\'invio del messaggio.');
         res.redirect(`/chat/${req.params.username}`);
+    }
+});
+
+// API endpoint per ottenere nuovi messaggi per una conversazione
+router.get('/api/messages/:username', isOnboardingComplete, isValidChatPartner, async (req, res) => {
+    try {
+        const otherUsername = req.params.username;
+        const lastMessageId = parseInt(req.query.lastMessageId) || 0;
+        // Verifica che l'altro utente esista
+        const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
+        if (!otherUser) {
+            return res.status(404).json({ error: 'Utente non trovato.' });
+        }
+        // Trova la conversazione tra i due utenti
+        const conversation = await db.get(`
+            SELECT * FROM conversations 
+            WHERE (username1 = ? AND username2 = ?) OR (username1 = ? AND username2 = ?)
+        `, [req.user.username, otherUsername, otherUsername, req.user.username]);
+        if (!conversation) {
+            return res.json({ messages: [] });
+        }
+        // Recupera i nuovi messaggi (quelli con ID maggiore di lastMessageId)
+        const newMessages = await db.all(`
+            SELECT m.*, u.profilePicture 
+            FROM messages m
+            LEFT JOIN users u ON m.senderUsername = u.username
+            WHERE m.conversationId = ? AND m.id > ?
+            ORDER BY m.createdAt ASC
+        `, [conversation.id, lastMessageId]);
+        res.json({ messages: newMessages || [] });
+    } catch (err) {
+        console.error('Errore durante il recupero dei nuovi messaggi:', err);
+        res.status(500).json({ error: 'Errore del server' });
     }
 });
 

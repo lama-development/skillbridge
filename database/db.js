@@ -107,7 +107,7 @@ const dbAsync = {
         });
     },
 
-    // Accesso al database originale
+    // Accesso al database originale per operazioni operazioni non incluse
     db: db
 };
 

@@ -4,29 +4,25 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
 import db from './db.js';
-import { promisify } from 'util';
 
-// Promisify bcrypt.compare
-const compareAsync = promisify(bcrypt.compare);
-
-passport.use(new LocalStrategy(
-    { usernameField: 'email', passwordField: 'password' },
-    async (email, password, done) => {
-        try {
-            // Converti l'email in minuscolo
-            const emailLowerCase = email.toLowerCase();
-            // Utilizzo della versione promise di db.get
-            const user = await db.get('SELECT * FROM users WHERE email = ?', [emailLowerCase]);
-            if (!user) return done(null, false);
-            // Utilizzo della versione promise di bcrypt.compare
-            const isMatch = await compareAsync(password, user.password);
-            if (isMatch) return done(null, user);
-            return done(null, false);
-        } catch (err) {
-            return done(err);
-        }
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+}, async (email, password, done) => {
+    try {
+        // Converte email in minuscolo
+        const emailLowerCase = email.toLowerCase();
+        // Utilizzo della versione promise di db.get
+        const user = await db.get('SELECT * FROM users WHERE email = ?', [emailLowerCase]);
+        if (!user) return done(null, false, { message: 'User not found.' });
+        // Utilizzo della versione promise di bcrypt.compare
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) return done(null, user);
+        else return done(null, false, { message: 'Incorrect password.' });
+    } catch (err) {
+        return done(err);
     }
-));
+}));
 
 passport.serializeUser((user, done) => {
     done(null, user.username);

@@ -43,15 +43,9 @@
         <i class="bi bi-person-circle me-1"></i> Visita profilo
       </a>
       <% if (user) { %>
-        <% if (user.type === 'freelancer' && post.type === 'job_offer') { %>
-          <!-- Freelancer che vede un post di un'azienda -->
+        <% if (user.type === 'freelancer' && post.type === 'job_offer' || user.type === 'business' && post.type === 'freelancer_promo') { %>
           <a href="/chat/<%= post.username %>" class="btn btn-outline-primary btn-sm post-btn">
-            <i class="bi bi-send-fill me-1"></i> Invia candidatura
-          </a>
-        <% } else if (user.type === 'business' && post.type === 'freelancer_promo') { %>
-          <!-- Azienda che vede un post di un freelancer -->
-          <a href="/chat/<%= post.username %>" class="btn btn-outline-primary btn-sm post-btn">
-            <i class="bi bi-briefcase-fill me-1"></i> Invita a collaborare
+            <i class="bi bi-chat-dots-fill me-1"></i> Inizia chat
           </a>
         <% } %>
       <% } %>

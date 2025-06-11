@@ -79,12 +79,10 @@
                                         Nessuna bio aggiunta.
                                     </div>
                                 <% } %>
-                                <% if (!isOwnProfile && typeof currentUser !== 'undefined' && currentUser && 
-                                      ((currentUser.type === 'freelancer' && user.type === 'business') || 
-                                       (currentUser.type === 'business' && user.type === 'freelancer'))) { %>
+                                <% if (!isOwnProfile && typeof currentUser !== 'undefined' && currentUser && ((currentUser.type === 'freelancer' && user.type === 'business') || (currentUser.type === 'business' && user.type === 'freelancer'))) { %>
                                     <div class="text-end mt-3">
                                         <a href="/chat/<%= user.username %>" class="btn btn-primary">
-                                            <i class="bi bi-chat-dots-fill me-1"></i> Inizia a chattare
+                                            <i class="bi bi-chat-dots-fill me-1"></i> Inizia chat
                                         </a>
                                     </div>
                                 <% } %>

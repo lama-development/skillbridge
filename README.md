@@ -7,7 +7,7 @@
 - [x] Aggiungere funzionalità per modificare/aggiungere informazioni sul profilo
 - [x] Aggiungere skills ai profili dei freelancer
 - [x] Aggiungere pagina 404
-- [ ] Aggiungere messaggio personalizzato per invio candidatura
+- [ ] Implementare DAO per accesso al database
 
 ### ⚙️ Fixes and Improvements
 - [x] Risolvere problemi di visualizzazione dell'immagine del profilo
@@ -20,4 +20,4 @@
 - [x] Eliminare funzione client side selectConversation
 - [x] Gestire paginazione annunci nella home page
 - [x] Fixare overflow container chat con scrolling
-- [ ] Fixare polling nuovi messaggi chat
+- [x] Fixare polling nuovi messaggi chat

@@ -7,6 +7,7 @@
     <title>Chat - SkillBridge</title>
     <%- include('partials/head') %>
     <script src="/js/scripts.js" defer></script>
+    <script src="/js/polling.js" defer></script>
 </head>
 
 <body class="d-flex flex-column h-100 has-navbar-padding">
@@ -104,7 +105,7 @@
                                 <div class="chat-messages p-3 d-flex flex-column" id="chat-messages">
                                     <% if (messages && messages.length > 0) { %>
                                         <% messages.forEach(message => { %>
-                                            <div class="message <%= message.senderUsername === user.username ? 'message-sent' : 'message-received' %>">
+                                            <div class="message <%= message.senderUsername === user.username ? 'message-sent' : 'message-received' %>" data-message-id="<%= message.id %>">
                                                 <div class="message-content"><%= message.content %></div>
                                             </div>
                                         <% }) %>
@@ -116,7 +117,7 @@
                                 </div>
                                 <!-- Input messaggi -->
                                 <div class="chat-input mt-auto">
-                                    <form action="/chat/<%= otherUser.username %>/send" method="POST" class="d-flex align-items-center p-3">
+                                    <form action="/chat/<%= otherUser.username %>/send" method="POST" class="d-flex align-items-center p-3" data-current-user="<%= user.username %>">
                                         <input type="text" name="message" class="form-control me-2" placeholder="Scrivi un messaggio..." maxlength="1000" autocomplete="off" required>
                                         <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center" style="width: 45px; height: 38px;">
                                             <i class="bi bi-send-fill"></i>
