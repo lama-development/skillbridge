@@ -65,11 +65,10 @@
                             </div>
                         </div>
                     </div>
-                    
                     <!-- Campi comuni -->
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
-                        <input type="text" class="form-control" name="name" placeholder="Nome Completo / Nome Azienda" autocomplete="name">
+                        <input type="text" class="form-control" name="name" placeholder="Nome Completo / Nome Azienda" autocomplete="name" required minlength="2" maxlength="100">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-globe"></i></span>
@@ -77,11 +76,11 @@
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
-                        <input type="tel" class="form-control" name="phone" placeholder="Telefono (opzionale)" autocomplete="tel" pattern="[\d\s\+]+" title="Il telefono può contenere solo numeri, spazi e +">
+                        <input type="tel" class="form-control" name="phone" placeholder="Telefono (opzionale)" autocomplete="tel" pattern="[\d\s\+]+" title="Il telefono può contenere numeri, spazi, +, -, ( e )" minlength="8" maxlength="20">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
-                        <input type="text" class="form-control" name="location" placeholder="Località (opzionale)" autocomplete="address-level2">
+                        <input type="text" class="form-control" name="location" placeholder="Località (opzionale)" autocomplete="address-level2" maxlength="100">
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary mt-2">Completa registrazione</button>

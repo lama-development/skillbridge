@@ -111,7 +111,7 @@ router.post('/update-contacts', requireAuth, async (req, res) => {
         if (phone && phone.trim()) {
             const phoneRegex = /^[\d\s\+]+$/;
             if (!phoneRegex.test(phone.trim())) {
-                req.flash('error_msg', 'Il numero di telefono può contenere solo numeri, spazi e +.');
+                req.flash('error_msg', 'Il numero di telefono può contenere solo numeri, spazi e il simbolo +.');
                 return res.redirect('/profile');
             }
         }
