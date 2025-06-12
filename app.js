@@ -46,15 +46,23 @@ app.use((req, res, next) => {
 });
 
 // Importa e monta i moduli delle rotte
-import indexRoutes from './routes/index.js';
+import homeRoutes from './routes/home.js';
 import authRoutes from './routes/auth.js';
 import postsRoutes from './routes/posts.js';
 import chatRoutes from './routes/chat.js';
+import profileRoutes from './routes/profile.js';
+import profileActionsRoutes from './routes/profile-actions.js';
+import searchRoutes from './routes/search.js';
+import onboardingRoutes from './routes/onboarding.js';
 
-app.use('/', indexRoutes);
+app.use('/', homeRoutes);
 app.use('/', authRoutes);
 app.use('/posts', postsRoutes);
 app.use('/chat', chatRoutes);
+app.use('/profile', profileRoutes);
+app.use('/profile', profileActionsRoutes);
+app.use('/search', searchRoutes);
+app.use('/onboarding', onboardingRoutes);
 
 // Middleware per gestire pagine non esistenti
 app.use((req, res) => {

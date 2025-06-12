@@ -1,58 +1,57 @@
+"use strict";
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Toggle visiblità password
-    document.querySelectorAll('.toggle-password').forEach(button => {
+    // Bottone per mostrare/nascondere la password
+    const passwordToggleButtons = document.querySelectorAll('.toggle-password');
+    passwordToggleButtons.forEach(function(button) {
         button.addEventListener('click', function() {
-            const input = this.parentElement.querySelector('input');
-            if (input.type === "password") {
-                input.type = "text";
+            const passwordInput = this.parentElement.querySelector('input');            
+            if (passwordInput.type === "password") {
+                // Mostra la password
+                passwordInput.type = "text";
                 this.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
             } else {
-                input.type = "password";
+                // Nasconde la password
+                passwordInput.type = "password";
                 this.innerHTML = '<i class="bi bi-eye-fill"></i>';
             }
         });
     });
-
-    // Validazione input username 
+    
+    // Controllo del campo username (solo lettere minuscole, numeri e trattini)
     const usernameInput = document.querySelector('input[name="username"]');
     if (usernameInput) {
-        usernameInput.addEventListener('input', function(e) {
-            // Mantieni solo lettere minuscole, numeri e trattini
-            const validValue = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
-            if (e.target.value !== validValue) {
-                e.target.value = validValue;
-            }
-        }); 
-        // Previene incolla di contenuto non valido
-        usernameInput.addEventListener('paste', function(e) {
-            e.preventDefault();
-            const paste = (e.clipboardData || window.clipboardData).getData('text');
-            const validPaste = paste.toLowerCase().replace(/[^a-z0-9-]/g, '');
-            e.target.value = validPaste;
+        // Filtra i caratteri mentre l'utente scrive
+        usernameInput.addEventListener('input', function(event) {
+            const validChars = event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            if (event.target.value !== validChars) event.target.value = validChars;
+        });
+        // Filtra anche quando l'utente incolla del testo
+        usernameInput.addEventListener('paste', function(event) {
+            event.preventDefault();
+            const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+            const validText = pastedText.toLowerCase().replace(/[^a-z0-9-]/g, '');
+            event.target.value = validText;
         });
     }
     
-    // Gestione scrolling chat
-    const messagesContainer = document.querySelector('.chat-messages');
-    if (messagesContainer) {
-        // Scrolla alla fine della chat all'apertura
-        scrollChatToBottom();
-        
-        // Quando un messaggio viene caricato o il DOM cambia, scrolla alla fine
-        const chatObserver = new MutationObserver(scrollChatToBottom);
-        chatObserver.observe(messagesContainer, { childList: true, subtree: true });
+    // Gestione automatica dello scroll nella chat
+    const chatMessagesContainer = document.querySelector('.chat-messages');
+    if (chatMessagesContainer) {
+        // Scrolla in basso appena si apre la chat
+        scrollToBottom();
+        // Scrolla in basso ogni volta che arrivano nuovi messaggi
+        const observer = new MutationObserver(scrollToBottom);
+        observer.observe(chatMessagesContainer, { childList: true, subtree: true });
     }
 
-    function scrollChatToBottom() {
-        const messagesContainer = document.querySelector('.chat-messages');
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+    // Funzione per scorrere la chat verso il basso
+    function scrollToBottom() {
+        const container = document.querySelector('.chat-messages');
+        if (container) container.scrollTop = container.scrollHeight;
     }
 
-    // Auto-focus su input messaggio chat
-    const messageInput = document.querySelector('.chat-input input[name="message"]');
-    if (messageInput) {
-        messageInput.focus();
-    }
+    // Mette automaticamente il focus sul campo messaggio della chat
+    const chatInput = document.querySelector('.chat-input input[name="message"]');
+    if (chatInput) chatInput.focus();
 });

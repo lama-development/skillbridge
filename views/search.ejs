@@ -19,31 +19,32 @@
             <div class="mb-4">
                 <h1 class="h3 fw-bold">
                     <% if (query) { %>
-                        Risultati per "<%= query %>"<%= selectedCategory && selectedCategory !== 'all' ? ` in ${selectedCategory}` : '' %>
-                    <% } else if (selectedCategory && selectedCategory !== 'all') { %>
-                        Tutti i risultati in <%= selectedCategory %>
+                        Risultati per "<%= query %>"<%= category && category !== 'all' ? ` in ${category}` : '' %>
+                    <% } else if (category && category !== 'all') { %>
+                        Tutti i risultati in <%= category %>
                     <% } else { %>
                         Tutti i risultati
                     <% } %>
                 </h1>
                 <div class="d-flex flex-wrap align-items-center justify-content-between">
-                    <p class="text-muted mb-0"><%= pagination && pagination.totalResults === 1 ? '1 risultato trovato' : `${pagination ? pagination.totalResults : results.length} risultati trovati` %></p>
+                    <p class="text-muted mb-0"><%= pagination && pagination.totalResults === 1 ? '1 risultato trovato' : `${pagination ? pagination.totalResults : posts.length} risultati trovati` %></p>
                     <!-- Filtri di ricerca -->
                     <form action="/search" method="GET" class="d-flex gap-2 mt-2 mt-md-0">
-                        <input type="hidden" name="q" value="<%= query %>">                        <!-- Filtro per categoria -->
+                        <input type="hidden" name="q" value="<%= query %>">
+                        <!-- Filtro per categoria -->
                         <select class="form-select" name="category" onchange="this.form.submit()">
-                            <option value="all" <%= selectedCategory === 'all' || !selectedCategory ? 'selected' : '' %>>Tutte le categorie</option>
-                            <option value="Sviluppo" <%= selectedCategory === 'Sviluppo' ? 'selected' : '' %>>Sviluppo</option>
-                            <option value="Design" <%= selectedCategory === 'Design' ? 'selected' : '' %>>Design</option>
-                            <option value="Marketing" <%= selectedCategory === 'Marketing' ? 'selected' : '' %>>Marketing</option>
-                            <option value="Copywriting" <%= selectedCategory === 'Copywriting' ? 'selected' : '' %>>Copywriting</option>
-                            <option value="Traduzioni" <%= selectedCategory === 'Traduzioni' ? 'selected' : '' %>>Traduzioni</option>
-                            <option value="Altro" <%= selectedCategory === 'Altro' ? 'selected' : '' %>>Altro</option>
+                            <option value="all" <%= category === 'all' || !category ? 'selected' : '' %>>Tutte le categorie</option>
+                            <option value="Sviluppo" <%= category === 'Sviluppo' ? 'selected' : '' %>>Sviluppo</option>
+                            <option value="Design" <%= category === 'Design' ? 'selected' : '' %>>Design</option>
+                            <option value="Marketing" <%= category === 'Marketing' ? 'selected' : '' %>>Marketing</option>
+                            <option value="Copywriting" <%= category === 'Copywriting' ? 'selected' : '' %>>Copywriting</option>
+                            <option value="Traduzioni" <%= category === 'Traduzioni' ? 'selected' : '' %>>Traduzioni</option>
+                            <option value="Altro" <%= category === 'Altro' ? 'selected' : '' %>>Altro</option>
                         </select>
                     </form>
                 </div>
             </div>
-            <% if (results.length > 0) { 
+            <% if (posts.length > 0) { 
                 function highlightText(text, searchQuery) {
                     if (!text) return '';
                     // Escape special regex characters in the search query
@@ -56,7 +57,7 @@
             %>
             <div class="row">
                 <div class="col-12">
-                    <% results.forEach(post => { 
+                    <% posts.forEach(post => { 
                         const highlightedPost = {
                             ...post,
                             title: highlightText(post.title, query),
@@ -79,7 +80,7 @@
                     <ul class="pagination justify-content-center">
                         <!-- Pulsante "Precedente" -->
                         <li class="page-item <%= !pagination.hasPrevPage ? 'disabled' : '' %>">
-                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory || 'all' %>&page=<%= pagination.page - 1 %>" aria-label="Precedente">
+                            <a class="page-link" href="/search?q=<%= query %>&category=<%= category || 'all' %>&page=<%= pagination.page - 1 %>" aria-label="Precedente">
                                 <span aria-hidden="true">&laquo;</span>
                                 <span class="visually-hidden">Precedente</span>
                             </a>
@@ -100,7 +101,7 @@
                         // Pagina 1 (se non inclusa nell'intervallo)
                         if (startPage > 1) { %>
                             <li class="page-item">
-                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory || 'all' %>&page=1">1</a>
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= category || 'all' %>&page=1">1</a>
                             </li>
                             <% if (startPage > 2) { %>
                                 <li class="page-item disabled">
@@ -111,7 +112,7 @@
                         <!-- Pagine numeriche -->
                         <% for (let i = startPage; i <= endPage; i++) { %>
                             <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
-                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory || 'all' %>&page=<%= i %>"><%= i %></a>
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= category || 'all' %>&page=<%= i %>"><%= i %></a>
                             </li>
                         <% } %>
                         <!-- Ultima pagina (se non inclusa nell'intervallo) -->
@@ -122,12 +123,12 @@
                                 </li>
                             <% } %>
                             <li class="page-item">
-                                <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory || 'all' %>&page=<%= pagination.totalPages %>"><%= pagination.totalPages %></a>
+                                <a class="page-link" href="/search?q=<%= query %>&category=<%= category || 'all' %>&page=<%= pagination.totalPages %>"><%= pagination.totalPages %></a>
                             </li>
                         <% } %>
                         <!-- Pulsante "Successiva" -->
                         <li class="page-item <%= !pagination.hasNextPage ? 'disabled' : '' %>">
-                            <a class="page-link" href="/search?q=<%= query %>&category=<%= selectedCategory || 'all' %>&page=<%= pagination.page + 1 %>" aria-label="Successiva">
+                            <a class="page-link" href="/search?q=<%= query %>&category=<%= category || 'all' %>&page=<%= pagination.page + 1 %>" aria-label="Successiva">
                                 <span aria-hidden="true">&raquo;</span>
                                 <span class="visually-hidden">Successiva</span>
                             </a>

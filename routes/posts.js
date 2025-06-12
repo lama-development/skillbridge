@@ -2,108 +2,89 @@
 
 import express from 'express';
 import db from '../database/db.js';
+import { requireOnboarding, requireBusinessUser, requireFreelancerUser } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Middleware per verificare se l'utente ha completato l'onboarding
-const isOnboardingComplete = (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        req.flash('error_msg', 'Devi essere loggato per effettuare questa operazione.');
-        return res.redirect('/login');
-    }
-    if (!req.user.type) {
-        req.flash('error_msg', 'Completa l\'onboarding per accedere a questa funzionalità.');
-        return res.redirect('/onboarding');
-    }
-    next();
-};
-
-// Middleware per verificare se l'utente è un'azienda
-const isBusinessUser = (req, res, next) => {
-    if (req.user.type !== 'business') {
-        req.flash('error_msg', 'Solo le aziende possono pubblicare offerte di lavoro.');
-        return res.redirect('/');
-    }
-    next();
-};
-
-// Middleware per verificare se l'utente è un freelancer
-const isFreelancerUser = (req, res, next) => {
-    if (req.user.type !== 'freelancer') {
-        req.flash('error_msg', 'Solo i freelancer possono promuovere i propri servizi.');
-        return res.redirect('/');
-    }
-    next();
-};
-
-// Creazione di un post di offerta di lavoro (solo aziende)
-router.post('/job-offer', isOnboardingComplete, isBusinessUser, async (req, res) => {
+// Crea un'offerta di lavoro (solo per le aziende)
+router.post('/job-offer', requireOnboarding, requireBusinessUser, async (req, res) => {
     try {
         const { title, content, category } = req.body;
-        // Validazione dei dati
+        
+        // Controlla che i campi obbligatori siano presenti
         if (!title || !content) {
             req.flash('error_msg', 'Titolo e descrizione sono obbligatori.');
             return res.redirect('/');
         }
-        // Inserimento nel database con async/await
+        
+        // Salva l'offerta di lavoro nel database
         await db.run(
             'INSERT INTO posts (username, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
             [req.user.username, 'job_offer', title, content, category || 'Altro', new Date().toISOString()]
         );
+        
         req.flash('success_msg', 'Offerta di lavoro pubblicata con successo!');
         res.redirect('/');
     } catch (err) {
-        console.error('Errore durante la creazione del post:', err);
-        req.flash('error_msg', 'Si è verificato un errore durante la pubblicazione dell\'offerta.');
+        console.error('Errore creazione post:', err);
+        req.flash('error_msg', 'Si è verificato un errore durante la pubblicazione.');
         return res.redirect('/');
     }
 });
 
-// Creazione di un post di promozione freelancer (solo freelancer)
-router.post('/freelancer-promo', isOnboardingComplete, isFreelancerUser, async (req, res) => {
+// Crea una promozione freelancer (solo per i freelancer)
+router.post('/freelancer-promo', requireOnboarding, requireFreelancerUser, async (req, res) => {
     try {
         const { title, content, category } = req.body;
-        // Validazione dei dati
+        
+        // Controlla che i campi obbligatori siano presenti
         if (!title || !content) {
             req.flash('error_msg', 'Titolo e descrizione sono obbligatori.');
             return res.redirect('/');
         }
-        // Inserimento nel database con async/await
+        
+        // Salva la promozione nel database
         await db.run(
             'INSERT INTO posts (username, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
             [req.user.username, 'freelancer_promo', title, content, category || 'Altro', new Date().toISOString()]
         );
-        req.flash('success_msg', 'Promozione dei tuoi servizi pubblicata con successo!');
+        
+        req.flash('success_msg', 'Promozione pubblicata con successo!');
         res.redirect('/');
     } catch (err) {
-        console.error('Errore durante la creazione del post:', err);
-        req.flash('error_msg', 'Si è verificato un errore durante la pubblicazione della promozione.');
+        console.error('Errore creazione post:', err);
+        req.flash('error_msg', 'Si è verificato un errore durante la pubblicazione.');
         return res.redirect('/');
     }
 });
 
-// Eliminazione di un post (solo il proprietario può eliminare i propri post)
-router.post('/:id/delete', isOnboardingComplete, async (req, res) => {
+// Elimina un post (solo il proprietario può eliminarlo)
+router.post('/:id/delete', requireOnboarding, async (req, res) => {
     try {
         const postId = req.params.id;
-        // Prima verifichiamo che l'utente sia il proprietario del post
+        
+        // Verifica che il post esista e appartenga all'utente
         const post = await db.get('SELECT * FROM posts WHERE id = ?', [postId]);
+        
         if (!post) {
             req.flash('error_msg', 'Post non trovato.');
             return res.redirect('/');
         }
-        // Verifica che l'utente sia il proprietario del post
+        
+        // Solo il proprietario può eliminare il proprio post
         if (post.username !== req.user.username) {
             req.flash('error_msg', 'Non sei autorizzato a eliminare questo post.');
             return res.redirect('/');
         }
-        // Eliminazione del post
+        
+        // Elimina il post dal database
         await db.run('DELETE FROM posts WHERE id = ?', [postId]);
+        
         req.flash('success_msg', 'Post eliminato con successo!');
         res.redirect('/');
     } catch (err) {
-        console.error('Errore durante l\'eliminazione del post:', err);
-        req.flash('error_msg', 'Si è verificato un errore durante l\'eliminazione del post.');
+        console.error('Errore eliminazione post:', err);
+        req.flash('error_msg', 'Si è verificato un errore durante l\'eliminazione.');
         return res.redirect('/');
     }
 });
