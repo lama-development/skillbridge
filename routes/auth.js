@@ -50,6 +50,20 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        
+        // Validazione input obbligatori
+        if (!email || !password) {
+            req.flash('error_msg', 'Email e password sono obbligatori.');
+            return res.redirect('/login');
+        }
+        
+        // Validazione formato email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            req.flash('error_msg', 'Formato email non valido.');
+            return res.redirect('/login');
+        }
+        
         const emailLowerCase = email.toLowerCase();
         
         // Cerca l'utente nel database
@@ -91,6 +105,26 @@ router.get('/signup', (req, res) => {
 router.post('/signup', async (req, res) => {
     try {
         const { email, username, password, 'confirm-password': confirmPassword } = req.body;
+        
+        // Validazione input obbligatori
+        if (!email || !username || !password || !confirmPassword) {
+            req.flash('error_msg', 'Tutti i campi sono obbligatori.');
+            return res.redirect('/signup');
+        }
+        
+        // Validazione formato email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            req.flash('error_msg', 'Formato email non valido.');
+            return res.redirect('/signup');
+        }
+        
+        // Validazione lunghezza password
+        if (password.length < 8) {
+            req.flash('error_msg', 'La password deve essere lunga almeno 8 caratteri.');
+            return res.redirect('/signup');
+        }
+        
         const emailLowerCase = email.toLowerCase();
         
         // Validazione username

@@ -11,16 +11,45 @@ router.post('/job-offer', requireOnboarding, requireBusinessUser, async (req, re
     try {
         const { title, content, category } = req.body;
         
-        // Controlla che i campi obbligatori siano presenti
+        // Validazione campi obbligatori
         if (!title || !content) {
             req.flash('error_msg', 'Titolo e descrizione sono obbligatori.');
             return res.redirect('/');
         }
         
-        // Salva l'offerta di lavoro nel database
+        // Validazione lunghezza titolo
+        if (title.trim().length < 5) {
+            req.flash('error_msg', 'Il titolo deve contenere almeno 5 caratteri.');
+            return res.redirect('/');
+        }
+        
+        if (title.trim().length > 200) {
+            req.flash('error_msg', 'Il titolo non può superare i 200 caratteri.');
+            return res.redirect('/');
+        }
+        
+        // Validazione lunghezza contenuto
+        if (content.trim().length < 20) {
+            req.flash('error_msg', 'La descrizione deve contenere almeno 20 caratteri.');
+            return res.redirect('/');
+        }
+        
+        if (content.trim().length > 5000) {
+            req.flash('error_msg', 'La descrizione non può superare i 5000 caratteri.');
+            return res.redirect('/');
+        }
+        
+        // Validazione categoria
+        const validCategories = ['Sviluppo Web', 'Sviluppo Mobile', 'Design', 'Marketing', 'Scrittura', 'Traduzione', 'Consulenza', 'Altro'];
+        const validCategory = validCategories.includes(category) ? category : 'Altro';
+        
+        // Sanitizzazione input
+        const sanitizedTitle = title.trim();
+        const sanitizedContent = content.trim();
+          // Salva l'offerta di lavoro nel database
         await db.run(
             'INSERT INTO posts (username, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-            [req.user.username, 'job_offer', title, content, category || 'Altro', new Date().toISOString()]
+            [req.user.username, 'job_offer', sanitizedTitle, sanitizedContent, validCategory, new Date().toISOString()]
         );
         
         req.flash('success_msg', 'Offerta di lavoro pubblicata con successo!');
@@ -37,16 +66,45 @@ router.post('/freelancer-promo', requireOnboarding, requireFreelancerUser, async
     try {
         const { title, content, category } = req.body;
         
-        // Controlla che i campi obbligatori siano presenti
+        // Validazione campi obbligatori
         if (!title || !content) {
             req.flash('error_msg', 'Titolo e descrizione sono obbligatori.');
             return res.redirect('/');
         }
         
-        // Salva la promozione nel database
+        // Validazione lunghezza titolo
+        if (title.trim().length < 5) {
+            req.flash('error_msg', 'Il titolo deve contenere almeno 5 caratteri.');
+            return res.redirect('/');
+        }
+        
+        if (title.trim().length > 200) {
+            req.flash('error_msg', 'Il titolo non può superare i 200 caratteri.');
+            return res.redirect('/');
+        }
+        
+        // Validazione lunghezza contenuto
+        if (content.trim().length < 20) {
+            req.flash('error_msg', 'La descrizione deve contenere almeno 20 caratteri.');
+            return res.redirect('/');
+        }
+        
+        if (content.trim().length > 5000) {
+            req.flash('error_msg', 'La descrizione non può superare i 5000 caratteri.');
+            return res.redirect('/');
+        }
+        
+        // Validazione categoria
+        const validCategories = ['Sviluppo Web', 'Sviluppo Mobile', 'Design', 'Marketing', 'Scrittura', 'Traduzione', 'Consulenza', 'Altro'];
+        const validCategory = validCategories.includes(category) ? category : 'Altro';
+        
+        // Sanitizzazione input
+        const sanitizedTitle = title.trim();
+        const sanitizedContent = content.trim();
+          // Salva la promozione nel database
         await db.run(
             'INSERT INTO posts (username, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-            [req.user.username, 'freelancer_promo', title, content, category || 'Altro', new Date().toISOString()]
+            [req.user.username, 'freelancer_promo', sanitizedTitle, sanitizedContent, validCategory, new Date().toISOString()]
         );
         
         req.flash('success_msg', 'Promozione pubblicata con successo!');
@@ -62,6 +120,12 @@ router.post('/freelancer-promo', requireOnboarding, requireFreelancerUser, async
 router.post('/:id/delete', requireOnboarding, async (req, res) => {
     try {
         const postId = req.params.id;
+        
+        // Validazione ID post
+        if (!postId || isNaN(parseInt(postId))) {
+            req.flash('error_msg', 'ID post non valido.');
+            return res.redirect('/');
+        }
         
         // Verifica che il post esista e appartenga all'utente
         const post = await db.get('SELECT * FROM posts WHERE id = ?', [postId]);

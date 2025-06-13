@@ -101,6 +101,19 @@ router.get('/:username', requireOnboarding, checkChatCompatibility, async (req, 
     try {
         const otherUsername = req.params.username;
         
+        // Validazione username
+        if (!otherUsername || typeof otherUsername !== 'string') {
+            req.flash('error_msg', 'Username non valido.');
+            return res.redirect('/chat');
+        }
+        
+        // Validazione formato username
+        const usernameRegex = /^[a-z0-9-]+$/;
+        if (!usernameRegex.test(otherUsername)) {
+            req.flash('error_msg', 'Username non valido.');
+            return res.redirect('/chat');
+        }
+        
         // Non permettere di chattare con se stessi
         if (otherUsername === req.user.username) {
             req.flash('error_msg', 'Non puoi chattare con te stesso.');
@@ -148,9 +161,34 @@ router.post('/:username/send', requireOnboarding, checkChatCompatibility, async 
         const otherUsername = req.params.username;
         const message = req.body?.message?.trim();
         
-        // Verifica che il messaggio non sia vuoto
+        // Validazione username
+        if (!otherUsername || typeof otherUsername !== 'string') {
+            const error = 'Username non valido.';
+            if (isAjax) return res.status(400).json({ error });
+            req.flash('error_msg', error);
+            return res.redirect('/chat');
+        }
+        
+        // Validazione formato username
+        const usernameRegex = /^[a-z0-9-]+$/;
+        if (!usernameRegex.test(otherUsername)) {
+            const error = 'Username non valido.';
+            if (isAjax) return res.status(400).json({ error });
+            req.flash('error_msg', error);
+            return res.redirect('/chat');
+        }
+        
+        // Validazione messaggio
         if (!message) {
             const error = 'Il messaggio non può essere vuoto.';
+            if (isAjax) return res.status(400).json({ error });
+            req.flash('error_msg', error);
+            return res.redirect(`/chat/${otherUsername}`);
+        }
+        
+        // Validazione lunghezza messaggio
+        if (message.length > 1000) {
+            const error = 'Il messaggio non può superare i 1000 caratteri.';
             if (isAjax) return res.status(400).json({ error });
             req.flash('error_msg', error);
             return res.redirect(`/chat/${otherUsername}`);

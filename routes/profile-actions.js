@@ -88,11 +88,19 @@ router.post('/update-bio', requireAuth, upload.none(), async (req, res) => {
     try {
         const { bio } = req.body;
         
-        // Aggiorna nel database
-        await db.run('UPDATE users SET bio = ? WHERE username = ?', [bio, req.user.username]);
+        // Validazione lunghezza biografia
+        if (bio && bio.length > 500) {
+            req.flash('error_msg', 'La biografia non può superare i 500 caratteri.');
+            return res.redirect('/profile');
+        }
+        
+        // Sanitizzazione input
+        const sanitizedBio = bio ? bio.trim() : null;
+          // Aggiorna nel database
+        await db.run('UPDATE users SET bio = ? WHERE username = ?', [sanitizedBio, req.user.username]);
         
         // Aggiorna nell'oggetto utente della sessione
-        req.user.bio = bio;
+        req.user.bio = sanitizedBio;
         
         req.flash('success_msg', 'Biografia aggiornata con successo!');
         res.redirect('/profile');
@@ -107,32 +115,72 @@ router.post('/update-bio', requireAuth, upload.none(), async (req, res) => {
 router.post('/update-contacts', requireAuth, async (req, res) => {
     try {
         const { website, phone, name, location } = req.body;
-          // Validazione del numero di telefono (se fornito)
+        
+        // Validazione nome (obbligatorio)
+        if (!name || !name.trim()) {
+            req.flash('error_msg', 'Il nome è obbligatorio.');
+            return res.redirect('/profile');
+        }
+        
+        if (name.trim().length < 2) {
+            req.flash('error_msg', 'Il nome deve contenere almeno 2 caratteri.');
+            return res.redirect('/profile');
+        }
+        
+        if (name.trim().length > 100) {
+            req.flash('error_msg', 'Il nome non può superare i 100 caratteri.');
+            return res.redirect('/profile');
+        }
+        
+        // Validazione sito web (se fornito)
+        if (website && website.trim()) {
+            const urlRegex = /^https?:\/\/.+/;
+            if (!urlRegex.test(website.trim())) {
+                req.flash('error_msg', 'Il sito web deve essere un URL valido (es. https://example.com).');
+                return res.redirect('/profile');
+            }
+        }
+        
+        // Validazione del numero di telefono (se fornito)
         if (phone && phone.trim()) {
             const phoneRegex = /^[\d\s\+]+$/;
             if (!phoneRegex.test(phone.trim())) {
                 req.flash('error_msg', 'Il numero di telefono può contenere solo numeri, spazi e il simbolo +.');
                 return res.redirect('/profile');
             }
+            
+            if (phone.trim().length < 8 || phone.trim().length > 20) {
+                req.flash('error_msg', 'Il numero di telefono deve essere compreso tra 8 e 20 caratteri.');
+                return res.redirect('/profile');
+            }
         }
         
-        // Aggiunge https:// al sito web se mancante
+        // Validazione località (se fornita)
+        if (location && location.trim() && location.trim().length > 100) {
+            req.flash('error_msg', 'La località non può superare i 100 caratteri.');
+            return res.redirect('/profile');
+        }
+          // Aggiunge https:// al sito web se mancante
         let validWebsite = website ? website.trim() : null;
         if (validWebsite && !validWebsite.startsWith('http://') && !validWebsite.startsWith('https://')) {
             validWebsite = 'https://' + validWebsite;
         }
         
-        // Aggiorna i contatti nel database
+        // Sanitizzazione input
+        const sanitizedName = name.trim();
+        const sanitizedPhone = phone ? phone.trim() : null;
+        const sanitizedLocation = location ? location.trim() : null;
+          // Aggiorna i contatti nel database
         await db.run(
             'UPDATE users SET website = ?, phone = ?, name = ?, location = ? WHERE username = ?',
-            [validWebsite, phone, name, location, req.user.username]
+            [validWebsite, sanitizedPhone, sanitizedName, sanitizedLocation, req.user.username]
         );
         
         // Aggiorna nell'oggetto utente della sessione
         req.user.website = validWebsite;
-        req.user.phone = phone;
-        req.user.location = location;
-        req.user.name = name;
+        req.user.phone = sanitizedPhone;
+        req.user.location = sanitizedLocation;
+        req.user.name = sanitizedName;
         
         req.flash('success_msg', 'Contatti aggiornati con successo!');
         res.redirect('/profile');
@@ -154,8 +202,29 @@ router.post('/update-skills', requireAuth, requireFreelancerUser, express.urlenc
                 .map(skill => skill.trim())
                 .filter(skill => skill.length > 0);
         } else if (Array.isArray(req.body.skills)) {
-            skills = req.body.skills.filter(Boolean);
+            skills = req.body.skills.filter(Boolean).map(skill => skill.trim());
         }
+        
+        // Validazione competenze
+        for (const skill of skills) {
+            if (skill.length < 2) {
+                req.flash('error_msg', 'Ogni competenza deve contenere almeno 2 caratteri.');
+                return res.redirect('/profile');
+            }
+            if (skill.length > 50) {
+                req.flash('error_msg', 'Ogni competenza non può superare i 50 caratteri.');
+                return res.redirect('/profile');
+            }
+            // Verifica caratteri speciali eccessivi
+            const specialCharRegex = /^[a-zA-Z0-9\s\-\+\#\.\&\/]+$/;
+            if (!specialCharRegex.test(skill)) {
+                req.flash('error_msg', 'Le competenze possono contenere solo lettere, numeri e alcuni caratteri speciali (-, +, #, ., &, /).');
+                return res.redirect('/profile');
+            }
+        }
+        
+        // Rimuovi duplicati
+        skills = [...new Set(skills)];
         
         // Limite massimo di competenze
         if (skills.length > 10) {

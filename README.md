@@ -14,7 +14,7 @@
 - [x] Migliorare ed ottimizzare rotte
 - [x] Unire input nome e cognome in onboarding
 - [x] Sistemare spacing su pagina profilo da mobile
-- [ ] Validare tutti gli input lato server
+- [x] Validare tutti gli input lato server
 - [x] Migliorare la pagina Chat su mobile
 - [x] Aggiungere più contenuti alla pagina Home
 - [x] Eliminare funzione client side selectConversation

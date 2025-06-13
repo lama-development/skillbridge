@@ -12,13 +12,36 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         // Estrae i parametri di ricerca dalla query string
-        const query = req.query.q?.trim();
-        const category = req.query.category?.trim();
-        const type = req.query.type?.trim();
+        let query = req.query.q?.trim();
+        let category = req.query.category?.trim();
+        let type = req.query.type?.trim();
         const page = parseInt(req.query.page) || 1;
         const RESULTS_PER_PAGE = 5;
         
-        // Se non ci sono criteri di ricerca, torna alla homepage
+        // Validazione parametri di ricerca
+        if (query && query.length > 80) {
+            req.flash('error_msg', 'La ricerca non può superare 80 caratteri.');
+            query = query.substring(0, 80);
+        }
+        
+        // Validazione categoria
+        const validCategories = ['Sviluppo Web', 'Sviluppo Mobile', 'Design', 'Marketing', 'Scrittura', 'Traduzione', 'Consulenza', 'Altro', 'all'];
+        if (category && !validCategories.includes(category)) {
+            category = null;
+        }
+        
+        // Validazione tipo
+        const validTypes = ['job_offer', 'freelancer_promo'];
+        if (type && !validTypes.includes(type)) {
+            type = null;
+        }
+        
+        // Validazione pagina
+        if (page < 1 || page > 100) { // Limite per evitare abusi
+            return res.redirect('/search?' + new URLSearchParams({ q: query || '', category: category || '' }).toString());
+        }
+        
+        // Se non ci sono criteri di ricerca validi, torna alla homepage
         if (!query && !category) {
             return res.redirect('/');
         }
