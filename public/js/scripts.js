@@ -1,6 +1,10 @@
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Inizializzazione dei tooltip Bootstrap
+    const tooltipElement = document.querySelector('[data-bs-toggle="tooltip"]');
+    if (tooltipElement) new bootstrap.Tooltip(tooltipElement);
+
     // Bottone per mostrare/nascondere la password
     const passwordToggleButtons = document.querySelectorAll('.toggle-password');
     passwordToggleButtons.forEach(function(button) {

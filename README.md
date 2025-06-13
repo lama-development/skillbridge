@@ -21,3 +21,4 @@
 - [x] Gestire paginazione annunci nella home page
 - [x] Fixare overflow container chat con scrolling
 - [x] Fixare polling nuovi messaggi chat
+- [ ] Fixare tooltip campo username su mobile
