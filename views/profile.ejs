@@ -17,6 +17,12 @@
     <main class="flex-shrink-0">
         <div class="container py-4 py-md-5">
             <!-- Flash Messages -->
+            <% if (success_msg && success_msg.length > 0) { %>
+                <div class="alert alert-success alert-dismissible show" role="alert">
+                    <%= success_msg %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
             <% if (error_msg && error_msg.length > 0) { %>
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <%= error_msg %>
