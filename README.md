@@ -1,24 +1,74 @@
-# 📋 To-Do
+## 🚀 Caratteristiche Principali
 
-### ✅ New Features
-- [X] Implementare chat in tempo reale tra utenti
-- [x] Aggiungere dropdown della categoria durante la creazione dei post
-- [x] Aggiungere filtri per categoria alla ricerca dei post
-- [x] Aggiungere funzionalità per modificare/aggiungere informazioni sul profilo
-- [x] Aggiungere skills ai profili dei freelancer
-- [x] Aggiungere pagina 404
-- [x] Implementare DAO per accesso al database
+- **Due tipologie di utenti**: Freelancer e Aziende con funzionalità dedicate
+- **Sistema di post**: Job offers per aziende e promozioni per freelancer
+- **Chat in tempo reale**: Comunicazione diretta tra utenti di tipologie diverse
+- **Ricerca avanzata**: Filtri per parole chiave e categorie
+- **Personalizzazione profili**: Upload foto profilo e aggiunta di informazioni
 
-### ⚙️ Fixes and Improvements
-- [x] Risolvere problemi di visualizzazione dell'immagine del profilo
-- [x] Migliorare ed ottimizzare rotte
-- [x] Unire input nome e cognome in onboarding
-- [x] Sistemare spacing su pagina profilo da mobile
-- [x] Validare tutti gli input lato server
-- [x] Migliorare la pagina Chat su mobile
-- [x] Aggiungere più contenuti alla pagina Home
-- [x] Eliminare funzione client side selectConversation
-- [x] Gestire paginazione annunci nella home page
-- [x] Fixare overflow container chat con scrolling
-- [x] Fixare polling nuovi messaggi chat
-- [x] Fixare tooltip campo username su mobile
+## 🌐 Demo Online
+
+Puoi testare SkillBridge direttamente nel browser senza installazione locale visitando il link sotto L'applicazione è deployata su Railway e include tutti i dati di test necessari.
+
+https://skillbridge.up.railway.app
+
+## ⚙️ Installazione
+
+1. **Clona il progetto** (o estrai lo ZIP) e naviga nella directory
+```bash
+cd skillbridge
+```
+
+2. **Installa le dipendenze**
+```bash
+npm install
+```
+
+3. **Avvia l'applicazione**
+```bash
+npm start
+```
+
+4. **Apri il browser** e vai su `http://localhost:8000`
+
+## 🎥 Video Dimostrativo
+
+**Link YouTube**: 
+
+## 👥 Utenti di Test
+
+### Freelancer
+- **Email**: freelancer@test.com
+- **Password**: password123
+
+### Azienda
+- **Email**: business@test.com  
+- **Password**: password123
+
+## 🎯 Funzionalità per Tipologia Utente
+
+### **Utenti non Registrati (Ospiti)**
+- ✅ Visualizzare profili e post di freelancer e aziende
+- ✅ Ricercare post di freelancer e aziende 
+- ❌ Pubblicare post e chattare con altri utenti
+- ❌ Personalizzare il proprio profilo
+
+### **Freelancer**
+- ✅ Creare e personalizzare il proprio profilo professionale
+- ✅ Pubblicare post promozionali per promuoversi
+- ✅ Chattare con aziende interessate
+- ✅ Ricercare opportunità lavorative 
+- ❌ Pubblicare job offers (riservato alle aziende)
+- ❌ Chattare con altri freelancer
+
+### **Aziende**
+- ✅ Creare e personalizzare il profilo aziendale
+- ✅ Pubblicare annunci di lavoro
+- ✅ Chattare con freelancer candidati
+- ✅ Ricercare freelancer
+- ❌ Pubblicare post promozionali (riservato ai freelancer)
+- ❌ Chattare con altre aziende
+
+---
+
+*Progetto realizzato per l'esame di **MF0438 Metodologie di Programmazione per il Web**, A.A. 2024/2025*
