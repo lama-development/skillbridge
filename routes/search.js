@@ -1,7 +1,7 @@
 "use strict";
 
 import express from 'express';
-import db from '../database/db.js';
+import * as dao from '../database/dao.js';
 import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
@@ -23,9 +23,8 @@ router.get('/', async (req, res) => {
             req.flash('error_msg', 'La ricerca non può superare 80 caratteri.');
             query = query.substring(0, 80);
         }
-        
         // Validazione categoria
-        const validCategories = ['Sviluppo Web', 'Sviluppo Mobile', 'Design', 'Marketing', 'Scrittura', 'Traduzione', 'Consulenza', 'Altro', 'all'];
+        const validCategories = ['Sviluppo', 'Design', 'Marketing', 'Copywriting', 'Traduzioni', 'Altro', 'all'];
         if (category && !validCategories.includes(category)) {
             category = null;
         }
@@ -45,7 +44,8 @@ router.get('/', async (req, res) => {
         if (!query && !category) {
             return res.redirect('/');
         }
-          // Costruisce le query base per conteggio e risultati
+        
+        // Costruisce le query base per conteggio e risultati
         let baseCondition = 'WHERE 1=1';
         const params = [];
         
@@ -82,32 +82,10 @@ router.get('/', async (req, res) => {
             baseCondition += ' AND p.category = ?';
             params.push(category);
         }
-        
-        // Query per contare i risultati totali
-        const countQuery = `
-            SELECT COUNT(*) as total
-            FROM posts p
-            JOIN users u ON p.username = u.username
-            ${baseCondition}
-        `;
-        
-        // Query per ottenere i risultati paginati
-        const searchQuery = `
-            SELECT p.*, u.name, u.website, u.profilePicture, u.username
-            FROM posts p
-            JOIN users u ON p.username = u.username
-            ${baseCondition}
-            ORDER BY p.createdAt DESC
-            LIMIT ? OFFSET ?
-        `;
-        
-        // Aggiunge parametri per la paginazione
-        const searchParams = [...params, RESULTS_PER_PAGE, (page - 1) * RESULTS_PER_PAGE];
-        
-        // Esegue entrambe le query in parallelo
+          // Esegue entrambe le query in parallelo usando il DAO
         const [posts, countResult] = await Promise.all([
-            db.all(searchQuery, searchParams),
-            db.get(countQuery, params)
+            dao.searchPosts(baseCondition, params, RESULTS_PER_PAGE, (page - 1) * RESULTS_PER_PAGE),
+            dao.countSearchResults(baseCondition, params)
         ]);
         
         // Calcola i dati per la paginazione

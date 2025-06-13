@@ -1,7 +1,7 @@
 "use strict";
 
 import express from 'express';
-import db from '../database/db.js';
+import * as dao from '../database/dao.js';
 import { requireAuth, preventOnboardingIfComplete } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -61,11 +61,15 @@ router.post('/', requireAuth, async (req, res) => {
             req.flash('error_msg', errors.join(' '));
             return res.redirect('/onboarding');
         }
-        
-        // Aggiorna il profilo utente nel database
-        await db.run(
-            'UPDATE users SET type = ?, name = ?, website = ?, phone = ?, location = ?, profilePicture = ? WHERE username = ?',
-            [type, name, website, phone, location, defaultProfilePicture, req.user.username]
+          // Aggiorna il profilo utente nel database
+        await dao.updateUserOnboarding(
+            req.user.username, 
+            type, 
+            name, 
+            website, 
+            phone, 
+            location, 
+            defaultProfilePicture
         );
         
         // Reindirizza alla homepage dopo il completamento

@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { createRequire } from "module";
-import db from '../database/db.js';
+import * as dao from '../database/dao.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
@@ -16,36 +16,12 @@ router.get('/', async (req, res) => {
         // Numero massimo di post da mostrare per categoria
         const POST_LIMIT = 3;
         
-        // Query per recuperare le offerte di lavoro più recenti
-        const businessPostsQuery = `
-            SELECT p.*, u.name, u.website, u.profilePicture, u.username 
-            FROM posts p 
-            JOIN users u ON p.username = u.username 
-            WHERE p.type = 'job_offer' 
-            ORDER BY p.createdAt DESC
-            LIMIT ?
-        `;
-        
-        // Query per recuperare le promozioni freelancer più recenti
-        const freelancerPostsQuery = `
-            SELECT p.*, u.name, u.website, u.profilePicture, u.username 
-            FROM posts p 
-            JOIN users u ON p.username = u.username
-            WHERE p.type = 'freelancer_promo' 
-            ORDER BY p.createdAt DESC
-            LIMIT ?
-        `;
-        
-        // Query per contare tutti i post per categoria
-        const businessCountQuery = `SELECT COUNT(*) as total FROM posts WHERE type = 'job_offer'`;
-        const freelancerCountQuery = `SELECT COUNT(*) as total FROM posts WHERE type = 'freelancer_promo'`;
-        
         // Esegue tutte le query in parallelo per migliorare le performance
         const [businessPosts, freelancerPosts, businessCount, freelancerCount] = await Promise.all([
-            db.all(businessPostsQuery, [POST_LIMIT]).catch(() => []),
-            db.all(freelancerPostsQuery, [POST_LIMIT]).catch(() => []),
-            db.get(businessCountQuery).catch(() => ({ total: 0 })),
-            db.get(freelancerCountQuery).catch(() => ({ total: 0 }))
+            dao.getPostsByType('job_offer', POST_LIMIT).catch(() => []),
+            dao.getPostsByType('freelancer_promo', POST_LIMIT).catch(() => []),
+            dao.countPostsByType('job_offer').catch(() => ({ total: 0 })),
+            dao.countPostsByType('freelancer_promo').catch(() => ({ total: 0 }))
         ]);
         
         // Renderizza la homepage con tutti i dati

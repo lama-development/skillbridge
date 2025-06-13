@@ -1,9 +1,9 @@
 "use strict";
 
 import express from 'express';
-import db from '../database/db.js';
+import * as dao from '../database/dao.js';
 import fs from 'fs';
-import { requireAuth, requireOnboarding, requireFreelancerUser } from '../middleware/auth.js';
+import { requireAuth, requireFreelancerUser } from '../middleware/auth.js';
 import { upload, handleMulterError, deleteExistingProfilePictures } from '../middleware/upload.js';
 
 const router = express.Router();
@@ -25,10 +25,9 @@ router.post('/upload-photo', requireAuth, upload.single('profilePicture'), handl
         
         // Percorso relativo per il database
         const relativePath = `/uploads/${req.file.filename}`;   
-        
         try {
             // Aggiorna il database con il nuovo percorso
-            await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [relativePath, req.user.username]);   
+            await dao.updateUserProfilePicture(req.user.username, relativePath);   
             
             // Solo dopo il successo, elimina i vecchi file
             deleteExistingProfilePictures(req.user.username, req.file.filename);
@@ -67,9 +66,8 @@ router.post('/remove-photo', requireAuth, async (req, res) => {
                 // Continua comunque con l'aggiornamento
             }
         }
-        
-        // Imposta l'immagine predefinita nel database
-        await db.run('UPDATE users SET profilePicture = ? WHERE username = ?', [defaultPhoto, req.user.username]);
+          // Imposta l'immagine predefinita nel database
+        await dao.updateUserProfilePicture(req.user.username, defaultPhoto);
         
         // Aggiorna l'oggetto utente nella sessione
         req.user.profilePicture = defaultPhoto;
@@ -93,11 +91,10 @@ router.post('/update-bio', requireAuth, upload.none(), async (req, res) => {
             req.flash('error_msg', 'La biografia non può superare i 500 caratteri.');
             return res.redirect('/profile');
         }
-        
         // Sanitizzazione input
         const sanitizedBio = bio ? bio.trim() : null;
-          // Aggiorna nel database
-        await db.run('UPDATE users SET bio = ? WHERE username = ?', [sanitizedBio, req.user.username]);
+        // Aggiorna nel database
+        await dao.updateUserBio(req.user.username, sanitizedBio);
         
         // Aggiorna nell'oggetto utente della sessione
         req.user.bio = sanitizedBio;
@@ -160,20 +157,22 @@ router.post('/update-contacts', requireAuth, async (req, res) => {
             req.flash('error_msg', 'La località non può superare i 100 caratteri.');
             return res.redirect('/profile');
         }
-          // Aggiunge https:// al sito web se mancante
+        // Aggiunge https:// al sito web se mancante
         let validWebsite = website ? website.trim() : null;
         if (validWebsite && !validWebsite.startsWith('http://') && !validWebsite.startsWith('https://')) {
             validWebsite = 'https://' + validWebsite;
         }
         
-        // Sanitizzazione input
-        const sanitizedName = name.trim();
+        // Sanitizzazione input        const sanitizedName = name.trim();
         const sanitizedPhone = phone ? phone.trim() : null;
         const sanitizedLocation = location ? location.trim() : null;
-          // Aggiorna i contatti nel database
-        await db.run(
-            'UPDATE users SET website = ?, phone = ?, name = ?, location = ? WHERE username = ?',
-            [validWebsite, sanitizedPhone, sanitizedName, sanitizedLocation, req.user.username]
+        // Aggiorna i contatti nel database
+        await dao.updateUserContacts(
+            req.user.username,
+            validWebsite, 
+            sanitizedPhone, 
+            sanitizedName, 
+            sanitizedLocation
         );
         
         // Aggiorna nell'oggetto utente della sessione
@@ -231,14 +230,13 @@ router.post('/update-skills', requireAuth, requireFreelancerUser, express.urlenc
             req.flash('error_msg', 'Non puoi aggiungere più di 10 competenze.');
             return res.redirect('/profile');
         }
-        
         // Rimuove tutte le competenze esistenti
-        await db.run('DELETE FROM skills WHERE username = ?', [req.user.username]);
+        await dao.deleteUserSkills(req.user.username);
         
         // Inserisce le nuove competenze
         if (skills.length > 0) {
             for (const skill of skills) {
-                await db.run('INSERT INTO skills (username, skill) VALUES (?, ?)', [req.user.username, skill.trim()]);
+                await dao.addUserSkill(req.user.username, skill.trim());
             }
         }
         

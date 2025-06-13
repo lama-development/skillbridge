@@ -1,7 +1,7 @@
 "use strict";
 
 import express from 'express';
-import db from '../database/db.js';
+import * as dao from '../database/dao.js';
 import { createRequire } from "module";
 import { requireAuth, requireOnboarding } from '../middleware/auth.js';
 
@@ -12,10 +12,8 @@ const router = express.Router();
 // Funzione helper per recuperare i dati di un profilo
 async function getUserProfileData(username) {
     const [userPosts, userSkills] = await Promise.all([
-        db.all('SELECT * FROM posts WHERE username = ? ORDER BY createdAt DESC', [username])
-            .catch(() => []),
-        db.all('SELECT skill FROM skills WHERE username = ?', [username])
-            .catch(() => [])
+        dao.getPostsByUser(username),
+        dao.getUserSkills(username)
     ]);
     
     return {
@@ -58,7 +56,7 @@ router.get('/:username', async (req, res) => {
         }
         
         // Cerca l'utente nel database
-        const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+        const otherUser = await dao.findUserByUsername(username);
         if (!otherUser) {
             req.flash('error_msg', 'Utente non trovato.');
             return res.redirect('/');

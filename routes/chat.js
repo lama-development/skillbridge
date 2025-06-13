@@ -1,9 +1,9 @@
 "use strict";
 
 import express from 'express';
-import db from '../database/db.js';
 import { createRequire } from "module";
 import { requireOnboarding } from '../middleware/auth.js';
+import * as dao from '../database/dao.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
@@ -13,20 +13,17 @@ const router = express.Router();
 const checkChatCompatibility = async (req, res, next) => {
     try {
         const otherUsername = req.params.username;
-        
-        // Cerca l'altro utente
-        const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
+        // Cerca l'altro utente 
+        const otherUser = await dao.findUserByUsername(otherUsername);
         if (!otherUser) {
             req.flash('error_msg', 'Utente non trovato.');
             return res.redirect('/chat');
         }
-        
         // Verifica che i tipi siano diversi (freelancer può chattare solo con business e viceversa)
         if (req.user.type === otherUser.type) {
             req.flash('error_msg', 'Puoi chattare solo con utenti di tipo diverso (freelancer <> business).');
             return res.redirect('/chat');
         }
-        
         next();
     } catch (err) {
         console.error('Errore verifica compatibilità:', err);
@@ -35,53 +32,11 @@ const checkChatCompatibility = async (req, res, next) => {
     }
 };
 
-// Helper per recuperare le conversazioni dell'utente
-async function getUserConversations(username) {
-    return db.all(`
-        SELECT DISTINCT c.*, 
-            CASE 
-                WHEN c.username1 = ? THEN c.username2 
-                ELSE c.username1 
-            END as otherUser,
-            u.name, u.profilePicture, u.type
-        FROM conversations c
-        LEFT JOIN users u ON (
-            CASE 
-                WHEN c.username1 = ? THEN u.username = c.username2 
-                ELSE u.username = c.username1 
-            END
-        )
-        WHERE c.username1 = ? OR c.username2 = ?
-        ORDER BY c.updatedAt DESC
-    `, [username, username, username, username]);
-}
-
-// Helper per trovare o creare una conversazione
-async function findOrCreateConversation(user1, user2) {
-    // Cerca se esiste già una conversazione
-    let conversation = await db.get(`
-        SELECT * FROM conversations 
-        WHERE (username1 = ? AND username2 = ?) OR (username1 = ? AND username2 = ?)
-    `, [user1, user2, user2, user1]);
-    
-    // Se non esiste, la crea
-    if (!conversation) {
-        const result = await db.run(
-            'INSERT INTO conversations (username1, username2) VALUES (?, ?)',
-            [user1, user2]
-        );
-        conversation = await db.get('SELECT * FROM conversations WHERE id = ?', [result.lastID]);
-    }
-    
-    return conversation;
-}
-
 // Pagina principale delle chat
 router.get('/', requireOnboarding, async (req, res) => {
     try {
         // Recupera tutte le conversazioni dell'utente
-        const conversations = await getUserConversations(req.user.username);
-        
+        const conversations = await dao.getUserConversations(req.user.username);
         res.render('chat', { 
             user: req.user,
             package: pkg,
@@ -120,23 +75,14 @@ router.get('/:username', requireOnboarding, checkChatCompatibility, async (req, 
             return res.redirect('/chat');
         }
         
-        // Recupera i dati dell'altro utente
-        const otherUser = await db.get('SELECT * FROM users WHERE username = ?', [otherUsername]);
-        
+        // Recupera i dati dell'altro utente 
+        const otherUser = await dao.findUserByUsername(otherUsername);
         // Trova o crea la conversazione
-        const conversation = await findOrCreateConversation(req.user.username, otherUsername);
-        
-        // Recupera i messaggi della conversazione
-        const messages = await db.all(`
-            SELECT m.*, u.profilePicture 
-            FROM messages m
-            LEFT JOIN users u ON m.senderUsername = u.username
-            WHERE m.conversationId = ?
-            ORDER BY m.createdAt ASC
-        `, [conversation.id]);
-        
+        const conversation = await dao.findOrCreateConversation(req.user.username, otherUsername);
+        // Recupera i messaggi della conversazione 
+        const messages = await dao.getConversationMessages(conversation.id);
         // Recupera tutte le conversazioni per la sidebar
-        const conversations = await getUserConversations(req.user.username);
+        const conversations = await dao.getUserConversations(req.user.username);
         
         res.render('chat', { 
             user: req.user,
@@ -195,19 +141,11 @@ router.post('/:username/send', requireOnboarding, checkChatCompatibility, async 
         }
         
         // Trova o crea la conversazione
-        const conversation = await findOrCreateConversation(req.user.username, otherUsername);
-        
+        const conversation = await dao.findOrCreateConversation(req.user.username, otherUsername);
         // Inserisce il messaggio
-        const messageResult = await db.run(
-            'INSERT INTO messages (conversationId, senderUsername, content) VALUES (?, ?, ?)',
-            [conversation.id, req.user.username, message]
-        );
-        
-        // Aggiorna il timestamp della conversazione
-        await db.run(
-            'UPDATE conversations SET updatedAt = CURRENT_TIMESTAMP WHERE id = ?',
-            [conversation.id]
-        );        
+        const messageResult = await dao.createMessage(conversation.id, req.user.username, message);
+        // Aggiorna il timestamp della conversazione 
+        await dao.updateConversationTimestamp(conversation.id);
         
         // Risposta in base al tipo di richiesta
         if (isAjax) {
@@ -233,30 +171,18 @@ router.post('/:username/send', requireOnboarding, checkChatCompatibility, async 
 });
 
 // API per ottenere nuovi messaggi (polling)
-router.get('/api/messages/:username', requireOnboarding, checkChatCompatibility, async (req, res) => {
-    try {
+router.get('/api/messages/:username', requireOnboarding, checkChatCompatibility, async (req, res) => {    try {
         const otherUsername = req.params.username;
         const lastMessageId = parseInt(req.query.lastMessageId) || 0;
         
-        // Trova la conversazione
-        const conversation = await db.get(`
-            SELECT * FROM conversations 
-            WHERE (username1 = ? AND username2 = ?) OR (username1 = ? AND username2 = ?)
-        `, [req.user.username, otherUsername, otherUsername, req.user.username]);
-        
+        // Trova la conversazione 
+        const conversation = await dao.findOrCreateConversation(req.user.username, otherUsername);
         if (!conversation) {
             return res.json({ messages: [] });
         }
         
-        // Recupera i nuovi messaggi
-        const newMessages = await db.all(`
-            SELECT m.*, u.profilePicture 
-            FROM messages m
-            LEFT JOIN users u ON m.senderUsername = u.username
-            WHERE m.conversationId = ? AND m.id > ?
-            ORDER BY m.createdAt ASC
-        `, [conversation.id, lastMessageId]);
-        
+        // Recupera i nuovi messaggi 
+        const newMessages = await dao.getNewMessages(conversation.id, lastMessageId);
         res.json({ messages: newMessages || [] });
     } catch (err) {
         console.error('Errore recupero nuovi messaggi:', err);

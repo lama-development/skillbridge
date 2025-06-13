@@ -2,8 +2,8 @@
 
 import express from 'express';
 import bcrypt from 'bcrypt';
-import db from '../database/db.js';
 import { promisify } from 'util';
+import * as dao from '../database/dao.js';
 
 const router = express.Router();
 
@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
         const emailLowerCase = email.toLowerCase();
         
         // Cerca l'utente nel database
-        const user = await db.get('SELECT * FROM users WHERE email = ?', [emailLowerCase]);
+        const user = await dao.findUserByEmail(emailLowerCase);
         if (!user) {
             req.flash('error_msg', 'Credenziali non valide.');
             return res.redirect('/login');
@@ -119,21 +119,12 @@ router.post('/signup', async (req, res) => {
             return res.redirect('/signup');
         }
         
-        // Validazione lunghezza password
-        if (password.length < 8) {
-            req.flash('error_msg', 'La password deve essere lunga almeno 8 caratteri.');
-            return res.redirect('/signup');
-        }
-        
-        const emailLowerCase = email.toLowerCase();
-        
         // Validazione username
         const usernameRegex = /^[a-z0-9-]+$/;
         if (!usernameRegex.test(username)) {
             req.flash('error_msg', 'Username non valido. Usa solo lettere minuscole, numeri e trattini.');
             return res.redirect('/signup');
         }
-        
         if (username.length < 3 || username.length > 30) {
             req.flash('error_msg', 'L\'username deve essere lungo tra 3 e 30 caratteri.');
             return res.redirect('/signup');
@@ -144,13 +135,10 @@ router.post('/signup', async (req, res) => {
             req.flash('error_msg', 'Le password non corrispondono.');
             return res.redirect('/signup');
         }
-        
+
         // Verifica che email e username non siano già in uso
-        const existingUser = await db.get(
-            'SELECT * FROM users WHERE email = ? OR username = ?', 
-            [emailLowerCase, username]
-        );
-        
+        const emailLowerCase = email.toLowerCase();
+        const existingUser = await dao.findExistingUser(emailLowerCase, username);     
         if (existingUser) {
             if (existingUser.email === emailLowerCase) {
                 req.flash('error_msg', 'L\'email è già associata ad un account.');
@@ -162,13 +150,10 @@ router.post('/signup', async (req, res) => {
         
         // Cripta la password e crea l'utente
         const hashedPassword = await hashPassword(password, 10);
-        await db.run(
-            'INSERT INTO users (email, username, password) VALUES (?, ?, ?)', 
-            [emailLowerCase, username, hashedPassword]
-        );
+        await dao.createUser(emailLowerCase, username, hashedPassword);
         
         // Recupera l'utente appena creato per il login automatico
-        const newUser = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+        const newUser = await dao.findUserByUsername(username);
         
         // Login automatico
         await loginUser(req, newUser);

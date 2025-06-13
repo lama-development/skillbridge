@@ -1,7 +1,7 @@
 "use strict";
 
 import express from 'express';
-import db from '../database/db.js';
+import * as dao from '../database/dao.js';
 import { requireOnboarding, requireBusinessUser, requireFreelancerUser } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -38,19 +38,14 @@ router.post('/job-offer', requireOnboarding, requireBusinessUser, async (req, re
             req.flash('error_msg', 'La descrizione non può superare i 5000 caratteri.');
             return res.redirect('/');
         }
-        
-        // Validazione categoria
-        const validCategories = ['Sviluppo Web', 'Sviluppo Mobile', 'Design', 'Marketing', 'Scrittura', 'Traduzione', 'Consulenza', 'Altro'];
+          // Validazione categoria
+        const validCategories = ['Sviluppo', 'Design', 'Marketing', 'Copywriting', 'Traduzioni', 'Altro'];
         const validCategory = validCategories.includes(category) ? category : 'Altro';
-        
         // Sanitizzazione input
         const sanitizedTitle = title.trim();
         const sanitizedContent = content.trim();
-          // Salva l'offerta di lavoro nel database
-        await db.run(
-            'INSERT INTO posts (username, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-            [req.user.username, 'job_offer', sanitizedTitle, sanitizedContent, validCategory, new Date().toISOString()]
-        );
+        // Salva l'offerta di lavoro nel database
+        await dao.createPost(req.user.username, 'job_offer', sanitizedTitle, sanitizedContent, validCategory);
         
         req.flash('success_msg', 'Offerta di lavoro pubblicata con successo!');
         res.redirect('/');
@@ -93,19 +88,14 @@ router.post('/freelancer-promo', requireOnboarding, requireFreelancerUser, async
             req.flash('error_msg', 'La descrizione non può superare i 5000 caratteri.');
             return res.redirect('/');
         }
-        
         // Validazione categoria
-        const validCategories = ['Sviluppo Web', 'Sviluppo Mobile', 'Design', 'Marketing', 'Scrittura', 'Traduzione', 'Consulenza', 'Altro'];
+        const validCategories = ['Sviluppo', 'Design', 'Marketing', 'Copywriting', 'Traduzioni', 'Altro'];
         const validCategory = validCategories.includes(category) ? category : 'Altro';
-        
         // Sanitizzazione input
         const sanitizedTitle = title.trim();
         const sanitizedContent = content.trim();
-          // Salva la promozione nel database
-        await db.run(
-            'INSERT INTO posts (username, type, title, content, category, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-            [req.user.username, 'freelancer_promo', sanitizedTitle, sanitizedContent, validCategory, new Date().toISOString()]
-        );
+        // Salva la promozione nel database
+        await dao.createPost(req.user.username, 'freelancer_promo', sanitizedTitle, sanitizedContent, validCategory);
         
         req.flash('success_msg', 'Promozione pubblicata con successo!');
         res.redirect('/');
@@ -128,7 +118,7 @@ router.post('/:id/delete', requireOnboarding, async (req, res) => {
         }
         
         // Verifica che il post esista e appartenga all'utente
-        const post = await db.get('SELECT * FROM posts WHERE id = ?', [postId]);
+        const post = await dao.findPostById(postId);
         
         if (!post) {
             req.flash('error_msg', 'Post non trovato.');
@@ -142,7 +132,7 @@ router.post('/:id/delete', requireOnboarding, async (req, res) => {
         }
         
         // Elimina il post dal database
-        await db.run('DELETE FROM posts WHERE id = ?', [postId]);
+        await dao.deletePostById(postId);
         
         req.flash('success_msg', 'Post eliminato con successo!');
         res.redirect('/');
