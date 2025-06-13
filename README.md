@@ -1,3 +1,5 @@
+![banner](https://github.com/user-attachments/assets/a5ad56e1-e090-483d-b5e9-4bfc3fb155d7)
+
 ## 🚀 Caratteristiche Principali
 
 - **Due tipologie di utenti**: Freelancer e Aziende con funzionalità dedicate
