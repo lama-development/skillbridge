@@ -10,9 +10,7 @@
 
 ## 🌐 Demo Online
 
-Puoi testare SkillBridge direttamente nel browser senza installazione locale visitando il link sotto L'applicazione è deployata su Railway e include tutti i dati di test necessari.
-
-https://skillbridge.up.railway.app
+Puoi testare SkillBridge direttamente nel browser senza installazione locale visitando il link https://skillbridge.up.railway.app. L'applicazione è deployata su Railway e include tutti i dati di test necessari.
 
 ## ⚙️ Installazione
 
