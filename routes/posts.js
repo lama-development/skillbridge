@@ -135,7 +135,7 @@ router.post('/:id/delete', requireOnboarding, async (req, res) => {
         await dao.deletePostById(postId);
         
         req.flash('success_msg', 'Post eliminato con successo!');
-        res.redirect('/');
+        res.redirect('/profile');
     } catch (err) {
         console.error('Errore eliminazione post:', err);
         req.flash('error_msg', 'Si è verificato un errore durante l\'eliminazione.');
