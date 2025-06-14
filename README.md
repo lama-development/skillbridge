@@ -29,7 +29,7 @@ npm install
 npm start
 ```
 
-4. **Apri il browser** e vai su `http://localhost:8000`
+4. **Apri il browser** e vai su `http://localhost:8080`
 
 ## 🎥 Video Dimostrativo
 
@@ -37,23 +37,23 @@ npm start
 
 ## 👥 Utenti di Test
 
-### Freelancer
+Freelancer
 - **Email**: freelancer@test.com
 - **Password**: password123
 
-### Azienda
+Azienda
 - **Email**: business@test.com  
 - **Password**: password123
 
 ## 🎯 Funzionalità per Tipologia Utente
 
-### **Utenti non Registrati (Ospiti)**
+**Utenti non Registrati (Ospiti)**
 - ✅ Visualizzare profili e post di freelancer e aziende
 - ✅ Ricercare post di freelancer e aziende 
 - ❌ Pubblicare post e chattare con altri utenti
 - ❌ Personalizzare il proprio profilo
 
-### **Freelancer**
+**Freelancer**
 - ✅ Creare e personalizzare il proprio profilo professionale
 - ✅ Pubblicare post promozionali per promuoversi
 - ✅ Chattare con aziende interessate
@@ -61,7 +61,7 @@ npm start
 - ❌ Pubblicare job offers (riservato alle aziende)
 - ❌ Chattare con altri freelancer
 
-### **Aziende**
+**Aziende**
 - ✅ Creare e personalizzare il profilo aziendale
 - ✅ Pubblicare annunci di lavoro
 - ✅ Chattare con freelancer candidati
