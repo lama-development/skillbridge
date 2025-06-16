@@ -33,7 +33,7 @@ npm start
 
 ## 🎥 Video Dimostrativo
 
-**Link YouTube**: 
+**Link YouTube**: https://youtu.be/rYNc9ZRcxZo
 
 ## 👥 Utenti di Test
 
