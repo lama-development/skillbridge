@@ -8,11 +8,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, 'skillbridge.db');
-const db = new sqlite3.Database(dbPath);
+const dbInstance = new sqlite3.Database(dbPath);
 
 // Inizializzazione delle tabelle
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS users (
+dbInstance.serialize(() => {
+    dbInstance.run(`CREATE TABLE IF NOT EXISTS users (
     username TEXT PRIMARY KEY,
     email TEXT NOT NULL UNIQUE COLLATE NOCASE,
     password TEXT NOT NULL,
@@ -29,7 +29,7 @@ db.serialize(() => {
     )
     )`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS skills (
+    dbInstance.run(`CREATE TABLE IF NOT EXISTS skills (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
     skill TEXT NOT NULL,
@@ -37,7 +37,7 @@ db.serialize(() => {
     UNIQUE(username, skill)
     )`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS posts (
+    dbInstance.run(`CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     username TEXT NOT NULL,
     type TEXT NOT NULL CHECK (type IN ('job_offer', 'freelancer_promo')),
@@ -48,7 +48,7 @@ db.serialize(() => {
     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
     )`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS conversations (
+    dbInstance.run(`CREATE TABLE IF NOT EXISTS conversations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username1 TEXT NOT NULL,
     username2 TEXT NOT NULL,
@@ -58,7 +58,7 @@ db.serialize(() => {
     UNIQUE(username1, username2)
     )`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS messages (
+    dbInstance.run(`CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     conversationId INTEGER NOT NULL,
     senderUsername TEXT NOT NULL,
@@ -70,11 +70,11 @@ db.serialize(() => {
 });
 
 // Wrapping dei metodi del database con Promise
-const dbAsync = {
+const db = {
     // Esegue una query che restituisce una riga
     get: function(sql, params = []) {
         return new Promise((resolve, reject) => {
-            db.get(sql, params, (err, row) => {
+            dbInstance.get(sql, params, (err, row) => {
                 if (err) reject(err);
                 else resolve(row);
             });
@@ -84,7 +84,7 @@ const dbAsync = {
     // Esegue una query che restituisce più righe
     all: function(sql, params = []) {
         return new Promise((resolve, reject) => {
-            db.all(sql, params, (err, rows) => {
+            dbInstance.all(sql, params, (err, rows) => {
                 if (err) reject(err);
                 else resolve(rows);
             });
@@ -94,7 +94,7 @@ const dbAsync = {
     // Esegue una query senza restituire risultati
     run: function(sql, params = []) {
         return new Promise((resolve, reject) => {
-            db.run(sql, params, function(err) {
+            dbInstance.run(sql, params, function(err) {
                 if (err) reject(err);
                 else {
                     // this.lastID e this.changes sono disponibili qui
@@ -106,9 +106,6 @@ const dbAsync = {
             });
         });
     },
-
-    // Accesso al database originale per operazioni operazioni non incluse
-    db: db
 };
 
-export default dbAsync;
+export default db;

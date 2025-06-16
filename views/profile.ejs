@@ -21,13 +21,13 @@
             <% if (success_msg && success_msg.length > 0) { %>
                 <div class="alert alert-success alert-dismissible show" role="alert">
                     <%= success_msg %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
                 </div>
             <% } %>
             <% if (error_msg && error_msg.length > 0) { %>
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <%= error_msg %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
                 </div>
             <% } %>
             <!-- Header del profilo -->
@@ -244,7 +244,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="profilePictureModalLabel">Gestisci foto profilo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Opzioni per la foto profilo -->
@@ -296,7 +296,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editBioModalLabel">Modifica la tua biografia</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
                 </div>
                 <div class="modal-body">
                     <form action="/profile/update-bio" method="POST" id="updateBioForm">
@@ -322,7 +322,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editContactsModalLabel">Modifica i tuoi contatti</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
                 </div>
                 <div class="modal-body">
                     <form action="/profile/update-contacts" method="POST" id="updateContactsForm">
@@ -365,7 +365,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editSkillsModalLabel">Modifica le tue competenze</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
                 </div>
                 <div class="modal-body">
                     <form action="/profile/update-skills" method="POST">
@@ -392,7 +392,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="deletePostModalLabel">Conferma eliminazione</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
                 </div>
                 <div class="modal-body">
                     <div>

@@ -20,13 +20,13 @@
             <% if (success_msg && success_msg.length > 0) { %>
                 <div class="alert alert-success alert-dismissible show" role="alert">
                     <%= success_msg %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
                 </div>
             <% } %>
             <% if (error_msg && error_msg.length > 0) { %>
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <%= error_msg %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
                 </div>
             <% } %>
             <div class="mb-4">
@@ -60,11 +60,11 @@
             <% if (posts.length > 0) { 
                 function highlightText(text, searchQuery) {
                     if (!text) return '';
-                    // Escape special regex characters in the search query
+                    // Escape caratteri speciali regex nella query di ricerca
                     const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    // Create a regex pattern to match the query (case insensitive)
+                    // Crea un pattern regex per trovare la query (case insensitive)
                     const regex = new RegExp(`(${escapedQuery})`, 'gi');
-                    // Replace matches with highlighted spans
+                    // Sostituisce le corrispondenze con span evidenziati
                     return text.replace(regex, '<span class="search-highlight">$1</span>');
                 }
             %>

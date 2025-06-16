@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="alert" aria-label="Chiudi"></button>
             </div>
         <% } %>
         <!-- Annuncio per utenti non loggati -->
@@ -40,26 +40,26 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Chiudi"></button>
             </div>
         <% } %>
         <!-- Flash Messages -->
         <% if (info_msg && info_msg.length > 0) { %>
             <div class="alert alert-info alert-dismissible show mt-3" role="alert">
                 <%= info_msg %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
             </div>
         <% } %>
         <% if (success_msg && success_msg.length > 0) { %>
             <div class="alert alert-success alert-dismissible show mt-3" role="alert">
                 <%= success_msg %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
             </div>
         <% } %>
         <% if (error_msg && error_msg.length > 0) { %>
             <div class="alert alert-danger alert-dismissible show mt-3" role="alert">
                 <%= error_msg %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
             </div>
         <% } %>
     </div>
