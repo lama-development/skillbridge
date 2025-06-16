@@ -25,7 +25,8 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // Configurazione delle sessioni per Passport
 app.use(session({
-    secret: 'SkillBridge', // Cambia in produzione
+    // Dovrebbe essere memorizzata in variabile d'ambiente (env), ma per semplicità di dimostrazione è in chiaro
+    secret: 'SkillBridge', 
     resave: false,
     saveUninitialized: false
 }));
