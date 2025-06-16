@@ -33,7 +33,7 @@
     <% if (user && user.username === post.username) { %>
       <!-- Proprietario del post: può solo eliminarlo -->
       <form action="/posts/<%= post.id %>/delete" method="POST" class="d-inline-block">
-        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Sei sicuro di voler eliminare questo post?')">
+        <button type="submit" class="btn btn-outline-danger btn-sm">
           <i class="bi bi-trash-fill me-1"></i> Elimina
         </button>
       </form>

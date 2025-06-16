@@ -17,23 +17,12 @@ router.post('/job-offer', requireOnboarding, requireBusinessUser, async (req, re
             return res.redirect('/');
         }
         
-        // Validazione lunghezza titolo
-        if (title.trim().length < 5) {
-            req.flash('error_msg', 'Il titolo deve contenere almeno 5 caratteri.');
-            return res.redirect('/');
-        }
-        
         if (title.trim().length > 200) {
             req.flash('error_msg', 'Il titolo non può superare i 200 caratteri.');
             return res.redirect('/');
         }
         
         // Validazione lunghezza contenuto
-        if (content.trim().length < 20) {
-            req.flash('error_msg', 'La descrizione deve contenere almeno 20 caratteri.');
-            return res.redirect('/');
-        }
-        
         if (content.trim().length > 5000) {
             req.flash('error_msg', 'La descrizione non può superare i 5000 caratteri.');
             return res.redirect('/');
@@ -67,23 +56,12 @@ router.post('/freelancer-promo', requireOnboarding, requireFreelancerUser, async
             return res.redirect('/');
         }
         
-        // Validazione lunghezza titolo
-        if (title.trim().length < 5) {
-            req.flash('error_msg', 'Il titolo deve contenere almeno 5 caratteri.');
-            return res.redirect('/');
-        }
-        
         if (title.trim().length > 200) {
             req.flash('error_msg', 'Il titolo non può superare i 200 caratteri.');
             return res.redirect('/');
         }
         
-        // Validazione lunghezza contenuto
-        if (content.trim().length < 20) {
-            req.flash('error_msg', 'La descrizione deve contenere almeno 20 caratteri.');
-            return res.redirect('/');
-        }
-        
+        // Validazione lunghezza contenuto     
         if (content.trim().length > 5000) {
             req.flash('error_msg', 'La descrizione non può superare i 5000 caratteri.');
             return res.redirect('/');

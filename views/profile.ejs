@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profilo - SkillBridge</title>
     <%- include('partials/head') %>
+    <script src="/js/scripts.js" defer></script>
 </head>
 
 <body class="d-flex flex-column h-100 has-navbar-padding">
@@ -411,22 +412,5 @@
         </div>
     </div>
     <% } %>
-
-    <script>
-        // Handle delete post modal
-        document.addEventListener('DOMContentLoaded', function() {
-            const deletePostModal = document.getElementById('deletePostModal');
-            if (deletePostModal) {
-                deletePostModal.addEventListener('show.bs.modal', function (event) {
-                    const button = event.relatedTarget;
-                    const postId = button.getAttribute('data-post-id');
-                    const postTitle = button.getAttribute('data-post-title');
-                    // Update form action
-                    const deleteForm = document.getElementById('deletePostForm');
-                    deleteForm.action = '/posts/' + postId + '/delete';
-                });
-            }
-        });
-    </script>
 </body>
 </html>

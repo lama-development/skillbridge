@@ -58,4 +58,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mette automaticamente il focus sul campo messaggio della chat
     const chatInput = document.querySelector('.chat-input input[name="message"]');
     if (chatInput) chatInput.focus();
+    
+    // Gestione del modal di conferma cancellazione post
+    const deletePostModal = document.getElementById('deletePostModal');
+    if (deletePostModal) {
+        deletePostModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const postId = button.getAttribute('data-post-id');
+            const postTitle = button.getAttribute('data-post-title');
+            // Update form action
+            const deleteForm = document.getElementById('deletePostForm');
+            deleteForm.action = '/posts/' + postId + '/delete';
+        });
+    }
 });
