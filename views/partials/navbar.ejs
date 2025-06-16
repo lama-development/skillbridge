@@ -10,7 +10,7 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <form class="d-flex mx-auto searchbar" action="/search" method="GET">
                 <div class="input-group">
-                    <input type="search" name="q" class="form-control" placeholder="Cerca annunci o professionisti..." aria-label="Cerca" required>
+                    <input type="search" name="q" class="form-control" placeholder="Cerca annunci..." aria-label="Cerca" required>
                     <button class="btn btn-outline-secondary" type="submit">
                         <i class="bi bi-search"></i>
                     </button>
@@ -37,7 +37,7 @@
                             const defaultImg = currentUser.type === 'business' ? '/img/business.png' : '/img/freelancer.png';
                             const profilePic = currentUser.profilePicture ? (currentUser.profilePicture.startsWith('/') ? currentUser.profilePicture : '/' + currentUser.profilePicture) : defaultImg;
                         %>
-                        <img src="<%= profilePic %>" alt="Profilo" class="rounded-circle me-0" style="width: 24px; height: 24px; object-fit: cover;">
+                        <img src="<%= profilePic %>" alt="Profilo" class="rounded-circle navbar-profile me-0">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="/profile"><i class="bi bi-person-circle me-2"></i>Profilo</a></li>

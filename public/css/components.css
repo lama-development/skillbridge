@@ -11,6 +11,10 @@
 .navbar .searchbar {
     width: 45% !important;
 }
+.navbar-profile {
+    width: 24px;
+    height: 24px;object-fit: cover;
+}
 .navbar-button {
     display: inline-flex;
     align-items: center;
@@ -34,6 +38,12 @@
 /* Categorie */
 .category-card:hover {
     background-color: var(--color-border);
+}
+
+/* Info */
+.info-circle {
+    width: 60px;
+    height: 60px;
 }
 
 /* Cerca */

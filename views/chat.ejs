@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <!-- Area conversazione -->
-                        <div class="col-md-8 d-flex flex-column chat-conversation" id="chat-conversation" style="height: 100%; overflow: hidden;">
+                        <div class="col-md-8 d-flex flex-column chat-conversation" id="chat-conversation">
                             <% if (selectedConversation && otherUser) { %>
                                 <!-- Header mobile con pulsante indietro -->
                                 <div class="mobile-chat-header d-md-none">
@@ -125,7 +125,7 @@
                                 <div class="chat-input mt-auto">
                                     <form action="/chat/<%= otherUser.username %>/send" method="POST" class="d-flex align-items-center p-3" data-current-user="<%= user.username %>">
                                         <input type="text" name="message" class="form-control me-2" placeholder="Scrivi un messaggio..." maxlength="1000" autocomplete="off" required>
-                                        <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center" style="width: 45px; height: 38px;">
+                                        <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">
                                             <i class="bi bi-send-fill"></i>
                                         </button>
                                     </form>
