@@ -163,7 +163,8 @@ router.post('/update-contacts', requireAuth, async (req, res) => {
             validWebsite = 'https://' + validWebsite;
         }
         
-        // Sanitizzazione input        const sanitizedName = name.trim();
+        // Sanitizzazione inputc 
+        const sanitizedName = name.trim();
         const sanitizedPhone = phone ? phone.trim() : null;
         const sanitizedLocation = location ? location.trim() : null;
         // Aggiorna i contatti nel database

@@ -171,7 +171,8 @@ router.post('/:username/send', requireOnboarding, checkChatCompatibility, async 
 });
 
 // API per ottenere nuovi messaggi (polling)
-router.get('/api/messages/:username', requireOnboarding, checkChatCompatibility, async (req, res) => {    try {
+router.get('/api/messages/:username', requireOnboarding, checkChatCompatibility, async (req, res) => {
+    try {
         const otherUsername = req.params.username;
         const lastMessageId = parseInt(req.query.lastMessageId) || 0;
         
