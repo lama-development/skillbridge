@@ -18,6 +18,9 @@
     "url": "https://github.com/lama-development/skillbridge/issues"
   },
   "homepage": "https://github.com/lama-development/skillbridge#readme",
+  "overrides": {
+    "tar": "7.5.3"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bootstrap": "^5.3.6",
